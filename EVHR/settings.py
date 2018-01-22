@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ProcessingEngine',
     'GeoProcessingEngine',
     'EvhrEngine',
+    'JobDaemon'
 ]
 
 MIDDLEWARE = [
@@ -154,7 +155,13 @@ LOGGING = {
 	}
 }
 
-EVHR_SETTINGS = {
-    'outputDirectory' : '/att/nobackup/rlgill/testing',
-}
+# WranglerProcess Settings
+OUTPUT_DIRECTORY = '/Users/a/Desktop/SystemTesting/EVHR'
+
+# WranglerProcess Settings
+DEFAULT_SCALE_IN_METERS = 30
+DOWNLOAD_DIR = '/tmp'
+MERRA_END_DATE = '2017-05-31'
+MERRA_START_DATE = '1980-01-01'
+WORK_DIRECTORY = OUTPUT_DIRECTORY
 
