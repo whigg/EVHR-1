@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import base64
+import errno
 import glob
+import grp
 import os
+import shutil
+import stat
 
+from django.conf import settings
 from django.core.validators import MaxLengthValidator
 from django.core.validators import MinLengthValidator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.core.validators import URLValidator
 from django.db import models
-from django.db.models.signals import pre_delete
+from django.db.models.signals import post_delete
+# from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
 # States
@@ -247,6 +254,9 @@ class Request(models.Model):
         blank = True,
         help_text = 'Latest date to retrieve')
 
+    # This is so the oldest Predictors are processed first.
+    created = models.DateTimeField(auto_now_add = True)
+
     #--------------------------------------------------------------------
     # describeStatus
     #--------------------------------------------------------------------
@@ -274,6 +284,27 @@ class Request(models.Model):
                                    ' must be less than end date, ' + \
                                    str(endDate) + '.')
         
+        # Validate the destination.
+        if self.destination == None or len(self.destination.name.strip()) == 0:
+            
+            self.destination = \
+                createUniqueDirName(settings.WORK_DIRECTORY, self.name)
+            
+        if not os.path.exists(self.destination.name):
+        
+            os.mkdir(self.destination.name, 0777)
+
+            try:
+
+                gid = grp.getgrnam('wrangler').gr_gid
+                os.chown(self.destination.name, -1, gid)
+
+            except KeyError:
+                pass
+                
+            curPerms = os.stat(self.destination.name).st_mode
+            os.chmod(self.destination.name, curPerms | stat.S_IWGRP)
+
         # Invoke the base class save().
         super(Request, self).save(*args, **kwargs)
 
@@ -403,35 +434,70 @@ class RequestProcess(BaseProcess):
         verbose_name_plural = "Request Processes"
 
 #-------------------------------------------------------------------------------
+# post_delete
+#
+# This is called after a Request is deleted.  This 'signal' method
+# deletes the request directory.  This cannot be accomplished by
+# overriding Request's delete() method because overridden delete methods
+# are not guaranteed to be called during bulk deletes.  This only deletes
+# requests stored in the Wrangler Process work directory.
+#-------------------------------------------------------------------------------
+@receiver(post_delete, sender=Request, dispatch_uid="my_unique_identifier")
+def deleteSiteSignal(sender, instance, using, **kwargs):
+
+    if instance.destination != None and \
+        os.path.exists(instance.destination.name):
+        
+        shutil.rmtree(instance.destination.name)
+
+#-------------------------------------------------------------------------------
 # pre_delete
 #
 # This is called before a Request is deleted.  This 'signal' method deletes the
-# predictor from the site directory.
+# predictor from the Request directory.
 #-------------------------------------------------------------------------------
-@receiver(pre_delete)
-def preDeletePredictor(sender, instance, using, **kwargs):
+# @receiver(pre_delete)
+# def preDeletePredictor(sender, instance, using, **kwargs):
+#
+#     if sender == Request:
+#
+#         # Do not remove the entire subdirectory, else you lose Landsat state.
+#         if instance.destination and os.path.isdir(instance.destination.name):
+#
+#             globFiles = []
+#
+#             fileExts  = ['*.csv', '*.gfs', '*.gml', '*.gz', '*.nc', '*.tif',
+#                          '*.xml', '*.xsd', '*.xyz']
+#
+#             for fileExt in fileExts:
+#
+#                 globStmt = os.path.join(instance.destination.name, fileExt)
+#                 globFiles += glob.glob(globStmt)
+#
+#             for f in globFiles:
+#                 os.remove(f)
+#
+#     elif sender == Constituent:
+#
+#         if instance.destination and os.path.exists(instance.destination.name):
+#             os.remove(instance.destination.name)
 
-    if sender == Request:
+#-------------------------------------------------------------------------------
+# createUniqueDirName
+#-------------------------------------------------------------------------------
+def createUniqueDirName(baseDir, dirName):
 
-        # Do not remove the entire subdirectory, else you lose Landsat state.
-        if instance.destination and os.path.isdir(instance.destination.name):
+    dirName = dirName.replace('\\', '-').replace('/', '-').replace(' ', '_')
+    uniqueDir = None
+    
+    while uniqueDir == None:
 
-            globFiles = []
-            
-            fileExts  = ['*.csv', '*.gfs', '*.gml', '*.gz', '*.nc', '*.tif', 
-                         '*.xml', '*.xsd', '*.xyz']
-            
-            for fileExt in fileExts:
-                
-                globStmt = os.path.join(instance.destination.name, fileExt)
-                globFiles += glob.glob(globStmt)
+        random  = base64.urlsafe_b64encode(os.urandom(30))
+        testDir = os.path.join(baseDir, dirName + '-' + str(random))
 
-            for f in globFiles:
-                os.remove(f)
+        if not os.path.exists(testDir):
+            uniqueDir = testDir        
         
-    elif sender == Constituent:
-
-        if instance.destination and os.path.exists(instance.destination.name):
-            os.remove(instance.destination.name)
+    return uniqueDir
 
 

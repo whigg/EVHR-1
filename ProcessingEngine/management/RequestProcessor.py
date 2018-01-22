@@ -136,7 +136,7 @@ class RequestProcessor():
         # Register that this instance is not running.
         if self.logger:
             self.logger.info('Completed request process for ' + 
-                             self.predictor.name)
+                             self.request.name)
         
         self.process.delete()
 
