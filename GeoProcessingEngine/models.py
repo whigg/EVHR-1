@@ -54,11 +54,11 @@ class GeoRequest(Request):
         validators = [DecimalValidator(12, 8)])
 
     srs = models.CharField(
-        max_length = 80,
+        max_length = 1000,
         help_text = 'The OGC well-known text definition of the spatial reference system describing ulx, uly, lrx and lry.')
 
     outSRS = models.CharField(
-        max_length = 80,
+        max_length = 1000,
         null = True,
         blank = True,
         help_text = 'The OGC well-known text definition of the spatial reference system describing the output products.')

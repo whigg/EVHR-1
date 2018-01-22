@@ -291,11 +291,10 @@ class MerraBase (GeoRetriever):
         # dates.
         #--- 
         earliestCollDate = \
-            datetime.strptime(settings.WRANGLE_SETTINGS['merraStartDate'], \
-                              '%Y-%m-%d').date()
+            datetime.strptime(settings.MERRA_START_DATE, '%Y-%m-%d').date()
+
         latestCollDate = \
-            datetime.strptime(settings.WRANGLE_SETTINGS['merraEndDate'], \
-                              '%Y-%m-%d').date()
+            datetime.strptime(settings.MERRA_END_DATE, '%Y-%m-%d').date()
                               
         self.startDate = self.request.startDate
         self.endDate   = self.request.endDate

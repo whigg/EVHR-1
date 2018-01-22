@@ -75,7 +75,7 @@ class WmsRetriever(GeoRetriever):
         # Try to find the maximum allowable scale.  This might not be given.
         if self.scaleHint == None:
 
-            scale = settings.WRANGLE_SETTINGS['defaultScaleInMeters']
+            scale = settings.DEFAULT_SCALE_IN_METERS
             
         else:
             scale = float(self.scaleHint['max'])

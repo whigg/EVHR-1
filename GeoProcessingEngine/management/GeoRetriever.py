@@ -193,8 +193,8 @@ class GeoRetriever(Retriever):
         urPoint.AddPoint(float(lrx), float(uly))
         urPoint.AssignSpatialReference(srs)
         
-        width  = abs(ulPoint.Distance(urPoint))
-        height = abs(ulPoint.Distance(lrPoint))
+        width  = ulPoint.Distance(urPoint)
+        height = ulPoint.Distance(lrPoint)
         
         pct      = percentage / 100.0
         exWidth  = width * pct / 2.0
@@ -365,22 +365,6 @@ class GeoRetriever(Retriever):
                 for tif in tifs:
                     os.remove(tif)
         
-    #---------------------------------------------------------------------------
-    # runSystemCmd
-    #---------------------------------------------------------------------------
-    def runSystemCmd(self, cmd):
-        
-        if not cmd:
-            return
-            
-        if self.logger:
-            self.logger.info('Command: ' + cmd)
-
-        status = os.system(cmd)
-
-        if status != 0:
-            raise RuntimeError('System command failed.')
-
     #---------------------------------------------------------------------------
     # transformBbox
     #---------------------------------------------------------------------------

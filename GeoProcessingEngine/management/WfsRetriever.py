@@ -161,7 +161,7 @@ class WfsRetriever(GeoRetriever):
         tifName    = os.path.join(path, name + '.tif')
 
         # Compute height and width based on the given scale.
-        scale = settings.WRANGLE_SETTINGS['defaultScaleInMeters']
+        scale = settingsDEFAULT_SCALE_IN_METERS
         
         outUl = ogr.Geometry(ogr.wkbPoint)
         outUl.AddPoint(float(outUlx), float(outUly))

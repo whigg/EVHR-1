@@ -42,7 +42,7 @@ class Command(BaseCommand):
         URLS = [BASE_URL + '/LANDSAT_ETM_C1.csv.gz',
                 BASE_URL + '/LANDSAT_8_C1.csv.gz']
 
-        META_DIR = settings.WRANGLE_SETTINGS['downloadDir']
+        META_DIR = settings.DOWNLOAD_DIR
 
         for url in URLS:
         
