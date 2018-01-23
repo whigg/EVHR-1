@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import uuid
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -17,17 +18,19 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 #-------------------------------------------------------------------------------
 # orderMosaic
 #
-# localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
+# http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
+#
+# curl --url "http://localhost:8000/api/orderMosaic/?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def orderMosaic(request):
 
     geoRequest             = GeoRequest()
     geoRequest.name        = 'API_' + str(uuid.uuid4())
-    geoRequest.destination = settings.EVHR_SETTINGS['outputDirectory']
+    geoRequest.destination = None #settings.OUTPUT_DIRECTORY
     geoRequest.startDate   = None                      # N/A
     geoRequest.endDate     = None                      # N/A
-    geoRequest.started     = True
+    geoRequest.started     = False
     geoRequest.ulx         = request.GET.get('ulx')
     geoRequest.uly         = request.GET.get('uly')
     geoRequest.lrx         = request.GET.get('lrx')
@@ -48,4 +51,4 @@ def orderMosaic(request):
     
     # CommandHelper.handle(geoRequest)
     
-    return geoRequest.id
+    return JsonResponse({'id': geoRequest.id})
