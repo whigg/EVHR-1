@@ -291,10 +291,10 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             xform = CoordinateTransformation(requestSRS,GeoRetriever.GEOG_4326)
             xPt = xform.TransformPoint(request.ulx, request.uly)
-            xValue = xPt.GetX()
+            xValue = float(xPt.GetX())
 
         else:
-            xValue = request.ulx
+            xValue = float(request.ulx)
 
         # Initally, use the UTM zone of the upper-left corner of the AoI.
         zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
@@ -319,8 +319,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         # lets the tiles encompass the far edges of the AoI.
         #---
         lons   = []
-        curLon = self.request.ulx - 0.5
-        maxLon = self.request.lrx
+        curLon = float(self.request.ulx) - 0.5
+        maxLon = float(self.request.lrx)
 
         while curLon <= maxLon:
 
@@ -328,8 +328,8 @@ class EvhrMosaicRetriever(GeoRetriever):
             lons.append(curLon)
 
         lats   = []
-        curLat = self.request.uly + 0.5
-        minLat = self.request.lry
+        curLat = float(self.request.uly) + 0.5
+        minLat = float(self.request.lry)
 
         while curLat >= minLat:
 
@@ -610,3 +610,19 @@ class EvhrMosaicRetriever(GeoRetriever):
         #---
         orthoScenes = [self.processScene(nitf) for nitf in fileList]
                     
+    #---------------------------------------------------------------------------
+    # runSystemCmd
+    #---------------------------------------------------------------------------
+    def runSystemCmd(self, cmd):
+        
+        if not cmd:
+            return
+            
+        if self.logger:
+            self.logger.info('Command: ' + cmd)
+
+        status = os.system(cmd)
+
+        if status != 0:
+            raise RuntimeError('System command failed.')
+        
