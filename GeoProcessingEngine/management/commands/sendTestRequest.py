@@ -69,6 +69,8 @@ class Command(BaseCommand):
             ExportToWkt()
     
         request.save()
+        
+        print 'Request ID: ' + str(request.id)
 
 
         
