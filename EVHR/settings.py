@@ -126,6 +126,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# EVHR Settings
+OUTPUT_DIRECTORY = '/Users/a/Desktop/SystemTesting/EVHR'
+
 LOGGING = {
 	'version': 1,
 	'disable_existing_loggers': False,
@@ -134,6 +137,13 @@ LOGGING = {
               'level': 'DEBUG',
               'class': 'logging.StreamHandler',
               'stream': sys.stdout,
+        },
+        'file': {
+            'level'       : 'INFO',
+            'class'       : 'logging.handlers.TimedRotatingFileHandler',
+			'filename'    : os.path.join(OUTPUT_DIRECTORY, 'logs/evhr.log'),
+            'when'        : 'midnight',
+            'backupCount' : 10,
         },
         'owslib': {
               'level': 'DEBUG',
@@ -147,6 +157,11 @@ LOGGING = {
 			'level'    : 'DEBUG',
             'propagate': False,
 		},
+        'jobDaemon': {
+            'handlers'  : ['console', 'file'],
+            'propagate' : True,
+            'level'     : 'INFO',
+        },
 		'owslib': {
 			'handlers' : ['console'],
 			'level'    : 'DEBUG',
@@ -154,9 +169,6 @@ LOGGING = {
 		},
 	}
 }
-
-# WranglerProcess Settings
-OUTPUT_DIRECTORY = '/Users/a/Desktop/SystemTesting/EVHR'
 
 # WranglerProcess Settings
 DEFAULT_SCALE_IN_METERS = 30
