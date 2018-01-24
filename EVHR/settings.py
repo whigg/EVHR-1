@@ -143,7 +143,7 @@ LOGGING = {
         'file': {
             'level'       : 'INFO',
             'class'       : 'logging.handlers.TimedRotatingFileHandler',
-			'filename'    : os.path.join(OUTPUT_DIRECTORY, 'logs/evhr.log'),
+			'filename'    : LOG_DIRECTORY,
             'when'        : 'midnight',
             'backupCount' : 10,
         },
