@@ -296,7 +296,7 @@ class Request(models.Model):
 
             try:
 
-                gid = grp.getgrnam('wrangler').gr_gid
+                gid = grp.getgrnam('j1101').gr_gid
                 os.chown(self.destination.name, -1, gid)
 
             except KeyError:
