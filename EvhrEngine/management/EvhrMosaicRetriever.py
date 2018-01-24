@@ -41,8 +41,6 @@ from EvhrEngine.management.DgFile import DgFile
 #
 # --- Crystal Fire ---
 # ./manage.py processGeoRequest --name testCrystal --epName "EVHR Mosaic" --ulx -113.39250146 --uly 43.35041085 --lrx -112.80953835 --lry 42.93059617 --epsg 4326 --outEpsg 102039 -n 1
-#
-# ./manage.py processGeoRequest --name testCrystal --epName "EVHR Mosaic" --ulx -113.39250146 --uly 43.35041085 --lrx -112.80953835 --lry 42.93059617 --epsg 4326 --outEpsg 102039 -n 1
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
