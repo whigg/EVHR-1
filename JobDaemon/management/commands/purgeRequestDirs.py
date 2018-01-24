@@ -33,15 +33,15 @@ def purgeRequestDirs():
         for diskFile in onDisk:
 
             if not os.path.isdir(diskFile):
-                break
+                next
                 
             for dbFile in inDb:
                 
                 if diskFile == dbFile:
-                    break
+                    next
 
                 if diskFile == os.path.split(dbFile)[0]:
-                    break
+                    next
                     
                 notInDb.append(diskFile)
 
