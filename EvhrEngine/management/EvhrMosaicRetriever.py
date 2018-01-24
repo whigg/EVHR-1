@@ -220,6 +220,9 @@ class EvhrMosaicRetriever(GeoRetriever):
             width  = 1  # need is the extent and file name of this tile tif.
             driver = gdal.GetDriverByName('GTiff')
             ds     = driver.Create(constituentName, width, height)
+            
+            if not ds:
+                raise RuntimeError('Unable to open ' + str(constituentName))
 
             ds.SetProjection(str(self.retrievalSRS))
             
