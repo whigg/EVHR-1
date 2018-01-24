@@ -45,5 +45,5 @@ def purgeRequestDirs():
         print 'Orphaned request directories to be deleted: ' + str(notInDb)
 
         for d in notInDb:
-            shutil.rmtree(d)
-            
+            if os.path.isdir(d):
+                shutil.rmtree(d)
