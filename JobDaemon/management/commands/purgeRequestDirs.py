@@ -43,7 +43,7 @@ def purgeRequestDirs():
                 if diskFile == os.path.split(dbFile)[0]:
                     next
                     
-                notInDb.append(diskFile)
+            notInDb.append(diskFile)
 
         print 'Orphaned request directories to be deleted: ' + str(notInDb)
 
