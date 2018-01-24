@@ -127,7 +127,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # EVHR Settings
-OUTPUT_DIRECTORY = '/Users/a/Desktop/SystemTesting/EVHR'
+BASE_DIRECTORY   = '/home/rlgill/testing'
+OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, 'requests')
+LOG_DIRECTORY    = os.path.join(BASE_DIRECTORY, 'logs')
 
 LOGGING = {
 	'version': 1,
