@@ -32,6 +32,9 @@ def purgeRequestDirs():
         
         for diskFile in onDisk:
 
+            if not os.path.isdir(diskFile):
+                break
+                
             for dbFile in inDb:
                 
                 if diskFile == dbFile:
@@ -45,5 +48,4 @@ def purgeRequestDirs():
         print 'Orphaned request directories to be deleted: ' + str(notInDb)
 
         for d in notInDb:
-            if os.path.isdir(d):
-                shutil.rmtree(d)
+            shutil.rmtree(d)
