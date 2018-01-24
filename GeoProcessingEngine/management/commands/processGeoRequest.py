@@ -47,7 +47,7 @@ class Command(BaseCommand):
         
         request             = GeoRequest()
         request.name        = options['name']
-        request.destination = options['o']
+        request.destination = None #options['o']
         request.startDate   = options['startDate']
         request.endDate     = options['endDate']
         request.started     = True
