@@ -7,31 +7,42 @@ from django.core.management.base import BaseCommand
 
 from ProcessingEngine.models import Request
 
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Command
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 class Command(BaseCommand):
 
-    #--------------------------------------------------------------------
+    #---------------------------------------------------------------------------
     # handle
-    #--------------------------------------------------------------------
+    #---------------------------------------------------------------------------
     def handle(self, **options):
     
         purgeRequestDirs()
         
-#--------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # purgeReqDirs
-#--------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 def purgeRequestDirs():
 
         workDir = settings.WORK_DIRECTORY
         onDisk  = glob.glob(workDir + '/*')
         inDb    = Request.objects.values_list('destination', flat = True)
-        notInDb = [d for d in onDisk if d not in inDb]
+        notInDb = []
+        
+        for diskFile in onDisk:
+
+            for dbFile in inDb:
+                
+                if diskFile == dbFile:
+                    break
+
+                if diskFile == os.path.split(dbFile)[0]:
+                    break
+                    
+                notInDb.append(diskFile)
 
         print 'Orphaned request directories to be deleted: ' + str(notInDb)
-    
+
         for d in notInDb:
             shutil.rmtree(d)
-    
-    
+            
