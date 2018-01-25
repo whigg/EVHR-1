@@ -45,5 +45,7 @@ def purgeRequestDirs():
                     break
                         
             if not found:
+                
+                print 'Removing orphaned directory: ' + str(diskFile)
                 shutil.rmtree(diskFile)
 
