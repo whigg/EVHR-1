@@ -34,8 +34,16 @@ def purgeRequestDirs():
 
             if not os.path.isdir(diskFile):
                 continue
-               
+
+            found = False
+            
             for dbFile in inDb:
-                if diskFile != dbFile and diskFile != os.path.split(dbFile)[0]:
-                    shutil.rmtree(diskFile)
+            
+                if diskFile == dbFile or diskFile == os.path.split(dbFile)[0]:
+            
+                    found = True
+                    break
+                        
+            if not found:
+                shutil.rmtree(diskFile)
 
