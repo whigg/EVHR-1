@@ -37,5 +37,5 @@ def purgeRequestDirs():
                
             for dbFile in inDb:
                 if diskFile != dbFile and diskFile != os.path.split(dbFile)[0]:
-                    shutil.rmtree(dbFile)
+                    shutil.rmtree(diskFile)
 
