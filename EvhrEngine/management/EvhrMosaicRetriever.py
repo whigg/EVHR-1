@@ -80,10 +80,10 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # clipShp
     #---------------------------------------------------------------------------
-    def clipShp(self, shpFile, ulx, uly, lrx, lry, srs):
+    def clipShp(self, shpFile, ulx, uly, lrx, lry, srs, extraQueryParams = ''):
         
         if self.logger:
-            self.logger.info('Clipping SRTM Shapefile.')
+            self.logger.info('Clipping Shapefile.')
             
         # Create a temporary file for the clip output.
         tempClipFile = tempfile.mkstemp()[1]
@@ -99,6 +99,7 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' -spat_srs'                     + \
               ' "' + srs.ExportToProj4() + '"' + \
               ' --debug on'                    + \
+              ' ' + str(extraQueryParams)      + \
               ' "' + tempClipFile + '"'        + \
               ' "' + shpFile + '"'
               
@@ -577,8 +578,17 @@ class EvhrMosaicRetriever(GeoRetriever):
         srs          = SpatialReference(dataset.GetProjection())
         dataset      = None
             
+        import pdb
+        pdb.set_trace()
+
+        whereClause = '-where '
+        
+        for sensor in self.runSensors:    
+            whereClause += ' "SENSOR=' + "'" + sensor + "'\""
+
         features = self.clipShp(EvhrMosaicRetriever.FOOTPRINTS_FILE, \
-                                ulx, uly, lrx, lry, srs)
+                                ulx, uly, lrx, lry, srs,             \
+                                whereClause)
 
         # Put them into a list of (row, path) tuples.
         nitfs = []
@@ -589,11 +599,11 @@ class EvhrMosaicRetriever(GeoRetriever):
                        getElementsByTagName('ogr:S_FILEPATH')[0]. \
                        firstChild. \
                        data)
-
+                       
             nitfFile = DgFile(nitf)
 
-            if nitfFile.sensor in self.runSensors:
-                nitfs.append(nitf)
+            # if nitfFile.sensor in self.runSensors:
+            #     nitfs.append(nitf)
 
         return nitfs
 
