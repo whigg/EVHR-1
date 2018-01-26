@@ -582,8 +582,15 @@ class EvhrMosaicRetriever(GeoRetriever):
         pdb.set_trace()
 
         whereClause = '-where '
+        first = True
         
         for sensor in self.runSensors:    
+
+            if first:
+                first = False
+            else:
+                whereClause += ' OR '
+                
             whereClause += ' "SENSOR=' + "'" + sensor + "'\""
 
         features = self.clipShp(EvhrMosaicRetriever.FOOTPRINTS_FILE, \
