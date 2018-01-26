@@ -578,9 +578,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         srs          = SpatialReference(dataset.GetProjection())
         dataset      = None
             
-        import pdb
-        pdb.set_trace()
-
         whereClause = '-where "'
         first = True
         
@@ -591,7 +588,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             else:
                 whereClause += ' OR '
                 
-            whereClause += ' SENSOR=' + "'" + sensor + "'"
+            whereClause += 'SENSOR=' + "'" + sensor + "'"
             
         whereClause += '"'
 
