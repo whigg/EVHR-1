@@ -610,7 +610,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             # if nitfFile.sensor in self.runSensors:
             #     nitfs.append(nitf)
-
+            nitfs.append(nitfFile)
+            
         return nitfs
 
     #---------------------------------------------------------------------------
