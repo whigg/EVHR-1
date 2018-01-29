@@ -501,7 +501,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                   ' --threads=2 -t rpc --mpp=2'                         + \
                   ' ' + clippedDEM                                      + \
                   ' ' + dgFile.fileName                                 + \
-                  # ' ' + inXmlFile                                       + \
                   ' ' + origDgFile.xmlFileName                          + \
                   ' ' + orthoFile
 
@@ -539,26 +538,31 @@ class EvhrMosaicRetriever(GeoRetriever):
             return orthoFinal
 
         # The output does not exist, so create it.
-        dgFile = DgFile(inputNitf)
+        # dgFile = DgFile(inputNitf)
+        #
+        # if dgFile.isMultispectral():
+        #
+        #     bandFiles = self.extractBands(dgFile)
+        #
+        #     orthoBands = [self.orthoOne(bandFile, dgNitf) \
+        #                   for bandFile in bandFiles]
+        #
+        #     self.mergeBands(orthoBands, orthoFinal)
+        #
+        # elif dgFile.isPanchromatic():
+        #
+        #     orthoBand  = self.orthoOne(dgFile.fileName, dgNitf)
+        #     orthoFinal = self.compress(orthoBand)
+        #
+        # else:
+        #     raise RuntimeError('Unable to determine if ' +
+        #                        str(inputNitf) +
+        #                        ' is panchromatic or multispectral.')
 
-        if dgFile.isMultispectral():
-
-            bandFiles = self.extractBands(dgFile)
-            
-            orthoBands = [self.orthoOne(bandFile, dgNitf) \
-                          for bandFile in bandFiles]
-            
-            self.mergeBands(orthoBands, orthoFinal)
-
-        elif dgFile.isPanchromatic():
-
-            orthoBand  = self.orthoOne(dgFile.fileName, dgNitf)
-            orthoFinal = self.compress(orthoBand)
-            
-        else:
-            raise RuntimeError('Unable to determine if ' +
-                               str(inputNitf) +
-                               ' is panchromatic or multispectral.')
+        dgFile     = DgFile(inputNitf)
+        bandFiles  = self.extractBands(dgFile)
+        orthoBands = [self.orthoOne(bandFile, dgNitf) for bandFile in bandFiles]
+        self.mergeBands(orthoBands, orthoFinal)
 
         return orthoFinal
 
