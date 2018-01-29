@@ -241,6 +241,8 @@ class EvhrMosaicRetriever(GeoRetriever):
             
     #---------------------------------------------------------------------------
     # extractBands
+    #
+    # retrieveOne -> processScene -> extractBands (multispectral only)
     #---------------------------------------------------------------------------
     def extractBands(self, nitfFile):
 
@@ -468,18 +470,18 @@ class EvhrMosaicRetriever(GeoRetriever):
     #
     # retrieveOne -> processScene -> orthoOne
     #---------------------------------------------------------------------------
-    def orthoOne(self, inFile, nitfFile):
+    def orthoOne(self, bandFile, origDgFile):
         
         if self.logger:
-            self.logger.info('Orthorectifying ' + str(inFile))
+            self.logger.info('Orthorectifying ' + str(bandFile))
             
-        dgFile = DgFile(inFile)
+        # dgFile = DgFile(nitfFile)
         
-        clippedDEM = self.createDemForOrthos(dgFile.ulx,
-                                             dgFile.uly,
-                                             dgFile.lrx,
-                                             dgFile.lry,
-                                             dgFile.srs)
+        clippedDEM = self.createDemForOrthos(origDgFile.ulx,
+                                             origDgFile.uly,
+                                             origDgFile.lrx,
+                                             origDgFile.lry,
+                                             origDgFile.srs)
                                 
         # Ensure the orthos directory exists.  
         orthoDir = os.path.join(self.request.destination.name, 'orthos')
@@ -488,18 +490,19 @@ class EvhrMosaicRetriever(GeoRetriever):
             os.mkdir(orthoDir)
 
         # Orthorectify.
-        baseName  = os.path.splitext(os.path.basename(inFile))[0]
+        baseName  = os.path.splitext(os.path.basename(bandFile))[0]
         orthoFile = os.path.join(orthoDir, baseName + '-ortho.tif')
         
         if not os.path.exists(orthoFile):
             
-            inXmlFile = nitfFile.replace('.ntf', '.xml')
+            # inXmlFile = origDgFile.replace('.ntf', '.xml')
         
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
                   ' ' + clippedDEM                                      + \
                   ' ' + dgFile.fileName                                 + \
-                  ' ' + inXmlFile                                       + \
+                  # ' ' + inXmlFile                                       + \
+                  ' ' + origDgFile.xmlFileName                          + \
                   ' ' + orthoFile
 
             self.runSystemCmd(cmd)
@@ -542,14 +545,14 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             bandFiles = self.extractBands(dgFile)
             
-            orthoBands = [self.orthoOne(tifFile, inputNitf) \
-                          for tifFile in bandFiles]
+            orthoBands = [self.orthoOne(bandFile, dgNitf) \
+                          for bandFile in bandFiles]
             
             self.mergeBands(orthoBands, orthoFinal)
 
         elif dgFile.isPanchromatic():
 
-            orthoBand  = self.orthoOne(dgFile.fileName, inputNitf)
+            orthoBand  = self.orthoOne(dgFile.fileName, dgNitf)
             orthoFinal = self.compress(orthoBand)
             
         else:
@@ -606,10 +609,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                        firstChild. \
                        data)
                        
-            # nitfFile = DgFile(nitf)
-            #
-            # if nitfFile.sensor in self.runSensors:
-            #     nitfs.append(nitf)
             nitfs.append(nitf)
             
         return nitfs
