@@ -606,11 +606,11 @@ class EvhrMosaicRetriever(GeoRetriever):
                        firstChild. \
                        data)
                        
-            nitfFile = DgFile(nitf)
-
+            # nitfFile = DgFile(nitf)
+            #
             # if nitfFile.sensor in self.runSensors:
             #     nitfs.append(nitf)
-            nitfs.append(nitfFile)
+            nitfs.append(nitf)
             
         return nitfs
 
