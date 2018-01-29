@@ -561,7 +561,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         dgFile     = DgFile(inputNitf)
         bandFiles  = self.extractBands(dgFile)
-        orthoBands = [self.orthoOne(bandFile, dgNitf) for bandFile in bandFiles]
+        orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
         self.mergeBands(orthoBands, orthoFinal)
 
         return orthoFinal
