@@ -479,7 +479,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Orthorectifying ' + str(bandFile))
             
-        # bandDgFile = DgFile(bandFile)
+        import pdb
+        pdb.set_trace()
         
         clippedDEM = self.createDemForOrthos(origDgFile.ulx,
                                              origDgFile.uly,
@@ -499,8 +500,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         if not os.path.exists(orthoFile):
             
-            # inXmlFile = origDgFile.replace('.ntf', '.xml')
-        
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
                   ' ' + clippedDEM                                      + \
