@@ -479,13 +479,13 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Orthorectifying ' + str(bandFile))
             
-        # dgFile = DgFile(nitfFile)
+        bandDgFile = DgFile(nitfFile)
         
-        clippedDEM = self.createDemForOrthos(origDgFile.ulx,
-                                             origDgFile.uly,
-                                             origDgFile.lrx,
-                                             origDgFile.lry,
-                                             origDgFile.srs)
+        clippedDEM = self.createDemForOrthos(bandDgFile.ulx,
+                                             bandDgFile.uly,
+                                             bandDgFile.lrx,
+                                             bandDgFile.lry,
+                                             bandDgFile.srs)
                                 
         # Ensure the orthos directory exists.  
         orthoDir = os.path.join(self.request.destination.name, 'orthos')
