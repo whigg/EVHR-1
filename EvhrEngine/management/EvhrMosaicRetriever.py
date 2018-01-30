@@ -478,9 +478,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         if self.logger:
             self.logger.info('Orthorectifying ' + str(bandFile))
-            
-        import pdb
-        pdb.set_trace()
         
         clippedDEM = self.createDemForOrthos(origDgFile.ulx,
                                              origDgFile.uly,
