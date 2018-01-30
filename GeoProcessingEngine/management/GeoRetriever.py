@@ -193,8 +193,8 @@ class GeoRetriever(Retriever):
         urPoint.AddPoint(float(lrx), float(uly))
         urPoint.AssignSpatialReference(srs)
         
-        width  = ulPoint.Distance(urPoint)
-        height = ulPoint.Distance(lrPoint)
+        width  = abs(ulPoint.Distance(urPoint))
+        height = abs(ulPoint.Distance(lrPoint))
         
         pct      = percentage / 100.0
         exWidth  = width * pct / 2.0
