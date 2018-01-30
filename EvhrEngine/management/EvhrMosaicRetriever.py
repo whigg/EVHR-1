@@ -500,7 +500,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
                   ' ' + clippedDEM                                      + \
-                  ' ' + dgFile.fileName                                 + \
+                  ' ' + origDgFile.fileName                             + \
                   ' ' + origDgFile.xmlFileName                          + \
                   ' ' + orthoFile
 
