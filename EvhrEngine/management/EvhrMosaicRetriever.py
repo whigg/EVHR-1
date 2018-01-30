@@ -479,7 +479,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Orthorectifying ' + str(bandFile))
             
-        bandDgFile = DgFile(nitfFile)
+        bandDgFile = DgFile(bandFile)
         
         clippedDEM = self.createDemForOrthos(bandDgFile.ulx,
                                              bandDgFile.uly,
