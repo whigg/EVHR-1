@@ -55,8 +55,12 @@ class EvhrMosaicRetriever(GeoRetriever):
     def __init__(self, request, logger):
 
         # EVHR gets its own subdirectory because it can have multiple files.
-        request.destination.name = os.path.join(request.destination.name,'EVHR')
-        request.save(update_fields = ['destination'])
+        if os.path.basename(request.destination.name) != 'EVHR':
+            
+            request.destination.name = \
+                os.path.join(request.destination.name,'EVHR')
+                
+            request.save(update_fields = ['destination'])
 
         if not os.path.exists(request.destination.name):
             os.mkdir(request.destination.name)
@@ -559,6 +563,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         #                        str(inputNitf) +
         #                        ' is panchromatic or multispectral.')
 
+        import pdb
+        pdb.set_trace()
         dgFile     = DgFile(inputNitf)
         bandFiles  = self.extractBands(dgFile)
         orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
