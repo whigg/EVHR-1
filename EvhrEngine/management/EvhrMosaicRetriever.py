@@ -563,8 +563,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         #                        str(inputNitf) +
         #                        ' is panchromatic or multispectral.')
 
-        import pdb
-        pdb.set_trace()
         dgFile     = DgFile(inputNitf)
         bandFiles  = self.extractBands(dgFile)
         orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
