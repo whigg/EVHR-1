@@ -117,15 +117,17 @@ class DgFile:
                                             'b{}.tif'.format(gdalBandIndex)))
 
         tempBandFile = os.path.join(outputDir, baseName)
+        
+        if not os.path.exists(tempBandFile):
 
-        cmd = 'gdal_translate'                      + \
-              ' -b {}'.format(gdalBandIndex)        + \
-              ' -a_nodata 0'                        + \
-              ' -mo "bandName={}"'.format(bandName) + \
-              ' ' + self.fileName                   + \
-              ' ' + tempBandFile
+            cmd = 'gdal_translate'                      + \
+                  ' -b {}'.format(gdalBandIndex)        + \
+                  ' -a_nodata 0'                        + \
+                  ' -mo "bandName={}"'.format(bandName) + \
+                  ' ' + self.fileName                   + \
+                  ' ' + tempBandFile
 
-        os.system(cmd)
+            os.system(cmd)
 
         return tempBandFile
 
