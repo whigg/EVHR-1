@@ -537,31 +537,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         if os.path.exists(orthoFinal):
             return orthoFinal
 
-        # The output does not exist, so create it.
-        # dgFile = DgFile(inputNitf)
-        #
-        # if dgFile.isMultispectral():
-        #
-        #     bandFiles = self.extractBands(dgFile)
-        #
-        #     orthoBands = [self.orthoOne(bandFile, dgNitf) \
-        #                   for bandFile in bandFiles]
-        #
-        #     self.mergeBands(orthoBands, orthoFinal)
-        #
-        # elif dgFile.isPanchromatic():
-        #
-        #     orthoBand  = self.orthoOne(dgFile.fileName, dgNitf)
-        #     orthoFinal = self.compress(orthoBand)
-        #
-        # else:
-        #     raise RuntimeError('Unable to determine if ' +
-        #                        str(inputNitf) +
-        #                        ' is panchromatic or multispectral.')
-
         dgFile     = DgFile(inputNitf)
         bandFiles  = self.extractBands(dgFile)
         orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
+        for bandFile in bandFiles: os.remove(bandFile)
         self.mergeBands(orthoBands, orthoFinal)
 
         return orthoFinal
