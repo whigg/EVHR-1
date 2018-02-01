@@ -499,7 +499,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Orthorectify.
         baseName  = os.path.splitext(os.path.basename(bandFile))[0]
-        orthoFile = os.path.join(orthoDir, baseName + '-ortho.tif')
+        orthoFile = os.path.join(self.orthoDir, baseName + '-ortho.tif')
         
         if not os.path.exists(orthoFile):
             
