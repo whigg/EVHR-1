@@ -81,6 +81,12 @@ class EvhrMosaicRetriever(GeoRetriever):
             
         self.runSensors = ['WV01', 'WV02', 'WV03']
 
+        # Ensure the orthos directory exists.  
+        self.orthoDir = os.path.join(self.request.destination.name, 'orthos')
+        
+        if not os.path.exists(self.orthoDir):
+            os.mkdir(self.orthoDir)
+
     #---------------------------------------------------------------------------
     # clipShp
     #---------------------------------------------------------------------------
@@ -485,11 +491,11 @@ class EvhrMosaicRetriever(GeoRetriever):
                                              origDgFile.lry,
                                              origDgFile.srs)
                                 
-        # Ensure the orthos directory exists.  
-        orthoDir = os.path.join(self.request.destination.name, 'orthos')
-        
-        if not os.path.exists(orthoDir):
-            os.mkdir(orthoDir)
+        # # Ensure the orthos directory exists.
+        # orthoDir = os.path.join(self.request.destination.name, 'orthos')
+        #
+        # if not os.path.exists(orthoDir):
+        #     os.mkdir(orthoDir)
 
         # Orthorectify.
         baseName  = os.path.splitext(os.path.basename(bandFile))[0]
@@ -520,17 +526,17 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Processing scene ' + str(inputNitf))
 
-        # Ensure the orthos directory exists.  
-        orthoDir = os.path.join(self.request.destination.name, 'orthos')
-        
-        if not os.path.exists(orthoDir):
-            os.mkdir(orthoDir)
-
+        # # Ensure the orthos directory exists.
+        # orthoDir = os.path.join(self.request.destination.name, 'orthos')
+        #
+        # if not os.path.exists(orthoDir):
+        #     os.mkdir(orthoDir)
+       
         # Get the output name to see if it exists.
         bname = os.path.basename(inputNitf).replace('.ntf', '-ortho.tif')
 
         orthoFinal = os.path.join(self.request.destination.name, \
-                                  orthoDir,
+                                  self.orthoDir,
                                   bname)
 
         # If the output file exists, don't bother running it again.
