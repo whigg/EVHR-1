@@ -23,15 +23,11 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 @csrf_exempt
 def download(request):
 
-    print 'r = ' + str(request.GET.get('request'))
-    
     try:
         req = GeoRequest.objects.get(id = request.GET.get('request'))
-        print 'c1'
 
     except GeoRequest.DoesNotExist:
 
-        print 'c2'
         success = False
         msg = 'Request ' + str(request.GET.get('request')) + ' does not exist.'
         return JsonResponse({'success': success, 'msg': msg})
