@@ -42,11 +42,8 @@ def downloadHelper(requestId):
     msg = None
     
     try:
-        print 'c1'
         response = utils.downloadRequest(requestId)
         
-        print 'c2'
-
         if response != None:
             return response
         
@@ -54,11 +51,9 @@ def downloadHelper(requestId):
               str(requestId) + '.'
     
     except Exception, e:
-        print 'e = ' + str(e)
         msg = e
 
-    print 'c3'
-    return msg
+    return JsonResponse({'success': False, 'msg': msg})
     
 #-------------------------------------------------------------------------------
 # orderMosaic
