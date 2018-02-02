@@ -18,7 +18,7 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 #-------------------------------------------------------------------------------
 # download
 #
-# http://localhost:8000/api/download?request=83
+# http://localhost:8000/api/download?request=35
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def download(request):
