@@ -14,7 +14,6 @@ from osgeo.osr import SpatialReference
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.DgFile import DgFile
-# test git
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
 #
