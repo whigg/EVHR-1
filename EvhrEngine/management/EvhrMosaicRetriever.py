@@ -397,10 +397,12 @@ class EvhrMosaicRetriever(GeoRetriever):
             constituents = {key : [] for key in tiles}
 
             # Query FOOTPRINTS for each tile.
+            MAX_FEATS = 10
+            
             for key in constituents.iterkeys():
 
                 outFile = key
-                constituents[outFile] = self.queryFootprints(outFile)
+                constituents[outFile] = self.queryFootprints(outFile, MAX_FEATS)
 
             # The FOOTPRINTS query is lengthy, so save the results.
             jsonConstituents = json.dumps(constituents)
@@ -540,7 +542,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # queryFootprints
     #---------------------------------------------------------------------------
-    def queryFootprints(self, clipFile):
+    def queryFootprints(self, clipFile, maxFeatures = None):
 
         # Get the extent of the clip file.
         dataset = gdal.Open(clipFile, gdal.GA_ReadOnly)
@@ -576,9 +578,15 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Put them into a list of (row, path) tuples.
         nitfs = []
+        featureCount = 0
 
         for feature in features:
 
+            featureCount += 1
+            
+            if maxFeatures and featureCount > maxFeatures:
+                break
+                
             nitf = str(feature. \
                        getElementsByTagName('ogr:S_FILEPATH')[0]. \
                        firstChild. \
