@@ -54,6 +54,7 @@ def downloadHelper(requestId):
               str(requestId) + '.'
     
     except Exception, e:
+        print 'e = ' + str(e)
         msg = e
 
     print 'c3'
