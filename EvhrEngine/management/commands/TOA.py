@@ -5,7 +5,7 @@ from osgeo import gdal
 from EvhrEngine.management.DgFile import DgFile
 
 from django.core.management.base import BaseCommand
-
+from django.conf import settings
 
 class TOA():
 
@@ -110,10 +110,9 @@ class TOA():
         baseName = os.path.basename(orthoBandFile).replace('.tif', '_TOA.tif')
         toaBandFile = os.path.join(outputDir, baseName)
 
-        #* also need to look into ASP's image calc function
-        cmd = 'gdal_calc.py -A {} --calc="A*{}" --outfile={} --NoDataValue=0 \
-                                    --type=\'Int16\''.format(orthoBandFile,  \
-                                            toaReflectanceCoeff, toaBandFile)
+        cmd = 'image_calc -c "var_0 * {}" {} -d int16 --output-nodata-value {}\
+                            -o {}'.format(toaReflectanceCoeff, orthoBandFile, \
+                                            settings.NO_DATA_VALUE, toaBandFile)
 
         if not os.path.isfile(toaBandFile):
             os.system(cmd)
