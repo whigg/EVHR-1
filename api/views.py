@@ -42,8 +42,11 @@ def downloadHelper(requestId):
     msg = None
     
     try:
+        print 'c1'
         response = utils.downloadRequest(requestId)
         
+        print 'c2'
+
         if response != None:
             return response
         
@@ -52,7 +55,8 @@ def downloadHelper(requestId):
     
     except Exception, e:
         msg = e
-        
+
+    print 'c3'
     return msg
     
 #-------------------------------------------------------------------------------
