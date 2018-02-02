@@ -36,14 +36,6 @@ class DgFile:
 
         tree = ET.parse(self.xmlFileName)
 
-##        # abscalFactors
-##        elem = tree.findall('.//ABSCALFACTOR')
-##        self.abscalFactors = [i.text for i in elem]
-##
-##        # effectiveBandwidths
-##        elem = tree.findall('.//EFFECTIVEBANDWIDTH')
-##        self.effectiveBandwidths = [i.text for i in elem]
-
         # firstLineTime
         t = dataset.GetMetadataItem('NITF_CSDIDA_TIME')
         self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
@@ -114,10 +106,10 @@ class DgFile:
 
         extension = os.path.splitext(self.fileName)[1]
         baseName = os.path.basename(self.fileName.replace(extension, \
-                                            'b{}.tif'.format(gdalBandIndex)))
+                                            '_b{}.tif'.format(gdalBandIndex)))
 
         tempBandFile = os.path.join(outputDir, baseName)
-        
+
         if not os.path.exists(tempBandFile):
 
             cmd = 'gdal_translate'                      + \
