@@ -18,11 +18,13 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 #-------------------------------------------------------------------------------
 # download
 #
-# http://localhost:8000/api/download?request=35
+# curl --url "http://localhost:8000/api/download/?request=35"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def download(request):
 
+    print 'r = ' + str(request)
+    
     try:
         req = GeoRequest.objects.get(id = request.GET.get('request'))
 
