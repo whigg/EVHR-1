@@ -25,16 +25,18 @@ from api import utils
 @csrf_exempt
 def download(request):
 
+    requestId = request.GET.get('request')
+    
     try:
-        req = GeoRequest.objects.get(id = request.GET.get('request'))
+        req = GeoRequest.objects.get(id = requestId)
 
     except GeoRequest.DoesNotExist:
 
         success = False
-        msg = 'Request ' + str(request.GET.get('request')) + ' does not exist.'
+        msg = 'Request ' + str(requestId) + ' does not exist.'
         return JsonResponse({'success': success, 'msg': msg})
         
-    return downloadHelper(request.GET.get('site'))        
+    return downloadHelper(requestId)        
 
 #--------------------------------------------------------------------------------
 # downloadHelper
