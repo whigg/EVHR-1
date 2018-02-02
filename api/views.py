@@ -16,6 +16,46 @@ from GeoProcessingEngine.models import GeoRequest
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
 #-------------------------------------------------------------------------------
+# download
+#
+# http://localhost:8000/api/download?request=83
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def download(request):
+
+    try:
+        req = GeoRequest.objects.get(id = request.GET.get('request'))
+
+    except GeoRequest.DoesNotExist:
+
+        success = False
+        msg = 'Request ' + str(request.GET.get('request')) + ' does not exist.'
+        return JsonResponse({'success': success, 'msg': msg})
+        
+    return downloadHelper(request.GET.get('site'))        
+
+#--------------------------------------------------------------------------------
+# downloadHelper
+#--------------------------------------------------------------------------------
+def downloadHelper(requestId):
+    
+    msg = None
+    
+    try:
+        response = utils.downloadRequest(requestId)
+        
+        if response != None:
+            return response
+        
+        msg = 'There were no constituents to download for request ' + \
+              str(requestId) + '.'
+    
+    except Exception, e:
+        msg = e
+        
+    return msg
+    
+#-------------------------------------------------------------------------------
 # orderMosaic
 #
 # http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
@@ -48,7 +88,5 @@ def orderMosaic(request):
         ExportToWkt()
     
     geoRequest.save()
-    
-    # CommandHelper.handle(geoRequest)
     
     return JsonResponse({'id': geoRequest.id})
