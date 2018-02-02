@@ -14,6 +14,7 @@ from osgeo.osr import SpatialReference
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.DgFile import DgFile
+from django.conf import settings
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
 #
@@ -398,7 +399,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             # Query FOOTPRINTS for each tile.
             MAX_FEATS = 10
-            
+
             for key in constituents.iterkeys():
 
                 outFile = key
@@ -420,10 +421,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Merging bands into ' + str(outFileName))
 
-        cmd = 'gdal_merge.py -co COMPRESS=LZW -co BIGTIFF=YES -ot Int16' + \
-              ' -separate -n 0 -a_nodata 0'                              + \
-              ' -o ' + outFileName                                       + \
-              ' ' + ' '.join(bandFiles)
+        cmd = 'gdal_merge.py -co COMPRESS=LZW -co BIGTIFF=YES -ot Int16' +     \
+                ' -separate -n {} -a_nodata {} -o {} {}'.format                \
+                (settings.NO_DATA_VALUE, settings.NO_DATA_VALUE, outFileName,  \
+                                                            ' '.join(bandFiles))
 
         self.runSystemCmd(cmd)
 
@@ -494,6 +495,12 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Orthorectify.
         baseName  = os.path.splitext(os.path.basename(bandFile))[0]
         orthoFile = os.path.join(self.orthoDir, baseName + '-ortho.tif')
+        orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
+
+        # get band name from bandFile
+        ds = gdal.Open(bandFile, gdal.GA_ReadOnly)
+        bandName =  ds.GetMetadataItem('bandName')
+        ds = None
 
         if not os.path.exists(orthoFile):
 
@@ -502,9 +509,23 @@ class EvhrMosaicRetriever(GeoRetriever):
                   ' ' + clippedDEM                                      + \
                   ' ' + bandFile                                        + \
                   ' ' + origDgFile.xmlFileName                          + \
-                  ' ' + orthoFile
+                  ' ' + orthoFileTemp
 
             self.runSystemCmd(cmd)
+
+            # Convert NoData to settings value, set output type to Int16
+            cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
+                        --output-nodata-value {} -o {}'.format(orthoFileTemp1, \
+                                            settings.NO_DATA_VALUE, orthoFile)
+
+            self.runSystemCmd(cmd)
+
+            os.remove(orthoFileTemp)
+
+            # Add bandName metadata tag back
+            ds = gdal.Open(orthoFile, gdal.GA_ReadOnly)
+            ds.SetMetadataItem("bandName", bandName)
+            ds = None
 
         return orthoFile
 
@@ -583,10 +604,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         for feature in features:
 
             featureCount += 1
-            
+
             if maxFeatures and featureCount > maxFeatures:
                 break
-                
+
             nitf = str(feature. \
                        getElementsByTagName('ogr:S_FILEPATH')[0]. \
                        firstChild. \
@@ -609,7 +630,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         # and covert to Geotiff.
         #---
         orthoScenes = [self.processScene(nitf) for nitf in fileList]
-        
+
         # Mosaic the scenes into a single file.
         return orthoScenes[0]   # This is temporary, so retrieveOne returns something.
 
