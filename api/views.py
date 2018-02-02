@@ -15,6 +15,8 @@ from ProcessingEngine.models import EndPoint
 from GeoProcessingEngine.models import GeoRequest
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
+from api import utils
+
 #-------------------------------------------------------------------------------
 # download
 #
