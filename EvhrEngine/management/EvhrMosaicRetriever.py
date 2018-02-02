@@ -609,6 +609,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         # and covert to Geotiff.
         #---
         orthoScenes = [self.processScene(nitf) for nitf in fileList]
+        
+        # Mosaic the scenes into a single file.
+        return orthoScenes[0]   # This is temporary, so retrieveOne returns something.
 
     #---------------------------------------------------------------------------
     # runSystemCmd
