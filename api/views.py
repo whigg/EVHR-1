@@ -53,7 +53,7 @@ def downloadHelper(requestId):
     except Exception, e:
         msg = e
 
-    return JsonResponse({'success': False, 'msg': msg})
+    return JsonResponse({'success': False, 'msg': str(msg)})
     
 #-------------------------------------------------------------------------------
 # orderMosaic
