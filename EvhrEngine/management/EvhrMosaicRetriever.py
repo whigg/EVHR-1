@@ -491,12 +491,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                                              origDgFile.lry,
                                              origDgFile.srs)
                                 
-        # # Ensure the orthos directory exists.
-        # orthoDir = os.path.join(self.request.destination.name, 'orthos')
-        #
-        # if not os.path.exists(orthoDir):
-        #     os.mkdir(orthoDir)
-
         # Orthorectify.
         baseName  = os.path.splitext(os.path.basename(bandFile))[0]
         orthoFile = os.path.join(self.orthoDir, baseName + '-ortho.tif')
@@ -526,12 +520,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Processing scene ' + str(inputNitf))
 
-        # # Ensure the orthos directory exists.
-        # orthoDir = os.path.join(self.request.destination.name, 'orthos')
-        #
-        # if not os.path.exists(orthoDir):
-        #     os.mkdir(orthoDir)
-       
         # Get the output name to see if it exists.
         bname = os.path.basename(inputNitf).replace('.ntf', '-ortho.tif')
 
