@@ -23,7 +23,7 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 @csrf_exempt
 def download(request):
 
-    print 'r = ' + str(request)
+    print 'r = ' + str(request.GET)
     
     try:
         req = GeoRequest.objects.get(id = request.GET.get('request'))
