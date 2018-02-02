@@ -15,7 +15,7 @@ from ProcessingEngine.models import Constituent
 #-------------------------------------------------------------------------------
 def downloadRequest(requestId):
 
-    cons = Constituent.objects.filter(request = requestId, enabled = True)
+    cons = Constituent.objects.filter(request = requestId)
 
     if cons:
 
