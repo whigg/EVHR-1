@@ -15,13 +15,10 @@ from ProcessingEngine.models import Constituent
 #-------------------------------------------------------------------------------
 def downloadRequest(requestId):
 
-    print 'c1'
     cons = Constituent.objects.filter(request = requestId, enabled = True)
 
-    print 'c2'
     if cons:
 
-        print 'c3'
         zipName = 'EVHR-REQUEST-' + str(requestId) + '-' + \
                   str(time.time()) + '.zip'
                   
