@@ -43,10 +43,16 @@ def downloadRequest(requestId):
 
         if atLeastOneFileZipped:
 
-            fileName = os.path.basename(archiveFile)
-            response = HttpResponse(FileWrapper(open(archiveFile)), content_type='application/x-zip-compressed')
-            response['Content-Length'] = os.path.getsize(archiveFile)
-            response['Content-Disposition'] = "attachment; filename=%s" % fileName
-            return response
+            # fileName = os.path.basename(archiveFile)
+            # response = HttpResponse(FileWrapper(open(archiveFile)), content_type='application/x-zip-compressed')
+            # response['Content-Length'] = os.path.getsize(archiveFile)
+            # response['Content-Disposition'] = "attachment; filename=%s" % fileName
+            # return response
+
+            #---
+            # Do not bother making an HTTP response, when we can retrieve the
+            # file via the file system.
+            #---
+            return archiveFile
 
     return None

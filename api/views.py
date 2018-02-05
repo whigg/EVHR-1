@@ -20,7 +20,7 @@ from api import utils
 #-------------------------------------------------------------------------------
 # download
 #
-# curl --url "http://localhost:8000/api/download/?request=35"
+# curl --url "http://localhost:8000/api/download/?request=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def download(request):
@@ -44,20 +44,25 @@ def download(request):
 def downloadHelper(requestId):
     
     msg = None
+    success = False
     
     try:
         response = utils.downloadRequest(requestId)
         
-        if response != None:
-            return response
-        
-        msg = 'There were no constituents to download for request ' + \
-              str(requestId) + '.'
+        if not response:
+
+            msg = 'There were no constituents to download for request ' + \
+                  str(requestId) + '.'
     
+        else:
+            
+            success = True
+            msg = 'Your file is: ' + str(response)
+            
     except Exception, e:
         msg = e
 
-    return JsonResponse({'success': False, 'msg': str(msg)})
+    return JsonResponse({'success': success, 'msg': str(msg)})
     
 #-------------------------------------------------------------------------------
 # orderMosaic
