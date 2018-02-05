@@ -515,7 +515,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
-                        --output-nodata-value {} -o {}'.format(orthoFileTemp1, \
+                        --output-nodata-value {} -o {}'.format(orthoFileTemp,  \
                                             settings.NO_DATA_VALUE, orthoFile)
 
             self.runSystemCmd(cmd)
