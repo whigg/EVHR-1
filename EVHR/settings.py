@@ -128,6 +128,7 @@ STATIC_URL = '/static/'
 
 # EVHR Settings
 BASE_DIRECTORY   = '/home/rlgill/testing'
+DOWNLOAD_DIR     = os.path.join(BASE_DIRECTORY, 'downloads')
 OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, 'requests')
 LOG_DIRECTORY    = os.path.join(BASE_DIRECTORY, 'logs')
 
@@ -174,7 +175,6 @@ LOGGING = {
 
 # WranglerProcess Settings
 DEFAULT_SCALE_IN_METERS = 30
-DOWNLOAD_DIR = '/home/rlgill/testing/downloads'
 MERRA_END_DATE = '2017-05-31'
 MERRA_START_DATE = '1980-01-01'
 WORK_DIRECTORY = OUTPUT_DIRECTORY
