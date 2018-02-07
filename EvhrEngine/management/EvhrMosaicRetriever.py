@@ -14,6 +14,7 @@ from osgeo.osr import SpatialReference
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.DgFile import DgFile
+from EvhrEngine.management.commands.TOA import TOA
 from django.conf import settings
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
@@ -81,11 +82,16 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         self.runSensors = ['WV01', 'WV02', 'WV03']
 
-        # Ensure the orthos directory exists.
+        # Ensure the orthos and toa directories exists.
         self.orthoDir = os.path.join(self.request.destination.name, 'orthos')
+        self.toaDir   = os.path.join(self.request.destination.name, 'toa')
 
         if not os.path.exists(self.orthoDir):
             os.mkdir(self.orthoDir)
+
+        if not os.path.exists(self.toaDir):
+            os.mkdir(self.toaDir)
+
 
     #---------------------------------------------------------------------------
     # clipShp
@@ -555,10 +561,13 @@ class EvhrMosaicRetriever(GeoRetriever):
         dgFile     = DgFile(inputNitf)
         bandFiles  = self.extractBands(dgFile)
         orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
+        toaBands   = [TOA.run(orthoBand, self.toaDir, inputNitf)   \
+                                                    for orthoBand in orthoBands]
         for bandFile in bandFiles: os.remove(bandFile)
         self.mergeBands(orthoBands, orthoFinal)
+        self.mergeBands(toaBands, toaFinal)
 
-        return orthoFinal
+        return orthoFinal # toa ???
 
     #---------------------------------------------------------------------------
     # queryFootprints
