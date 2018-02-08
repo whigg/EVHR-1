@@ -553,7 +553,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         orthoFinal = os.path.join(self.request.destination.name, \
                                   self.orthoDir,
                                   bname)
-        tooFinal   = os.path.join(self.request.destination.name, \
+        toaFinal   = os.path.join(self.request.destination.name, \
                                   self.toaDir,
                                   bname.replace('.tif', '-toa.tif')) #why twice?
 
