@@ -107,7 +107,7 @@ class TOA():
 
         toaReflectanceCoeff = TOA.calcToaReflectanceCoeff(dgFile, bandName)
 
-        baseName = os.path.basename(orthoBandFile).replace('.tif', '_TOA.tif')
+        baseName = os.path.basename(orthoBandFile).replace('.tif', '-toa.tif')
         toaBandFile = os.path.join(outputDir, baseName)
 
         cmd = 'image_calc -c "var_0 * {}" {} -d int16 --output-nodata-value {}\

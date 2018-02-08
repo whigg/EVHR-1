@@ -553,6 +553,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         orthoFinal = os.path.join(self.request.destination.name, \
                                   self.orthoDir,
                                   bname)
+        tooFinal   = os.path.join(self.request.destination.name, \
+                                  self.toaDir,
+                                  bname.replace('.tif', '-toa.tif')) #why twice?
 
         # If the output file exists, don't bother running it again.
         if os.path.exists(orthoFinal):
