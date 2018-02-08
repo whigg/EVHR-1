@@ -99,3 +99,29 @@ def orderMosaic(request):
     geoRequest.save()
     
     return JsonResponse({'id': geoRequest.id})
+    
+#-------------------------------------------------------------------------------
+# status
+#
+# curl --url "http://localhost:8000/api/status/?request=36"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def status(request):
+
+    requestId = request.GET.get('request')
+    success = False
+    
+    try:
+        req = GeoRequest.objects.get(id = requestId)
+        success = True
+        msg = 'state is ' + str(req.state())
+        
+    except GeoRequest.DoesNotExist:
+
+        msg = 'Request ' + str(requestId) + ' does not exist.'
+
+
+    return JsonResponse({'success': success, 'msg': msg})
+        
+    
+        
