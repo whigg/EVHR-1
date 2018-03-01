@@ -34,7 +34,9 @@ class Command(BaseCommand):
                      'lrx'      : '-112.80953835',
                      'lry'      : '42.93059617',
                      'epsg'     : '4326',
-                     'outEpsg'  : '102039'},
+                     'outEpsg'  : '102039',
+                     'startDate': datetime.date(2016, 8, 4),
+                     'endDate'  : datetime.date(2017, 1, 31)},
     }
     
     #---------------------------------------------------------------------------
