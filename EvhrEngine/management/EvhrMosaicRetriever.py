@@ -550,27 +550,49 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Get the output name to see if it exists.
         bname = os.path.basename(inputNitf).replace('.ntf', '-ortho.tif')
 
-        orthoFinal = os.path.join(self.request.destination.name, \
-                                  self.orthoDir,
-                                  bname)
-        toaFinal   = os.path.join(self.request.destination.name, \
-                                  self.toaDir,
-                                  bname.replace('.tif', '-toa.tif')) #why twice?
+        # orthoFinal = os.path.join(self.request.destination.name, \
+        #                           self.orthoDir,
+        #                           bname)
+        # toaFinal   = os.path.join(self.request.destination.name, \
+        #                           self.toaDir,
+        #                           bname.replace('.tif', '-toa.tif')) #why twice?
+        #
+        # # If the output file exists, don't bother running it again.
+        # if os.path.exists(orthoFinal):
+        #     return orthoFinal
+        #
+        # dgFile     = DgFile(inputNitf)
+        # bandFiles  = self.extractBands(dgFile)
+        # orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
+        # toaBands   = [TOA.run(orthoBand, self.toaDir, inputNitf)   \
+        #                                             for orthoBand in orthoBands]
+        # for bandFile in bandFiles: os.remove(bandFile)
+        # self.mergeBands(orthoBands, orthoFinal)
+        # self.mergeBands(toaBands, toaFinal)
+        #
+        # return orthoFinal # toa ???
+
+        toaFinal = os.path.join(self.request.destination.name, \
+                                self.toaDir,
+                                bname.replace('.tif', '-toa.tif'))
 
         # If the output file exists, don't bother running it again.
-        if os.path.exists(orthoFinal):
-            return orthoFinal
+        if os.path.exists(toaFinal):
+            return toaFinal
 
-        dgFile     = DgFile(inputNitf)
-        bandFiles  = self.extractBands(dgFile)
-        orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
-        toaBands   = [TOA.run(orthoBand, self.toaDir, inputNitf)   \
-                                                    for orthoBand in orthoBands]
-        for bandFile in bandFiles: os.remove(bandFile)
-        self.mergeBands(orthoBands, orthoFinal)
+        dgFile    = DgFile(inputNitf)
+        bandFiles = self.extractBands(dgFile)
+
+        for bandFile in bandFiles:
+            
+            orthoBand = self.orthoOne(bandFile, dgFile)
+            os.remove(bandFile)
+            toaBand  = TOA.run(orthoBand, self.toaDir, inputNitf)
+            os.remove(orthoBan)
+            
         self.mergeBands(toaBands, toaFinal)
 
-        return orthoFinal # toa ???
+        return toaFinal
 
     #---------------------------------------------------------------------------
     # queryFootprints
