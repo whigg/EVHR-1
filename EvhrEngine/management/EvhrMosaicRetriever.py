@@ -427,10 +427,12 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Merging bands into ' + str(outFileName))
 
-        cmd = 'gdal_merge.py -co COMPRESS=LZW -co BIGTIFF=YES -ot Int16' +     \
-                ' -separate -n {} -a_nodata {} -o {} {}'.format                \
-                (settings.NO_DATA_VALUE, settings.NO_DATA_VALUE, outFileName,  \
-                                                            ' '.join(bandFiles))
+        cmd = 'gdal_merge.py -co COMPRESS=LZW -co BIGTIFF=YES -ot Int16 \
+                -separate -n {} -a_nodata {} -o {} {}'. \
+                format(settings.NO_DATA_VALUE, \
+                       settings.NO_DATA_VALUE, 
+                       outFileName, \
+                       ' '.join(bandFiles))
 
         self.runSystemCmd(cmd)
 
@@ -587,7 +589,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         for bandFile in bandFiles:
             
             orthoBand = self.orthoOne(bandFile, dgFile)
-            toaBands.append(TOA.run(orthoBand, self.toaDir, inputNitf))
+            toaBands.append(TOA.run(orthoBand, self.toaDir, inputNitf, logger))
             os.remove(bandFile)
             os.remove(orthoBand)
             
