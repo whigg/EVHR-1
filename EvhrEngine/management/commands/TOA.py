@@ -114,11 +114,11 @@ class TOA():
         toaBandFile = os.path.join(outputDir, baseName)
 
         cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0 * {}" {} ' + \
-              '-d int16 --output-nodata-value {} -o {}' + \
-              .format(toaReflectanceCoeff, \
-                      orthoBandFile, \
-                      settings.NO_DATA_VALUE, \
-                      toaBandFile)
+              '-d int16 --output-nodata-value {} -o {}'.\
+              format(toaReflectanceCoeff, \
+                     orthoBandFile, \
+                     settings.NO_DATA_VALUE, \
+                     toaBandFile)
 
         if not os.path.isfile(toaBandFile):
             os.system(cmd)
