@@ -589,7 +589,12 @@ class EvhrMosaicRetriever(GeoRetriever):
         for bandFile in bandFiles:
             
             orthoBand = self.orthoOne(bandFile, dgFile)
-            toaBands.append(TOA.run(orthoBand, self.toaDir, inputNitf, logger))
+            
+            toaBands.append(TOA.run(orthoBand, 
+                                    self.toaDir, 
+                                    inputNitf, 
+                                    self.logger))
+            
             os.remove(bandFile)
             os.remove(orthoBand)
             
