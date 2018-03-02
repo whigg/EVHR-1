@@ -98,7 +98,7 @@ class TOA():
     # run()
     #---------------------------------------------------------------------------
     @staticmethod
-    def run(orthoBandFile, outputDir, dgFileName):
+    def run(orthoBandFile, outputDir, dgFileName, logger = None):
 
         dgFile = DgFile(dgFileName)
 
@@ -125,6 +125,10 @@ class TOA():
             status = os.system(cmd)
             
             if status != 0 or not os.path.exists(toaBandFile):
+                
+                if logger:
+                    logger.info('Command: ' + str(cmd))
+                    
                 raise RuntimeError('ToA failed.')
 
         return toaBandFile
