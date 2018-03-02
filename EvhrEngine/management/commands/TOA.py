@@ -113,18 +113,21 @@ class TOA():
         baseName = os.path.basename(orthoBandFile).replace('.tif', '-toa.tif')
         toaBandFile = os.path.join(outputDir, baseName)
 
-        cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0 * {}" {} ' + \
-              '-d int16 --output-nodata-value {} -o {}'.\
-              format(toaReflectanceCoeff, \
-                     orthoBandFile, \
-                     settings.NO_DATA_VALUE, \
-                     toaBandFile)
-
         if not os.path.isfile(toaBandFile):
-            os.system(cmd)
+
+            cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0 * {}" {} ' + \
+                  '-d int16 --output-nodata-value {} -o {}'.\
+                  format(toaReflectanceCoeff, \
+                         orthoBandFile, \
+                         settings.NO_DATA_VALUE, \
+                         toaBandFile)
+
+            status = os.system(cmd)
+            
+            if status != 0 or not os.path.exists(toaBandFile):
+                raise RuntimeError('ToA failed.')
 
         return toaBandFile
-
 
 #-------------------------------------------------------------------------------
 # class Command
