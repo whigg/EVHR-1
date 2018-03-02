@@ -129,6 +129,9 @@ class TOA():
                 if logger:
                     logger.info('Command: ' + str(cmd))
                     
+                else:
+                    print 'Command: ' + str(cmd)
+                    
                 raise RuntimeError('ToA failed.')
 
         return toaBandFile
