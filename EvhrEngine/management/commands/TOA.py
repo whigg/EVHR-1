@@ -115,8 +115,8 @@ class TOA():
 
         if not os.path.isfile(toaBandFile):
 
-            cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0 * {}" {} ' + \
-                  '-d int16 --output-nodata-value {} -o {}'.\
+            cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0 * {}" {} \
+                  -d int16 --output-nodata-value {} -o {}'.\
                   format(toaReflectanceCoeff, \
                          orthoBandFile, \
                          settings.NO_DATA_VALUE, \
