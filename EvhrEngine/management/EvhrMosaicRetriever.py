@@ -599,9 +599,6 @@ class EvhrMosaicRetriever(GeoRetriever):
             os.remove(orthoBand)
             
         self.mergeBands(toaBands, toaFinal)
-
-        for toaBand in toaBands:
-            os.remove(toaBand)
             
         return toaFinal
 
@@ -674,10 +671,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Orthorectify the full scene, clip to the half-degree-square tile,
         # and covert to Geotiff.
         #---
-        orthoScenes = [self.processScene(nitf) for nitf in fileList]
+        completedScenes = [self.processScene(nitf) for nitf in fileList]
 
         # Mosaic the scenes into a single file.
-        return orthoScenes[0]   # This is temporary, so retrieveOne returns something.
+        return completedScenes[0]   # This is temporary, so retrieveOne returns something.
 
     #---------------------------------------------------------------------------
     # runSystemCmd
