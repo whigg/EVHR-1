@@ -173,9 +173,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                   '.tif'
 
         demName = os.path.join(clipDir, demName)
+        demNameFinal = demName.replace('.tif', '_datum-adj.tif')
 
-        if os.path.exists(demName):
-            return demName
+        if os.path.exists(demNameFinal):
+            return demNameFinal
 
         # Expand the bounding box before clipping the DEM.
         xUlx, xUly, xLrx, xLry = self.expandByPercentage(ulx, uly, lrx, lry,srs)
@@ -183,7 +184,13 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Mosaic SRTM tiles to cover this AoI.
         self.mosaicAndClipDemTiles(demName, xUlx, xUly, xLrx, xLry, srs)
 
-        return demName
+        # Convert geoid-based DEM to datum-based DEM for mapproject
+        cmd = 'dem_geoid {} --geoid EGM96 -o {} --reverse-adjustment'.format \
+                                (demName, demNameFinal.strip('-adj.tif'))
+
+        self.runSystemCmd(cmd)
+
+        return demNameFinal
 
     #---------------------------------------------------------------------------
     # createEmptyTiles
