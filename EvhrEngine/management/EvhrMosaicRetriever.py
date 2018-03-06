@@ -185,8 +185,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.mosaicAndClipDemTiles(demName, xUlx, xUly, xLrx, xLry, srs)
 
         # Convert geoid-based DEM to datum-based DEM for mapproject
-        cmd = 'dem_geoid {} --geoid EGM96 -o {} --reverse-adjustment'.format \
-                                (demName, demNameFinal.strip('-adj.tif'))
+        cmd = '/opt/StereoPipeline/bin/dem_geoid {} --geoid EGM96 -o {} \
+        --reverse-adjustment'.format(demName, demNameFinal.strip('-adj.tif'))
 
         self.runSystemCmd(cmd)
 
