@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import base64
 import errno
 import glob
-import grp
+# import grp
 import os
 import shutil
 import stat
@@ -296,8 +296,8 @@ class Request(models.Model):
 
             try:
 
-                gid = grp.getgrnam('j1101').gr_gid
-                os.chown(self.destination.name, -1, gid)
+                # gid = grp.getgrnam('j1101').gr_gid
+                os.chown(self.destination.name, -1, os.getgid())
 
             except KeyError:
                 pass
