@@ -120,6 +120,8 @@ def percentageComplete(request):
 
         msg = 'Request ' + str(requestId) + ' does not exist.'
 
+    return JsonResponse({'success': success, 'msg': msg})
+
 #-------------------------------------------------------------------------------
 # status
 #
@@ -139,7 +141,6 @@ def status(request):
     except GeoRequest.DoesNotExist:
 
         msg = 'Request ' + str(requestId) + ' does not exist.'
-
 
     return JsonResponse({'success': success, 'msg': msg})
         
