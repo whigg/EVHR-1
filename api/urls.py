@@ -9,3 +9,4 @@ urlpatterns = [
     url(r'^orderMosaic/$',        api.views.orderMosaic),
     url(r'^percentageComplete/$', api.views.percentageComplete),
     url(r'^status/$',             api.views.status),
+]
