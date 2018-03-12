@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import base64
 import errno
 import glob
-# import grp
+import grp
 import os
 import shutil
 import stat
@@ -270,6 +270,37 @@ class Request(models.Model):
             print 'Message:  ' + str(msg)
         
     #---------------------------------------------------------------------------
+    # percentageComplete
+    #---------------------------------------------------------------------------
+    def percentageComplete(self):
+        
+        if self.state() == COMPLETE:
+            return 100.0
+            
+        if self.state() == PENDING:
+            return 0.0
+            
+        constituents = Constituent.objects.filter(request = self)
+        
+        if constituents.count() == 0:
+            return 0.0
+            
+        numComplete = 0.0
+        
+        for constituent in constituents:
+            if constituent.state() == COMPLETE:
+                numComplete += 1.0
+                    
+        #---
+        # Declare the aggregation process always equires 10% of the processing.
+        # Subtract 10% to account for this.  Even though it is not accurate, it
+        # provides an appoximation of percentage complete.  If aggregation
+        # were complete at this point, self.state() would be COMPLETE and
+        # we would not get here.
+        #---
+        return max(0, int(numComplete / constituents.count() * 100) - 10)
+                    
+    #---------------------------------------------------------------------------
     # save
     #---------------------------------------------------------------------------
     def save(self, *args, **kwargs):
@@ -296,8 +327,8 @@ class Request(models.Model):
 
             try:
 
-                # gid = grp.getgrnam('j1101').gr_gid
-                os.chown(self.destination.name, -1, os.getgid())
+                gid = grp.getgrnam('wrangler').gr_gid
+                os.chown(self.destination.name, -1, gid)
 
             except KeyError:
                 pass
