@@ -101,6 +101,26 @@ def orderMosaic(request):
     return JsonResponse({'id': geoRequest.id})
     
 #-------------------------------------------------------------------------------
+# percentageComplete
+#
+# curl --url "http://localhost:8000/api/percentageComplete/?request=36"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def percentageComplete(request):
+
+    requestId = request.GET.get('request')
+    success = False
+    
+    try:
+        req = GeoRequest.objects.get(id = requestId)
+        success = True
+        msg = req.percentageComplete()
+        
+    except GeoRequest.DoesNotExist:
+
+        msg = 'Request ' + str(requestId) + ' does not exist.'
+
+#-------------------------------------------------------------------------------
 # status
 #
 # curl --url "http://localhost:8000/api/status/?request=36"
