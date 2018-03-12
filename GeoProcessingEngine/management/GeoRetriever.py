@@ -197,8 +197,8 @@ class GeoRetriever(Retriever):
         height = ulPoint.Distance(lrPoint)
         
         pct      = percentage / 100.0
-        exWidth  = width * pct / 2.0
-        exHeight = height * pct / 2.0
+        exWidth  = abs(width * pct / 2.0)
+        exHeight = abs(height * pct / 2.0)
         
         exUlx = ulx - exWidth
         exUly = uly + exHeight
