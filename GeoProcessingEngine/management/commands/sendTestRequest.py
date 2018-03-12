@@ -27,8 +27,8 @@ class Command(BaseCommand):
                      'outEpsg'  : '102039',
                      'startDate': datetime.date(2016, 8, 4),
                      'endDate'  : datetime.date(2017, 1, 31)},
-
-        'evhr'   : {'epName'   : 'EVHR Mosaic',
+                     
+        'modis'   : {'epName'   : 'MODIS',
                      'ulx'      : '-113.39250146',
                      'uly'      : '43.35041085',
                      'lrx'      : '-112.80953835',
@@ -38,7 +38,7 @@ class Command(BaseCommand):
                      'startDate': datetime.date(2016, 8, 4),
                      'endDate'  : datetime.date(2017, 1, 31)},
     }
-    
+
     #---------------------------------------------------------------------------
     # add_arguments
     #---------------------------------------------------------------------------
@@ -79,8 +79,6 @@ class Command(BaseCommand):
             ExportToWkt()
     
         request.save()
-        
-        print 'Request ID: ' + str(request.id)
 
 
         
