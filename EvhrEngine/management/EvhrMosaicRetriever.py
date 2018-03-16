@@ -400,7 +400,17 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         else:
 
+            #---
+            # Create a list of empty tile files which define the overall tiling
+            # scheme.
+            #---
             tiles = self.createEmptyTiles()
+
+            #---
+            # Make a dictionary where the key is a tile file and the values
+            # are blank.  The values will become a list of scenes from
+            # FOOTPRINTS.
+            #---
             constituents = {key : [] for key in tiles}
 
             # Query FOOTPRINTS for each tile.
@@ -551,28 +561,6 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Get the output name to see if it exists.
         bname = os.path.basename(inputNitf).replace('.ntf', '-ortho.tif')
-
-        # orthoFinal = os.path.join(self.request.destination.name, \
-        #                           self.orthoDir,
-        #                           bname)
-        # toaFinal   = os.path.join(self.request.destination.name, \
-        #                           self.toaDir,
-        #                           bname.replace('.tif', '-toa.tif')) #why twice?
-        #
-        # # If the output file exists, don't bother running it again.
-        # if os.path.exists(orthoFinal):
-        #     return orthoFinal
-        #
-        # dgFile     = DgFile(inputNitf)
-        # bandFiles  = self.extractBands(dgFile)
-        # orthoBands = [self.orthoOne(bandFile, dgFile) for bandFile in bandFiles]
-        # toaBands   = [TOA.run(orthoBand, self.toaDir, inputNitf)   \
-        #                                             for orthoBand in orthoBands]
-        # for bandFile in bandFiles: os.remove(bandFile)
-        # self.mergeBands(orthoBands, orthoFinal)
-        # self.mergeBands(toaBands, toaFinal)
-        #
-        # return orthoFinal # toa ???
 
         toaFinal = os.path.join(self.request.destination.name, \
                                 self.toaDir,

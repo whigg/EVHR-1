@@ -2,7 +2,6 @@ from EvhrEngine.management.DgFile import DgFile
 
 from django.core.management.base import BaseCommand
 
-
 class Command(BaseCommand):
 
     #---------------------------------------------------------------------------
@@ -13,7 +12,6 @@ class Command(BaseCommand):
         parser.add_argument('-o', help = 'Full path to output directory.')
         parser.add_argument('-b', help = 'Band name (eg. BAND_B).')
         parser.add_argument('-n', help = 'Full path to NITF file')
-
 
     #---------------------------------------------------------------------------
     # handle
