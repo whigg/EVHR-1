@@ -95,6 +95,7 @@ class Command(BaseCommand):
                                            request.srs)
 
         outFeature = ogr.Feature(layerDefn)
+        outFeature.SetField('name', 'AoI')
         outFeature.SetGeometry(polygon)
         outLayer.CreateFeature(outFeature)
         
@@ -106,6 +107,7 @@ class Command(BaseCommand):
     
             polygon = Command.tifToPolygon(tile)
             outFeature = ogr.Feature(layerDefn)
+            outFeature.SetField('name', 'Tile')
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
 
