@@ -80,7 +80,7 @@ class Command(BaseCommand):
         # Create the output Shapefile.
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         gridFile = os.path.join(str(request.destination.name), 'grids.shp')
-        outDataSource = outDriver.CreateDataSource(bboxFile)
+        outDataSource = outDriver.CreateDataSource(gridFile)
         outLayer = outDataSource.CreateLayer(gridFile, geom_type=ogr.wkbPolygon)
         layerDefn = outLayer.GetLayerDefn()
         
