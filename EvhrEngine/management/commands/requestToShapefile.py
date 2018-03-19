@@ -64,6 +64,7 @@ class Command(BaseCommand):
         ring.AddPoint(fLrx, fUly)
         ring.AddPoint(fLrx, fLry)
         ring.AddPoint(fUlx, fLry)
+        ring.AddPoint(fUlx, fUly)   # Repeating makes it a closed polygon.
         
         poly = ogr.Geometry(ogr.wkbPolygon)
         poly.AddGeometry(ring)
