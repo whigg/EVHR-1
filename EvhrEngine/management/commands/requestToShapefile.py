@@ -50,6 +50,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     # cornersToPolygon
     #---------------------------------------------------------------------------
+    @staticmethod
     def cornersToPolygon(self, ulx, uly, lrx, lry, srs):
         
         fUlx = float(ulx)
@@ -85,11 +86,11 @@ class Command(BaseCommand):
         layerDefn = outLayer.GetLayerDefn()
         
         # Add the request's corners as a polygon feature.
-        polygon = cornersToPolygon(request.ulx, 
-                                   request.uly, 
-                                   request.lrx,
-                                   request.lry,
-                                   request.srs)
+        polygon = Command.cornersToPolygon(request.ulx, 
+                                           request.uly, 
+                                           request.lrx,
+                                           request.lry,
+                                           request.srs)
 
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
@@ -101,7 +102,7 @@ class Command(BaseCommand):
         
         for tile in tiles:
     
-            polygon = tifToPolygon(tile)
+            polygon = Command.tifToPolygon(tile)
             outFeature = ogr.Feature(layerDefn)
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
@@ -111,6 +112,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     # tifToPolygon
     #---------------------------------------------------------------------------
+    @staticmethod
     def tifToPolygon(self, tif):
         
     	dataset = gdal.Open(inFile, gdalconst.GA_ReadOnly)
