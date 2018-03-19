@@ -116,7 +116,7 @@ class Command(BaseCommand):
     @staticmethod
     def tifToPolygon(tif):
         
-    	dataset = gdal.Open(inFile, gdalconst.GA_ReadOnly)
+    	dataset = gdal.Open(tif, gdalconst.GA_ReadOnly)
         
     	if not dataset:
             raise RuntimeError('Unable to open ' + str(tif))
