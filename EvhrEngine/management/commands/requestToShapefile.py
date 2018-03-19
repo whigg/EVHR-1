@@ -26,7 +26,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     # constructSrs
     #---------------------------------------------------------------------------
-    def constructSrs(self, srsString):
+    def constructSrs(srsString):
         
         srs = SpatialReference(str(srsString))  # str() in case it's unicode
         
@@ -66,7 +66,7 @@ class Command(BaseCommand):
         
         poly = ogr.Geometry(ogr.wkbPolygon)
         poly.AddGeometry(ring)
-        poly.AssignSpatialReference(self.constructSrs(srs))
+        poly.AssignSpatialReference(Command.constructSrs(srs))
         
         return poly
         
