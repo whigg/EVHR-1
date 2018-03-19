@@ -85,11 +85,11 @@ class Command(BaseCommand):
         layerDefn = outLayer.GetLayerDefn()
         
         # Add the request's corners as a polygon feature.
-        polygon = self.cornersToPolygon(request.ulx, 
-                                        request.uly, 
-                                        request.lrx,
-                                        request.lry,
-                                        request.srs)
+        polygon = cornersToPolygon(request.ulx, 
+                                   request.uly, 
+                                   request.lrx,
+                                   request.lry,
+                                   request.srs)
 
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
@@ -101,7 +101,7 @@ class Command(BaseCommand):
         
         for tile in tiles:
     
-            polygon = self.tifToPolygon(tile)
+            polygon = tifToPolygon(tile)
             outFeature = ogr.Feature(layerDefn)
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
