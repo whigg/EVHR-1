@@ -26,6 +26,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     # constructSrs
     #---------------------------------------------------------------------------
+    @staticmethod
     def constructSrs(srsString):
         
         srs = SpatialReference(str(srsString))  # str() in case it's unicode
