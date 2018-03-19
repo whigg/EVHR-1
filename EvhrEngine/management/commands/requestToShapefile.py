@@ -51,7 +51,7 @@ class Command(BaseCommand):
     # cornersToPolygon
     #---------------------------------------------------------------------------
     @staticmethod
-    def cornersToPolygon(self, ulx, uly, lrx, lry, srs):
+    def cornersToPolygon(ulx, uly, lrx, lry, srs):
         
         fUlx = float(ulx)
         fUly = float(uly)
@@ -113,7 +113,7 @@ class Command(BaseCommand):
     # tifToPolygon
     #---------------------------------------------------------------------------
     @staticmethod
-    def tifToPolygon(self, tif):
+    def tifToPolygon(tif):
         
     	dataset = gdal.Open(inFile, gdalconst.GA_ReadOnly)
         
