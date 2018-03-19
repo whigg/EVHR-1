@@ -132,10 +132,10 @@ class Command(BaseCommand):
     	lrx = ulx + width  * xScale
     	lry = uly + height * yScale
         
-        return Command.cornerToPolygon(ulx, 
-                                       uly, 
-                                       lrx, 
-                                       lry, 
-                                       dataset.GetProjection())
+        return Command.cornersToPolygon(ulx, 
+                                        uly, 
+                                        lrx, 
+                                        lry, 
+                                        dataset.GetProjection())
         
         
