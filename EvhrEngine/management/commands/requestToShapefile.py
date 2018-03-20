@@ -94,7 +94,7 @@ class Command(BaseCommand):
                                            request.lry,
                                            request.srs)
 
-        nameField = FieldDefn()
+        nameField = ogr.FieldDefn()
         nameField.SetName('AoI')
         layerDefn.addFieldDefn(nameField) 
         outFeature = ogr.Feature(layerDefn)
