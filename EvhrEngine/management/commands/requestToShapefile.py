@@ -83,7 +83,7 @@ class Command(BaseCommand):
         # Create the output Shapefile.
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         
-        tileDir = os.path.join(request.destination.name, 'tileTemplates')
+        tileDir = os.path.join(str(request.destination.name), 'tileTemplates')
         gridFile = os.path.join(tileDir, 'grids.shp')
         
         outDataSource = outDriver.CreateDataSource(gridFile)
@@ -97,9 +97,12 @@ class Command(BaseCommand):
                                            request.lry,
                                            request.srs)
 
-        nameField = ogr.FieldDefn()
-        nameField.SetName('AoI')
-        layerDefn.AddFieldDefn(nameField) 
+        # nameField = ogr.FieldDefn()
+        # nameField.SetName('AoI')
+        # layerDefn.AddFieldDefn(nameField)
+        nameField = ogr.FieldDefn('Name', ogr.OFTString)
+        layerDefn.CreateField(nameField)
+        
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
         outLayer.CreateFeature(outFeature)
