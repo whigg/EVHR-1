@@ -100,8 +100,11 @@ class Command(BaseCommand):
         outFeature = ogr.Feature(layerDefn)
 
         #--------------
+        import pdb
+        pdb.set_trace()
         nameField = ogr.FieldDefn('Name', ogr.OFTString)
-        outFeature.GetDefnRef().AddFieldDefn(nameField)
+        featDefn  = outFeature.GetDefnRef()
+        featDefn.AddFieldDefn(nameField)
         outFeature.SetField('Name', 'AoI')
         #--------------
 
