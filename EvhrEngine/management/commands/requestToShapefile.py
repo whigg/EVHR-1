@@ -104,13 +104,14 @@ class Command(BaseCommand):
         # Create features for each tile.
         tileDir = os.path.join(request.destination.name, 'tileTemplates')
         tiles   = glob.glob(os.path.join(tileDir, 'tileTemplate*.tif'))
-        # tileNum = 1
+        tileNum = 1
         
         for tile in tiles:
     
             polygon = Command.tifToPolygon(tile)
-            # layerDefn.AddFieldDefn(ogr.FieldDefn('Tile' + str(tileNum)))
-            # tileNum += 1
+            layerDefn = outLayer.GetLayerDefn()
+            layerDefn.AddFieldDefn(ogr.FieldDefn('Tile' + str(tileNum)))
+            tileNum += 1
             outFeature = ogr.Feature(layerDefn)
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
