@@ -97,15 +97,13 @@ class Command(BaseCommand):
                                            request.lry,
                                            request.srs)
 
-        # nameField = ogr.FieldDefn()
-        # nameField.SetName('AoI')
-        # layerDefn.AddFieldDefn(nameField)
-        
         outFeature = ogr.Feature(layerDefn)
 
+        #--------------
         nameField = ogr.FieldDefn('Name', ogr.OFTString)
-        outFeature.AddFieldDefn(nameField)
+        outFeature.GetDefnRef().AddFieldDefn(nameField)
         outFeature.SetField('Name', 'AoI')
+        #--------------
 
         outFeature.SetGeometry(polygon)
         outLayer.CreateFeature(outFeature)
