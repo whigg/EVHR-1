@@ -97,7 +97,6 @@ class Command(BaseCommand):
                                            request.lry,
                                            request.srs)
 
-        # outFeature = ogr.Feature(layerDefn)
 
         #--------------
         # nameField = ogr.FieldDefn('Name', ogr.OFTString)
@@ -105,14 +104,17 @@ class Command(BaseCommand):
         # featDefn.AddFieldDefn(nameField)
         # outFeature.SetField('Name', 'AoI')
 
-        nameFieldDefn = ogr.FieldDefn('Name', ogr.OFTString)
-        featDefn = ogr.FeatureDefn()
-        featDefn.AddFieldDefn(nameFieldDefn)
-        outFeature = ogr.Feature(featDefn)
+        # nameFieldDefn = ogr.FieldDefn('Name', ogr.OFTString)
+        # featDefn = ogr.FeatureDefn()
+        # featDefn.AddFieldDefn(nameFieldDefn)
+        # outFeature = ogr.Feature(featDefn)
         
         #--------------
 
+        outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
+        import pdb
+        pdb.set_trace()
         outLayer.CreateFeature(outFeature)
         
         # Create features for each tile.
