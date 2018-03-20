@@ -104,7 +104,7 @@ class Command(BaseCommand):
         outFeature = ogr.Feature(layerDefn)
 
         nameField = ogr.FieldDefn('Name', ogr.OFTString)
-        outLayer.CreateField(nameField)
+        outFeature.AddFieldDefn(nameField)
         outFeature.SetField('Name', 'AoI')
 
         outFeature.SetGeometry(polygon)
