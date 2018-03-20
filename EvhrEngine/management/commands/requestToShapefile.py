@@ -109,7 +109,8 @@ class Command(BaseCommand):
         for tile in tiles:
     
             polygon = Command.tifToPolygon(tile)
-            layerDefn.AddFieldDefn(ogr.FieldDefn('Tile' + str(tileNum++))) 
+            layerDefn.AddFieldDefn(ogr.FieldDefn('Tile' + str(tileNum)))
+            tileNum += 1 
             outFeature = ogr.Feature(layerDefn)
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
