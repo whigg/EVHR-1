@@ -107,7 +107,7 @@ class Command(BaseCommand):
 
         nameFieldDefn = ogr.FieldDefn('Name', ogr.OFTString)
         featDefn = ogr.FeatureDefn()
-        featDefn.AddFieldDefn(nameField)
+        featDefn.AddFieldDefn(nameFieldDefn)
         outFeature = ogr.Feature(featDefn)
         
         #--------------
