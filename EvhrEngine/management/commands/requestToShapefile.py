@@ -97,15 +97,19 @@ class Command(BaseCommand):
                                            request.lry,
                                            request.srs)
 
-        outFeature = ogr.Feature(layerDefn)
+        # outFeature = ogr.Feature(layerDefn)
 
         #--------------
-        import pdb
-        pdb.set_trace()
-        nameField = ogr.FieldDefn('Name', ogr.OFTString)
-        featDefn  = outFeature.GetDefnRef()
-        featDefn.AddFieldDefn(nameField)
+        # nameField = ogr.FieldDefn('Name', ogr.OFTString)
+        # featDefn  = outFeature.GetDefnRef()
+        # featDefn.AddFieldDefn(nameField)
         # outFeature.SetField('Name', 'AoI')
+
+        nameFieldDefn = ogr.FieldDefn('Name', ogr.OFTString)
+        featDefn = ogr.FeatureDefn()
+        featDefn.AddFieldDefn(nameField)
+        outFeature = ogr.Feature(featDefn)
+        
         #--------------
 
         outFeature.SetGeometry(polygon)
