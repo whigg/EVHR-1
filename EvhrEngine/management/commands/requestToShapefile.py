@@ -144,6 +144,6 @@ class Command(BaseCommand):
                                         uly, 
                                         lrx, 
                                         lry, 
-                                        dataset.GetProjectionRef())
+                                        Command.constructSrs(dataset.GetProjection()))
         
         
