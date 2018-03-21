@@ -144,6 +144,6 @@ class Command(BaseCommand):
                                         uly, 
                                         lrx, 
                                         lry, 
-                                        dataset.GetProjection())
+                                        dataset.GetProjectionRef())
         
         
