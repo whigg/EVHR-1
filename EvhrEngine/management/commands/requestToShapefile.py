@@ -68,7 +68,7 @@ class Command(BaseCommand):
         
         poly = ogr.Geometry(ogr.wkbPolygon)
         poly.AddGeometry(ring)
-        poly.AssignSpatialReference(Command.constructSrs(srs))
+        poly.AssignSpatialReference(srs)
         
         return poly
         
@@ -87,7 +87,12 @@ class Command(BaseCommand):
         gridFile = os.path.join(tileDir, 'grids.shp')
         
         outDataSource = outDriver.CreateDataSource(gridFile)
-        outLayer = outDataSource.CreateLayer(gridFile, geom_type=ogr.wkbPolygon)
+        srs = Command.constructSrs(request.srs)
+
+        outLayer = outDataSource.CreateLayer(gridFile, 
+                                             srs, 
+                                             geom_type = ogr.wkbPolygon)
+
         layerDefn = outLayer.GetLayerDefn()
         
         # Add the request's corners as a polygon feature.
@@ -95,26 +100,10 @@ class Command(BaseCommand):
                                            request.uly, 
                                            request.lrx,
                                            request.lry,
-                                           request.srs)
-
-
-        #--------------
-        # nameField = ogr.FieldDefn('Name', ogr.OFTString)
-        # featDefn  = outFeature.GetDefnRef()
-        # featDefn.AddFieldDefn(nameField)
-        # outFeature.SetField('Name', 'AoI')
-
-        # nameFieldDefn = ogr.FieldDefn('Name', ogr.OFTString)
-        # featDefn = ogr.FeatureDefn()
-        # featDefn.AddFieldDefn(nameFieldDefn)
-        # outFeature = ogr.Feature(featDefn)
-        
-        #--------------
+                                           srs)
 
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
-        import pdb
-        pdb.set_trace()
         outLayer.CreateFeature(outFeature)
         
         # Create features for each tile.
