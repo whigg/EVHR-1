@@ -16,6 +16,7 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.commands.TOA import TOA
 from django.conf import settings
+
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
 #
@@ -370,22 +371,17 @@ class EvhrMosaicRetriever(GeoRetriever):
     def listConstituents(self):
 
         #---
-        # Impose 1/2 degree by 1/2 degree tiling on AoI.  Create an empty output
-        # file for each tile.  These empty files will have the extent of their
-        # 1/2 degree tiles.  RetrieveOne() will clip the files in its fileList
-        # to this.
-        #
-        # constituents = {'/path/to/outputTile1.tif' : [],
-        #                 '/path/to/outputTile2.tif' : [], ...}
-        #
-        # The list of constituents associated with each tile contains the full
-        # path to each NITF scene overlapping the tile.  The NITF could cover a
-        # much larger area than the tile.  Clipping happens later.
+        # constituents = {'/path/to/scene1.tif' : [/path/to/scene1.ntf],
+        #                 '/path/to/scene2.tif' : [/path/to/scene2.ntf],
+        #                 ...
+        #                }
         #
         # If a saved constituent list exists. use it.
         #---
+        constituents = None
+        
         constituentFile = os.path.join(self.request.destination.name,
-                                      'constituents.txt')
+                                       'constituents.txt')
 
         if os.path.exists(constituentFile):
 
@@ -399,26 +395,21 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         else:
 
-            #---
-            # Create a list of empty tile files which define the overall tiling
-            # scheme.
-            #---
-            tiles = self.createEmptyTiles()
-
-            #---
-            # Make a dictionary where the key is a tile file and the values
-            # are blank.  The values will become a list of scenes from
-            # FOOTPRINTS.
-            #---
-            constituents = {key : [] for key in tiles}
-
-            # Query FOOTPRINTS for each tile.
+            # Query FOOTPRINTS using the AoI.
             MAX_FEATS = 10
 
-            for key in constituents.iterkeys():
-
-                outFile = key
-                constituents[outFile] = self.queryFootprints(outFile, MAX_FEATS)
+            scenes = self.queryFootprints(self.retrievalUlx,
+                                          self.retrievalUly,
+                                          self.retrievalLrx,
+                                          self.retrievalLry,
+                                          MAX_FEATS)
+                                          
+            constituents = {}
+            
+            for scene in scenes:
+                
+                consName = scene.replace('.ntf', '.tif')
+                constituents[consName] = scene
 
             # The FOOTPRINTS query is lengthy, so save the results.
             jsonConstituents = json.dumps(constituents)
@@ -427,6 +418,70 @@ class EvhrMosaicRetriever(GeoRetriever):
                 f.write(jsonConstituents)
 
         return constituents
+            
+    #---------------------------------------------------------------------------
+    # listConstituents
+    #---------------------------------------------------------------------------
+    # def listConstituents(self):
+    #
+    #     #---
+    #     # Impose 1/2 degree by 1/2 degree tiling on AoI.  Create an empty output
+    #     # file for each tile.  These empty files will have the extent of their
+    #     # 1/2 degree tiles.  RetrieveOne() will clip the files in its fileList
+    #     # to this.
+    #     #
+    #     # constituents = {'/path/to/outputTile1.tif' : [],
+    #     #                 '/path/to/outputTile2.tif' : [], ...}
+    #     #
+    #     # The list of constituents associated with each tile contains the full
+    #     # path to each NITF scene overlapping the tile.  The NITF could cover a
+    #     # much larger area than the tile.  Clipping happens later.
+    #     #
+    #     # If a saved constituent list exists. use it.
+    #     #---
+    #     constituentFile = os.path.join(self.request.destination.name,
+    #                                   'constituents.txt')
+    #
+    #     if os.path.exists(constituentFile):
+    #
+    #         with open(constituentFile) as f:
+    #             constituentsString = f.read()
+    #
+    #         constituents = json.loads(constituentsString)
+    #
+    #         if self.logger:
+    #             self.logger.info('Using saved constituent list.')
+    #
+    #     else:
+    #
+    #         #---
+    #         # Create a list of empty tile files which define the overall tiling
+    #         # scheme.
+    #         #---
+    #         tiles = self.createEmptyTiles()
+    #
+    #         #---
+    #         # Make a dictionary where the key is a tile file and the values
+    #         # are blank.  The values will become a list of scenes from
+    #         # FOOTPRINTS.
+    #         #---
+    #         constituents = {key : [] for key in tiles}
+    #
+    #         # Query FOOTPRINTS for each tile.
+    #         MAX_FEATS = 10
+    #
+    #         for key in constituents.iterkeys():
+    #
+    #             outFile = key
+    #             constituents[outFile] = self.queryFootprintsFromFile(outFile, MAX_FEATS)
+    #
+    #         # The FOOTPRINTS query is lengthy, so save the results.
+    #         jsonConstituents = json.dumps(constituents)
+    #
+    #         with open(constituentFile, 'w+') as f:
+    #             f.write(jsonConstituents)
+    #
+    #     return constituents
 
     #---------------------------------------------------------------------------
     # mergeBands
@@ -592,21 +647,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # queryFootprints
     #---------------------------------------------------------------------------
-    def queryFootprints(self, clipFile, maxFeatures = None):
-
-        # Get the extent of the clip file.
-        dataset = gdal.Open(clipFile, gdal.GA_ReadOnly)
-
-        if not dataset:
-            raise RuntimeError('Unable to open ' + str(clipFile))
-
-        geoTransform = dataset.GetGeoTransform()
-        ulx          = geoTransform[0]
-        uly          = geoTransform[3]
-        lrx          = ulx + geoTransform[1] * dataset.RasterXSize
-        lry          = uly + geoTransform[5] * dataset.RasterYSize
-        srs          = SpatialReference(dataset.GetProjection())
-        dataset      = None
+    def queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures = None):
 
         whereClause = '-where "'
         first = True
@@ -645,6 +686,27 @@ class EvhrMosaicRetriever(GeoRetriever):
             nitfs.append(nitf)
 
         return nitfs
+
+    #---------------------------------------------------------------------------
+    # queryFootprintsFromFile
+    #---------------------------------------------------------------------------
+    def queryFootprintsFromFile(self, clipFile, maxFeatures = None):
+
+        # Get the extent of the clip file.
+        dataset = gdal.Open(clipFile, gdal.GA_ReadOnly)
+
+        if not dataset:
+            raise RuntimeError('Unable to open ' + str(clipFile))
+
+        geoTransform = dataset.GetGeoTransform()
+        ulx          = geoTransform[0]
+        uly          = geoTransform[3]
+        lrx          = ulx + geoTransform[1] * dataset.RasterXSize
+        lry          = uly + geoTransform[5] * dataset.RasterYSize
+        srs          = SpatialReference(dataset.GetProjection())
+        dataset      = None
+        
+        return self.queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures)
 
     #---------------------------------------------------------------------------
     # retrieveOne
