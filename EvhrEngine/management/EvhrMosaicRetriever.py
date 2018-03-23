@@ -402,6 +402,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                                           self.retrievalUly,
                                           self.retrievalLrx,
                                           self.retrievalLry,
+                                          self.retrievalSRS,
                                           MAX_FEATS)
                                           
             constituents = {}
