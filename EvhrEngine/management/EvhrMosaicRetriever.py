@@ -92,7 +92,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         if not os.path.exists(self.toaDir):
             os.mkdir(self.toaDir)
 
-
     #---------------------------------------------------------------------------
     # clipShp
     #---------------------------------------------------------------------------
