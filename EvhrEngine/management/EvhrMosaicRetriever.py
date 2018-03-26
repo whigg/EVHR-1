@@ -410,7 +410,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             for scene in scenes:
                 
                 consName = scene.replace('.ntf', '.tif')
-                constituents[consName] = scene
+                constituents[consName] = [scene]
 
             # The FOOTPRINTS query is lengthy, so save the results.
             jsonConstituents = json.dumps(constituents)
