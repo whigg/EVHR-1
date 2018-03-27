@@ -323,11 +323,11 @@ class EvhrMosaicRetriever(GeoRetriever):
         # srs = GeoRetriever.constructSrsFromIntCode(epsg)
         # return srs.ExportToWkt()
         
-        center = self.bBoxToPolygon(self.request.ulx,
-                                    self.request.uly,
-                                    self.request.lrx,
-                                    self.request.lry,
-                                    self.request.srs).Centroid()
+        center = self.bBoxToPolygon(request.ulx,
+                                    request.uly,
+                                    request.lrx,
+                                    request.lry,
+                                    request.srs).Centroid()
         
         # If request is already in WGS84 UTM...
         if center.IsProjected() and 'UTM' in center.GetAttrValue('PROJCS'):
