@@ -56,11 +56,9 @@ class GeoRetriever(Retriever):
         self.retrievalLry = retrievalOrds[3]
         
     #---------------------------------------------------------------------------
-    # bBoxToVector
-    #
-    # This is helpful for testing, to visualize bounding boxes.
+    # bBoxToPolygon
     #---------------------------------------------------------------------------
-    def bBoxToVector(self, ulx, uly, lrx, lry, srs, name):
+    def bBoxToPolygon(self, ulx, uly, lrx, lry, srs, name):
         
         fUlx = float(ulx)
         fUly = float(uly)
@@ -72,10 +70,37 @@ class GeoRetriever(Retriever):
         ring.AddPoint(fLrx, fUly)
         ring.AddPoint(fLrx, fLry)
         ring.AddPoint(fUlx, fLry)
+        ring.AddPoint(fUlx, fUly)  # Repeating the first closes the polygon.
         
         poly = ogr.Geometry(ogr.wkbPolygon)
         poly.AddGeometry(ring)
         poly.AssignSpatialReference(srs)
+        
+        return poly
+        
+    #---------------------------------------------------------------------------
+    # bBoxToVector
+    #
+    # This is helpful for testing, to visualize bounding boxes.
+    #---------------------------------------------------------------------------
+    def bBoxToVector(self, ulx, uly, lrx, lry, srs, name):
+        
+        # fUlx = float(ulx)
+        # fUly = float(uly)
+        # fLrx = float(lrx)
+        # fLry = float(lry)
+        #
+        # ring = ogr.Geometry(ogr.wkbLinearRing)
+        # ring.AddPoint(fUlx, fUly)
+        # ring.AddPoint(fLrx, fUly)
+        # ring.AddPoint(fLrx, fLry)
+        # ring.AddPoint(fUlx, fLry)
+        #
+        # poly = ogr.Geometry(ogr.wkbPolygon)
+        # poly.AddGeometry(ring)
+        # poly.AssignSpatialReference(srs)
+        
+        poly = self.bBoxToPolygon(ulx, uly, lrx, lry, srs, name)
         
         outDriver = ogr.GetDriverByName('GML')
         
