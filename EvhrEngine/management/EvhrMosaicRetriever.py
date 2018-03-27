@@ -296,25 +296,56 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def getUtmSrs(self, request):
 
-        requestSRS = self.constructSrs(request.srs)
-
+        # requestSRS = self.constructSrs(request.srs)
+        #
+        # # If request is already in WGS84 UTM...
+        # if requestSRS.IsProjected() and \
+        #    'UTM' in requestSRS.GetAttrValue('PROJCS'):
+        #
+        #     return request.srs
+        #
+        # # If the request is not in geographic projection, convert it.
+        # xValue = None
+        #
+        # if not GeoRetriever.GEOG_4326.IsSame(requestSRS):
+        #
+        #     xform = CoordinateTransformation(requestSRS,GeoRetriever.GEOG_4326)
+        #     xPt = xform.TransformPoint(request.ulx, request.uly)
+        #     xValue = float(xPt.GetX())
+        #
+        # else:
+        #     xValue = float(request.ulx)
+        #
+        # # Initally, use the UTM zone of the upper-left corner of the AoI.
+        # zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
+        # BASE_UTM_EPSG = '326'
+        # epsg = int(BASE_UTM_EPSG + str(int(zone)))
+        # srs = GeoRetriever.constructSrsFromIntCode(epsg)
+        # return srs.ExportToWkt()
+        
+        center = self.bBoxToPolygon(self.request.ulx,
+                                    self.request.uly,
+                                    self.request.lrx,
+                                    self.request.lry,
+                                    self.request.srs).Centroid()
+        
         # If request is already in WGS84 UTM...
-        if requestSRS.IsProjected() and \
-           'UTM' in requestSRS.GetAttrValue('PROJCS'):
-
+        if center.IsProjected() and 'UTM' in center.GetAttrValue('PROJCS'):
             return request.srs
 
-        # If the request is not in geographic projection, convert it.
+        # If the center is not in geographic projection, convert it.
         xValue = None
 
-        if not GeoRetriever.GEOG_4326.IsSame(requestSRS):
+        if not GeoRetriever.GEOG_4326.IsSame(center.GetSpatialReference()):
 
-            xform = CoordinateTransformation(requestSRS,GeoRetriever.GEOG_4326)
-            xPt = xform.TransformPoint(request.ulx, request.uly)
+            xform = CoordinateTransformation(center.GetSpatialReference(),
+                                             GeoRetriever.GEOG_4326)
+            
+            xPt = xform.TransformPoint(center.GetX(), center.GetY())
             xValue = float(xPt.GetX())
 
         else:
-            xValue = float(request.ulx)
+            xValue = float(center.GetX())
 
         # Initally, use the UTM zone of the upper-left corner of the AoI.
         zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
@@ -322,7 +353,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         epsg = int(BASE_UTM_EPSG + str(int(zone)))
         srs = GeoRetriever.constructSrsFromIntCode(epsg)
         return srs.ExportToWkt()
-
+                
     #---------------------------------------------------------------------------
     # imposeGridOnAoI
     #
