@@ -58,7 +58,7 @@ class GeoRetriever(Retriever):
     #---------------------------------------------------------------------------
     # bBoxToPolygon
     #---------------------------------------------------------------------------
-    def bBoxToPolygon(self, ulx, uly, lrx, lry, srs, name):
+    def bBoxToPolygon(self, ulx, uly, lrx, lry, srs):
         
         fUlx = float(ulx)
         fUly = float(uly)
