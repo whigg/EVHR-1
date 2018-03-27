@@ -327,7 +327,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                                     request.uly,
                                     request.lrx,
                                     request.lry,
-                                    request.srs).Centroid()
+                                    self.constructSrs(request.srs)).Centroid()
         
         # If request is already in WGS84 UTM...
         if center.IsProjected() and 'UTM' in center.GetAttrValue('PROJCS'):
