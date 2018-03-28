@@ -2,7 +2,7 @@
 from osgeo.osr import CoordinateTransformation
 from osgeo.osr import SpatialReference
 
-from EvhrEngine.management import Tiler
+from EvhrEngine.management.Tiler import Tiler
 
 #-------------------------------------------------------------------------------
 # class TilerHalfDegree
