@@ -32,7 +32,7 @@ class Tiler(object):
     #---------------------------------------------------------------------------
     # defineGrid
     #---------------------------------------------------------------------------
-    @abc.abstractmethod
+    @abstractmethod
     def defineGrid(self):
         
         """This method returns an array where each element is an array of
