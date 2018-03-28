@@ -188,72 +188,72 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # createEmptyTiles
     #---------------------------------------------------------------------------
-    def createEmptyTiles(self):
-
-        # Ensure the clippedDEMs subdirectory exists.
-        templDir = os.path.join(self.request.destination.name, 'tileTemplates')
-
-        if not os.path.exists(templDir):
-            os.mkdir(templDir)
-
-        #---
-        # Here is where we define position the start of the tile grid.
-        # Initially, we start it at the upper-left of the request AoI.  If ever
-        # we want a more efficient tiling scheme to align the AoI, the UTM grid,
-        # and the half-degree tile grid, do that here by adjusting this starting
-        # point.
-        #---
-        startingX = self.request.ulx
-        startingY = self.request.uly
-
-        #---
-        # Create the upper-left and lower-right tile corners, based on the
-        # starting point and lower-left of the request AoI.
-        #---
-        corners = self.imposeGridOnAoI(startingX,
-                                       startingY,
-                                       self.request.lrx,
-                                       self.request.lry)
-
-        # Use the corners to create GeoTiffs representing each constituent.
-        tiles = []
-        count = 0
-
-        for corner in corners:
-
-            ulx = corner[0]
-            uly = corner[1]
-            lrx = corner[2]
-            lry = corner[3]
-
-            count += 1
-            constituentName = os.path.join(self.request.destination.name,
-                                           templDir,
-                                           'tileTemplate' + str(count) + '.tif')
-
-            height = 1  # Choose a nominal height and width.  All we really
-            width  = 1  # need is the extent and file name of this tile tif.
-            driver = gdal.GetDriverByName('GTiff')
-            ds     = driver.Create(constituentName, width, height)
-
-            if not ds:
-                raise RuntimeError('Unable to open ' + str(constituentName))
-
-            ds.SetProjection(str(self.retrievalSRS))
-
-            rotation = 0
-            xRes = lrx - ulx
-            yRes = (uly - lry) * -1.0
-
-            ds.SetGeoTransform([ulx, xRes, rotation, uly, rotation, yRes])
-            raster = numpy.zeros((height, width), dtype = numpy.uint8)
-
-            ds.GetRasterBand(1).WriteArray(raster)
-            ds = None
-
-            tiles.append(constituentName)
-
-        return tiles
+    # def createEmptyTiles(self):
+    #
+    #     # Ensure the clippedDEMs subdirectory exists.
+    #     templDir = os.path.join(self.request.destination.name, 'tileTemplates')
+    #
+    #     if not os.path.exists(templDir):
+    #         os.mkdir(templDir)
+    #
+    #     #---
+    #     # Here is where we define position the start of the tile grid.
+    #     # Initially, we start it at the upper-left of the request AoI.  If ever
+    #     # we want a more efficient tiling scheme to align the AoI, the UTM grid,
+    #     # and the half-degree tile grid, do that here by adjusting this starting
+    #     # point.
+    #     #---
+    #     startingX = self.request.ulx
+    #     startingY = self.request.uly
+    #
+    #     #---
+    #     # Create the upper-left and lower-right tile corners, based on the
+    #     # starting point and lower-left of the request AoI.
+    #     #---
+    #     corners = self.imposeGridOnAoI(startingX,
+    #                                    startingY,
+    #                                    self.request.lrx,
+    #                                    self.request.lry)
+    #
+    #     # Use the corners to create GeoTiffs representing each constituent.
+    #     tiles = []
+    #     count = 0
+    #
+    #     for corner in corners:
+    #
+    #         ulx = corner[0]
+    #         uly = corner[1]
+    #         lrx = corner[2]
+    #         lry = corner[3]
+    #
+    #         count += 1
+    #         constituentName = os.path.join(self.request.destination.name,
+    #                                        templDir,
+    #                                        'tileTemplate' + str(count) + '.tif')
+    #
+    #         height = 1  # Choose a nominal height and width.  All we really
+    #         width  = 1  # need is the extent and file name of this tile tif.
+    #         driver = gdal.GetDriverByName('GTiff')
+    #         ds     = driver.Create(constituentName, width, height)
+    #
+    #         if not ds:
+    #             raise RuntimeError('Unable to open ' + str(constituentName))
+    #
+    #         ds.SetProjection(str(self.retrievalSRS))
+    #
+    #         rotation = 0
+    #         xRes = lrx - ulx
+    #         yRes = (uly - lry) * -1.0
+    #
+    #         ds.SetGeoTransform([ulx, xRes, rotation, uly, rotation, yRes])
+    #         raster = numpy.zeros((height, width), dtype = numpy.uint8)
+    #
+    #         ds.GetRasterBand(1).WriteArray(raster)
+    #         ds = None
+    #
+    #         tiles.append(constituentName)
+    #
+    #     return tiles
 
     #---------------------------------------------------------------------------
     # extractBands
@@ -293,36 +293,12 @@ class EvhrMosaicRetriever(GeoRetriever):
 
     #---------------------------------------------------------------------------
     # getUtmSrs
+    #
+    # This method finds the UTM zone covering the most of the request's AoI.
+    # It does this by finding the centroid of the AoI and choosing that zone.
     #---------------------------------------------------------------------------
     def getUtmSrs(self, request):
 
-        # requestSRS = self.constructSrs(request.srs)
-        #
-        # # If request is already in WGS84 UTM...
-        # if requestSRS.IsProjected() and \
-        #    'UTM' in requestSRS.GetAttrValue('PROJCS'):
-        #
-        #     return request.srs
-        #
-        # # If the request is not in geographic projection, convert it.
-        # xValue = None
-        #
-        # if not GeoRetriever.GEOG_4326.IsSame(requestSRS):
-        #
-        #     xform = CoordinateTransformation(requestSRS,GeoRetriever.GEOG_4326)
-        #     xPt = xform.TransformPoint(request.ulx, request.uly)
-        #     xValue = float(xPt.GetX())
-        #
-        # else:
-        #     xValue = float(request.ulx)
-        #
-        # # Initally, use the UTM zone of the upper-left corner of the AoI.
-        # zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
-        # BASE_UTM_EPSG = '326'
-        # epsg = int(BASE_UTM_EPSG + str(int(zone)))
-        # srs = GeoRetriever.constructSrsFromIntCode(epsg)
-        # return srs.ExportToWkt()
-        
         # Centroid, called below, doesn't preserve the SRS.
         srs = self.constructSrs(request.srs)
         
@@ -363,55 +339,48 @@ class EvhrMosaicRetriever(GeoRetriever):
     # point it chooses to best align the AoI, the UTM grid and the half-degree
     # grid.
     #---------------------------------------------------------------------------
-    def imposeGridOnAoI(self, ulx, uly, lrx, lry):
-
-        #---
-        # Start at the upper-left corner of the AoI, and create 1/2-degree
-        # square tiles.  Adjust initial lon and lat by 0.5, so the loop's test
-        # lets the tiles encompass the far edges of the AoI.
-        #---
-        lons   = []
-        curLon = float(self.request.ulx) - 0.5
-        maxLon = float(self.request.lrx)
-
-        while curLon <= maxLon:
-
-            curLon += 0.5
-            lons.append(curLon)
-
-        lats   = []
-        curLat = float(self.request.uly) + 0.5
-        minLat = float(self.request.lry)
-
-        while curLat >= minLat:
-
-            curLat -= 0.5
-            lats.append(curLat)
-
-        # We have the lats and longs comprising the grid.  Form them into tiles.
-        corners = []
-
-        for x in range(len(lons) - 1):
-            for y in range(len(lats) - 1):
-                corners.append((lons[x], lats[y], lons[x+1], lats[y+1]))
-
-        return corners
+    # def imposeGridOnAoI(self, ulx, uly, lrx, lry):
+    #
+    #     #---
+    #     # Start at the upper-left corner of the AoI, and create 1/2-degree
+    #     # square tiles.  Adjust initial lon and lat by 0.5, so the loop's test
+    #     # lets the tiles encompass the far edges of the AoI.
+    #     #---
+    #     lons   = []
+    #     curLon = float(self.request.ulx) - 0.5
+    #     maxLon = float(self.request.lrx)
+    #
+    #     while curLon <= maxLon:
+    #
+    #         curLon += 0.5
+    #         lons.append(curLon)
+    #
+    #     lats   = []
+    #     curLat = float(self.request.uly) + 0.5
+    #     minLat = float(self.request.lry)
+    #
+    #     while curLat >= minLat:
+    #
+    #         curLat -= 0.5
+    #         lats.append(curLat)
+    #
+    #     # We have the lats and longs comprising the grid.  Form them into tiles.
+    #     corners = []
+    #
+    #     for x in range(len(lons) - 1):
+    #         for y in range(len(lats) - 1):
+    #             corners.append((lons[x], lats[y], lons[x+1], lats[y+1]))
+    #
+    #     return corners
 
     #---------------------------------------------------------------------------
     # listConstituents
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        #---
-        # constituents = {'/path/to/scene1.tif' : [/path/to/scene1.ntf],
-        #                 '/path/to/scene2.tif' : [/path/to/scene2.ntf],
-        #                 ...
-        #                }
-        #
         # If a saved constituent list exists. use it.
-        #---
         constituents = None
-        
+
         constituentFile = os.path.join(self.request.destination.name,
                                        'constituents.txt')
 
@@ -427,7 +396,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         else:
 
-            # Query FOOTPRINTS using the AoI.
+            # AoI + FOOTPRINTS = scenes
             MAX_FEATS = 10
 
             scenes = self.queryFootprints(self.retrievalUlx,
@@ -437,20 +406,116 @@ class EvhrMosaicRetriever(GeoRetriever):
                                           self.retrievalSRS,
                                           MAX_FEATS)
                                           
-            constituents = {}
+            sceneGeoms = {}
             
             for scene in scenes:
                 
-                consName = scene.replace('.ntf', '.tif')
-                constituents[consName] = [scene]
+                dataset = gdal.Open(scene, gdal.GA_ReadOnly)
 
+                if not dataset:
+                    raise RuntimeError('Unable to open ' + str(scene))
+
+                geoTransform = dataset.GetGeoTransform()
+                ulx          = geoTransform[0]
+                uly          = geoTransform[3]
+                lrx          = ulx + geoTransform[1] * dataset.RasterXSize
+                lry          = uly + geoTransform[5] * dataset.RasterYSize
+                srs          = SpatialReference(dataset.GetProjection())
+                
+                geom = self.bBoxToPolygon(ulx, uly, lrx, lry, srs)
+                sceneGeoms[scene] = geom
+                                          
+            # Define the tiles.
+            tiler = TilerHalfDegree(self.retrievalUlx,
+                                    self.retrievalUly,
+                                    self.retrievalLrx,
+                                    self.retrievalLry,
+                                    self.retrievalSRS, 
+                                    self.logger)
+
+            grid  = tiler.defineGrid()
+            tiles = tiler.gridToPolygons(grid)
+            
+            # Tiles + scenes = constituents.
+            constituents = {}
+            
+            for tile in tiles:
+                
+                constituents[tile] = []
+                
+                for scene in scenes:
+                    
+                    if not tile.GetSpatialReference(). \
+                           IsSame(scene.GetSpatialReference()):
+                           
+                        raise RuntimeError('Tile and scene must be in the '
+                                           'same SRS.')
+                                           
+                    if tile.Intersects(scene):
+                        constituents[tile].append(scene)
+                        
             # The FOOTPRINTS query is lengthy, so save the results.
             jsonConstituents = json.dumps(constituents)
 
             with open(constituentFile, 'w+') as f:
                 f.write(jsonConstituents)
-
+                
         return constituents
+        
+    #---------------------------------------------------------------------------
+    # listConstituents
+    #---------------------------------------------------------------------------
+    # def listConstituents(self):
+    #
+    #     #---
+    #     # constituents = {'/path/to/scene1.tif' : [/path/to/scene1.ntf],
+    #     #                 '/path/to/scene2.tif' : [/path/to/scene2.ntf],
+    #     #                 ...
+    #     #                }
+    #     #
+    #     # If a saved constituent list exists. use it.
+    #     #---
+    #     constituents = None
+    #
+    #     constituentFile = os.path.join(self.request.destination.name,
+    #                                    'constituents.txt')
+    #
+    #     if os.path.exists(constituentFile):
+    #
+    #         with open(constituentFile) as f:
+    #             constituentsString = f.read()
+    #
+    #         constituents = json.loads(constituentsString)
+    #
+    #         if self.logger:
+    #             self.logger.info('Using saved constituent list.')
+    #
+    #     else:
+    #
+    #         # Query FOOTPRINTS using the AoI.
+    #         MAX_FEATS = 10
+    #
+    #         scenes = self.queryFootprints(self.retrievalUlx,
+    #                                       self.retrievalUly,
+    #                                       self.retrievalLrx,
+    #                                       self.retrievalLry,
+    #                                       self.retrievalSRS,
+    #                                       MAX_FEATS)
+    #
+    #         constituents = {}
+    #
+    #         for scene in scenes:
+    #
+    #             consName = scene.replace('.ntf', '.tif')
+    #             constituents[consName] = [scene]
+    #
+    #         # The FOOTPRINTS query is lengthy, so save the results.
+    #         jsonConstituents = json.dumps(constituents)
+    #
+    #         with open(constituentFile, 'w+') as f:
+    #             f.write(jsonConstituents)
+    #
+    #     return constituents
             
     #---------------------------------------------------------------------------
     # listConstituents
@@ -723,23 +788,23 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # queryFootprintsFromFile
     #---------------------------------------------------------------------------
-    def queryFootprintsFromFile(self, clipFile, maxFeatures = None):
-
-        # Get the extent of the clip file.
-        dataset = gdal.Open(clipFile, gdal.GA_ReadOnly)
-
-        if not dataset:
-            raise RuntimeError('Unable to open ' + str(clipFile))
-
-        geoTransform = dataset.GetGeoTransform()
-        ulx          = geoTransform[0]
-        uly          = geoTransform[3]
-        lrx          = ulx + geoTransform[1] * dataset.RasterXSize
-        lry          = uly + geoTransform[5] * dataset.RasterYSize
-        srs          = SpatialReference(dataset.GetProjection())
-        dataset      = None
-        
-        return self.queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures)
+    # def queryFootprintsFromFile(self, clipFile, maxFeatures = None):
+    #
+    #     # Get the extent of the clip file.
+    #     dataset = gdal.Open(clipFile, gdal.GA_ReadOnly)
+    #
+    #     if not dataset:
+    #         raise RuntimeError('Unable to open ' + str(clipFile))
+    #
+    #     geoTransform = dataset.GetGeoTransform()
+    #     ulx          = geoTransform[0]
+    #     uly          = geoTransform[3]
+    #     lrx          = ulx + geoTransform[1] * dataset.RasterXSize
+    #     lry          = uly + geoTransform[5] * dataset.RasterYSize
+    #     srs          = SpatialReference(dataset.GetProjection())
+    #     dataset      = None
+    #
+    #     return self.queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures)
 
     #---------------------------------------------------------------------------
     # retrieveOne
