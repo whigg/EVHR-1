@@ -1,5 +1,5 @@
 
-import abc
+from abc import ABCMeta
 
 from osgeo import ogr
 from osgeo.osr import SpatialReference
