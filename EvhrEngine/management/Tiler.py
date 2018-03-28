@@ -7,7 +7,7 @@ from osgeo.osr import SpatialReference
 #-------------------------------------------------------------------------------
 # class Tiler
 #
-# https://pymotw.com/3/abc/
+# https://pymotw.com/2/abc/
 #-------------------------------------------------------------------------------
 class Tiler(object):
     
