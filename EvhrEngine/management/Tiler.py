@@ -1,5 +1,5 @@
 
-from abc import ABCMeta
+import abc
 
 from osgeo import ogr
 from osgeo.osr import SpatialReference
@@ -11,7 +11,7 @@ from osgeo.osr import SpatialReference
 #-------------------------------------------------------------------------------
 class Tiler(object):
     
-    __metaclass__ = ABCMeta
+    __metaclass__ = abc.ABCMeta
     
     #---------------------------------------------------------------------------
     # __init__
@@ -32,7 +32,7 @@ class Tiler(object):
     #---------------------------------------------------------------------------
     # defineGrid
     #---------------------------------------------------------------------------
-    @abstractmethod
+    @abc.abstractmethod
     def defineGrid(self):
         
         """This method returns an array where each element is an array of
