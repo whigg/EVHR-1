@@ -64,7 +64,7 @@ class Tiler(object):
             poly.AssignSpatialReference(self.srs)
             polygons.append(poly)
             
-        return polygon
+        return polygons
         
     #---------------------------------------------------------------------------
     # gridUpperLeft
