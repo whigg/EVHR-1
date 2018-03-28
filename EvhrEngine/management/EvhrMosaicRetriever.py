@@ -411,19 +411,8 @@ class EvhrMosaicRetriever(GeoRetriever):
             
             for scene in scenes:
                 
-                dataset = gdal.Open(scene, gdal.GA_ReadOnly)
-
-                if not dataset:
-                    raise RuntimeError('Unable to open ' + str(scene))
-
-                geoTransform = dataset.GetGeoTransform()
-                ulx          = geoTransform[0]
-                uly          = geoTransform[3]
-                lrx          = ulx + geoTransform[1] * dataset.RasterXSize
-                lry          = uly + geoTransform[5] * dataset.RasterYSize
-                srs          = SpatialReference(dataset.GetProjection())
-                
-                geom = self.bBoxToPolygon(ulx, uly, lrx, lry, srs)
+                dg = DgFile(scene)
+                geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
                 sceneGeoms[scene] = geom
                                           
             # Define the tiles.
