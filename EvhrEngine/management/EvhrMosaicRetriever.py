@@ -447,7 +447,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                 for scene in scenes:
                     
                     if not tile.GetSpatialReference(). \
-                           IsSame(scene.GetSpatialReference()):
+                           IsSame(sceneGeoms[scene].GetSpatialReference()):
                            
                         raise RuntimeError('Tile and scene must be in the '
                                            'same SRS.')
