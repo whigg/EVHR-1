@@ -9,7 +9,9 @@ from osgeo.osr import SpatialReference
 #
 # https://pymotw.com/3/abc/
 #-------------------------------------------------------------------------------
-class Tiler(metaclass=abc.ABCMeta):
+class Tiler(object):
+    
+    __metaclass__ = ABCMeta
     
     #---------------------------------------------------------------------------
     # __init__
