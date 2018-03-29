@@ -284,7 +284,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         if not ds:
             raise RuntimeError('Unable to open ' + str(tileName))
 
-        ds.SetProjection(srs)
+        ds.SetProjection(srs.ExportToWkt())
 
         rotation = 0
         xRes = lrx - ulx
