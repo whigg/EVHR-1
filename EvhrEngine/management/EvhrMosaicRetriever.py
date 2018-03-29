@@ -296,7 +296,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         ds.GetRasterBand(1).WriteArray(raster)
         ds = None
 
-        return tile
+        return tileName
 
     #---------------------------------------------------------------------------
     # extractBands
