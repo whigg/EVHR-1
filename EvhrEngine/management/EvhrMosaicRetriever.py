@@ -259,7 +259,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # createEmptyTile
     #---------------------------------------------------------------------------
-    def createEmptyTile(self, corners, srs, tileNum):
+    def createEmptyTile(self, tileGeometry, srs, tileNum):
 
         # Ensure the clippedDEMs subdirectory exists.
         tileDir = os.path.join(self.request.destination.name, 'tiles')
@@ -267,10 +267,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         if not os.path.exists(tileDir):
             os.mkdir(tileDir)
 
-        ulx = corners[0]
-        uly = corners[1]
-        lrx = corners[2]
-        lry = corners[3]
+        ulx = tileGeometry.GetPoint(0).GetX()
+        uly = tileGeometry.GetPoint(0).GetY()
+        lrx = tileGeometry.GetPoint(1).GetX()
+        lry = tileGeometry.GetPoint(1).GetY()
 
         count += 1
         tileName = os.path.join(self.request.destination.name,
