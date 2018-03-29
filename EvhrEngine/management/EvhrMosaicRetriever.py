@@ -441,7 +441,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                         raise RuntimeError('Tile and scene must be in the '
                                            'same SRS.')
                                            
-                    if tile.Intersects(scene):
+                    if tile.Intersects(sceneGeoms[scene]):
                         constituents[tile].append(scene)
                         
             # The FOOTPRINTS query is lengthy, so save the results.
