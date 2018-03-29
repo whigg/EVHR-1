@@ -486,7 +486,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                                            'same SRS.')
                                            
                     if tile.Intersects(sceneGeoms[scene]):
-                        constituents[tile].append(scene)
+                        constituents[tileFile].append(scene)
                         
             # The FOOTPRINTS query is lengthy, so save the results.
             jsonConstituents = json.dumps(constituents)
