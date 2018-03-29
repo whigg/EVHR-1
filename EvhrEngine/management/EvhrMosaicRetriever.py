@@ -279,7 +279,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         height = 1  # Choose a nominal height and width.  All we really
         width  = 1  # need is the extent and file name of this tile tif.
         driver = gdal.GetDriverByName('GTiff')
-        ds     = driver.Create(constituentName, width, height)
+        ds     = driver.Create(tileName, width, height)
 
         if not ds:
             raise RuntimeError('Unable to open ' + str(tileName))
