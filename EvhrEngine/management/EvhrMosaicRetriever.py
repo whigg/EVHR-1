@@ -272,10 +272,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         lrx = tileGeometry.GetPoint(1)[0]
         lry = tileGeometry.GetPoint(1)[1]
 
-        count += 1
         tileName = os.path.join(self.request.destination.name,
                                 tileDir,
-                                'tile' + str(count) + '.tif')
+                                'tile' + str(tileNum) + '.tif')
 
         height = 1  # Choose a nominal height and width.  All we really
         width  = 1  # need is the extent and file name of this tile tif.
