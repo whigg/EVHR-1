@@ -475,7 +475,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             
             for tile in tiles:
                 
-                tileFile = createEmptyTile(tile, self.retrievalSRS, tileNum)
+                tileFile = self.createEmptyTile(tile, self.retrievalSRS, tileNum)
                 constituents[tileFile] = []
                 
                 for scene in scenes:
