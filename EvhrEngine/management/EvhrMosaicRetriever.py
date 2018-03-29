@@ -257,6 +257,49 @@ class EvhrMosaicRetriever(GeoRetriever):
     #     return tiles
 
     #---------------------------------------------------------------------------
+    # createEmptyTile
+    #---------------------------------------------------------------------------
+    def createEmptyTile(self, corners, srs, tileNum):
+
+        # Ensure the clippedDEMs subdirectory exists.
+        tileDir = os.path.join(self.request.destination.name, 'tiles')
+
+        if not os.path.exists(tileDir):
+            os.mkdir(tileDir)
+
+        ulx = corners[0]
+        uly = corners[1]
+        lrx = corners[2]
+        lry = corners[3]
+
+        count += 1
+        tileName = os.path.join(self.request.destination.name,
+                                tileDir,
+                                'tile' + str(count) + '.tif')
+
+        height = 1  # Choose a nominal height and width.  All we really
+        width  = 1  # need is the extent and file name of this tile tif.
+        driver = gdal.GetDriverByName('GTiff')
+        ds     = driver.Create(constituentName, width, height)
+
+        if not ds:
+            raise RuntimeError('Unable to open ' + str(tileName))
+
+        ds.SetProjection(srs)
+
+        rotation = 0
+        xRes = lrx - ulx
+        yRes = (uly - lry) * -1.0
+
+        ds.SetGeoTransform([ulx, xRes, rotation, uly, rotation, yRes])
+        raster = numpy.zeros((height, width), dtype = numpy.uint8)
+
+        ds.GetRasterBand(1).WriteArray(raster)
+        ds = None
+
+        return tile
+
+    #---------------------------------------------------------------------------
     # extractBands
     #
     # retrieveOne -> processScene -> extractBands (multispectral only)
@@ -428,10 +471,12 @@ class EvhrMosaicRetriever(GeoRetriever):
             
             # Tiles + scenes = constituents.
             constituents = {}
+            tileNum = 0
             
             for tile in tiles:
                 
-                constituents[tile] = []
+                tileFile = createEmptyTile(tile, self.retrievalSRS, tileNum)
+                constituents[tileFile] = []
                 
                 for scene in scenes:
                     
