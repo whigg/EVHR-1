@@ -857,7 +857,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         completedScenes = [self.processScene(nitf) for nitf in fileList]
 
         # Mosaic the scenes into a single file.
-        return completedScenes[0]   # This is temporary, so retrieveOne returns something.
+        return None   # This is temporary, so retrieveOne returns something.
 
     #---------------------------------------------------------------------------
     # runSystemCmd
