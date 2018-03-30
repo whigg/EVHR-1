@@ -267,10 +267,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         if not os.path.exists(tileDir):
             os.mkdir(tileDir)
 
-        ulx = tileGeometry.GetPoint(0)[0]
-        uly = tileGeometry.GetPoint(0)[1]
-        lrx = tileGeometry.GetPoint(1)[0]
-        lry = tileGeometry.GetPoint(1)[1]
+        ulx = tileGeometry.GetGeometryRef(0).GetPoint(0)[0]
+        uly = tileGeometry.GetGeometryRef(0).GetPoint(0)[1]
+        lrx = tileGeometry.GetGeometryRef(0).GetPoint(1)[0]
+        lry = tileGeometry.GetGeometryRef(0).GetPoint(1)[1]
 
         tileName = os.path.join(self.request.destination.name,
                                 tileDir,
