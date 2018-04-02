@@ -83,7 +83,7 @@ class Command(BaseCommand):
         # Create the output Shapefile.
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         
-        tileDir = os.path.join(str(request.destination.name), 'tileTemplates')
+        tileDir = os.path.join(str(request.destination.name), 'tiles')
         gridFile = os.path.join(tileDir, 'grids.shp')
         
         outDataSource = outDriver.CreateDataSource(gridFile)
@@ -107,7 +107,7 @@ class Command(BaseCommand):
         outLayer.CreateFeature(outFeature)
         
         # Create features for each tile.
-        tiles = glob.glob(os.path.join(tileDir, 'tileTemplate*.tif'))
+        tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
         
         for tile in tiles:
     
