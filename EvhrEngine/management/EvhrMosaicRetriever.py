@@ -599,9 +599,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                                         inputNitf, 
                                         self.logger))
             
-                # os.remove(bandFile)
-                # os.remove(orthoBand)
-            
             self.mergeBands(toaBands, toaFinal)
             
         return toaFinal
@@ -684,7 +681,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         #---
         completedScenes = [self.processScene(nitf) for nitf in fileList]
 
-        self.deleteFiles(self.bandDir)
+        # self.deleteFiles(self.bandDir)
+        self.deleteFiles(self.orthoDir)
         self.deleteFiles(self.orthoDir)
 
         # Mosaic the scenes into a single file.
