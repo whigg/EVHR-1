@@ -85,8 +85,16 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.runSensors = ['WV01', 'WV02', 'WV03']
 
         # Ensure the orthos and toa directories exists.
-        self.orthoDir = os.path.join(self.request.destination.name, 'orthos')
-        self.toaDir   = os.path.join(self.request.destination.name, 'toa')
+        self.bandDir  = os.path.join(self.request.destination.name, '1-bands')
+        self.demDir   = os.path.join(self.request.destination.name, '2-dems')
+        self.orthoDir = os.path.join(self.request.destination.name, '3-orthos')
+        self.toaDir   = os.path.join(self.request.destination.name, '4-toas')
+
+        if not os.path.exists(self.bandDir):
+            os.mkdir(self.bandDir)
+
+        if not os.path.exists(self.demDir):
+            os.mkdir(self.demDir)
 
         if not os.path.exists(self.orthoDir):
             os.mkdir(self.orthoDir)
@@ -158,12 +166,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Creating DEM for orthorectification.')
 
-        # Ensure the clippedDEMs subdirectory exists.
-        clipDir = os.path.join(self.request.destination.name, 'clippedDEMs')
-
-        if not os.path.exists(clipDir):
-            os.mkdir(clipDir)
-
         # If there is already a clipped DEM for this bounding box, use it.
         demName = 'dem-'                          + \
                   str(ulx) + '-'                  + \
@@ -173,7 +175,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                   str(srs.GetAuthorityCode(None)) + \
                   '.tif'
 
-        demName = os.path.join(clipDir, demName)
+        demName = os.path.join(self.demDir, demName)
 
         if os.path.exists(demName):
             return demName
@@ -187,94 +189,22 @@ class EvhrMosaicRetriever(GeoRetriever):
         return demName
 
     #---------------------------------------------------------------------------
-    # createEmptyTiles
-    #---------------------------------------------------------------------------
-    # def createEmptyTiles(self):
-    #
-    #     # Ensure the clippedDEMs subdirectory exists.
-    #     templDir = os.path.join(self.request.destination.name, 'tileTemplates')
-    #
-    #     if not os.path.exists(templDir):
-    #         os.mkdir(templDir)
-    #
-    #     #---
-    #     # Here is where we define position the start of the tile grid.
-    #     # Initially, we start it at the upper-left of the request AoI.  If ever
-    #     # we want a more efficient tiling scheme to align the AoI, the UTM grid,
-    #     # and the half-degree tile grid, do that here by adjusting this starting
-    #     # point.
-    #     #---
-    #     startingX = self.request.ulx
-    #     startingY = self.request.uly
-    #
-    #     #---
-    #     # Create the upper-left and lower-right tile corners, based on the
-    #     # starting point and lower-left of the request AoI.
-    #     #---
-    #     corners = self.imposeGridOnAoI(startingX,
-    #                                    startingY,
-    #                                    self.request.lrx,
-    #                                    self.request.lry)
-    #
-    #     # Use the corners to create GeoTiffs representing each constituent.
-    #     tiles = []
-    #     count = 0
-    #
-    #     for corner in corners:
-    #
-    #         ulx = corner[0]
-    #         uly = corner[1]
-    #         lrx = corner[2]
-    #         lry = corner[3]
-    #
-    #         count += 1
-    #         constituentName = os.path.join(self.request.destination.name,
-    #                                        templDir,
-    #                                        'tileTemplate' + str(count) + '.tif')
-    #
-    #         height = 1  # Choose a nominal height and width.  All we really
-    #         width  = 1  # need is the extent and file name of this tile tif.
-    #         driver = gdal.GetDriverByName('GTiff')
-    #         ds     = driver.Create(constituentName, width, height)
-    #
-    #         if not ds:
-    #             raise RuntimeError('Unable to open ' + str(constituentName))
-    #
-    #         ds.SetProjection(str(self.retrievalSRS))
-    #
-    #         rotation = 0
-    #         xRes = lrx - ulx
-    #         yRes = (uly - lry) * -1.0
-    #
-    #         ds.SetGeoTransform([ulx, xRes, rotation, uly, rotation, yRes])
-    #         raster = numpy.zeros((height, width), dtype = numpy.uint8)
-    #
-    #         ds.GetRasterBand(1).WriteArray(raster)
-    #         ds = None
-    #
-    #         tiles.append(constituentName)
-    #
-    #     return tiles
-
-    #---------------------------------------------------------------------------
     # createEmptyTile
     #---------------------------------------------------------------------------
     def createEmptyTile(self, tileGeometry, srs, tileNum):
 
         # Ensure the clippedDEMs subdirectory exists.
-        tileDir = os.path.join(self.request.destination.name, 'tiles')
-
-        if not os.path.exists(tileDir):
-            os.mkdir(tileDir)
+        # tileDir = os.path.join(self.request.destination.name, 'tiles')
+        #
+        # if not os.path.exists(tileDir):
+        #     os.mkdir(tileDir)
 
         ulx = tileGeometry.GetGeometryRef(0).GetPoint(0)[0]
         uly = tileGeometry.GetGeometryRef(0).GetPoint(0)[1]
         lrx = tileGeometry.GetGeometryRef(0).GetPoint(1)[0]
         lry = tileGeometry.GetGeometryRef(0).GetPoint(1)[1]
 
-        tileName = os.path.join(self.request.destination.name,
-                                tileDir,
-                                'tile' + str(tileNum) + '.tif')
+        tileName = os.path.join(self.tileDir, 'tile' + str(tileNum) + '.tif')
 
         height = 1  # Choose a nominal height and width.  All we really
         width  = 1  # need is the extent and file name of this tile tif.
@@ -299,6 +229,16 @@ class EvhrMosaicRetriever(GeoRetriever):
         return tileName
 
     #---------------------------------------------------------------------------
+    # deleteFiles
+    #---------------------------------------------------------------------------
+    def deleteFiles(self, deleteDir):
+        
+        files = glob.glob(os.path.join(deleteDir, '*.tif'))
+        
+        for f in files:
+            os.remove(f)
+            
+    #---------------------------------------------------------------------------
     # extractBands
     #
     # retrieveOne -> processScene -> extractBands (multispectral only)
@@ -307,12 +247,6 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         if self.logger:
             self.logger.info('Extracting bands from ' + str(nitfFile.fileName))
-
-        # Make a directory for temporary band files.
-        tempDir = os.path.join(self.request.destination.name, 'bandFiles')
-
-        if not os.path.exists(tempDir):
-            os.mkdir(tempDir)
 
         # Get the bands to use.
         bands = ['BAND_P'] if nitfFile.isPanchromatic() else \
@@ -323,7 +257,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         for band in bands:
 
-            bandFileName = nitfFile.getBand(tempDir, band)
+            bandFileName = nitfFile.getBand(self.bandDir, band)
             bandFiles.append(bandFileName)
 
         return bandFiles
@@ -374,48 +308,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         srs = GeoRetriever.constructSrsFromIntCode(epsg)
         return srs.ExportToWkt()
                 
-    #---------------------------------------------------------------------------
-    # imposeGridOnAoI
-    #
-    # This method, given an AoI, returns a list of 1/2-degree square grid
-    # corners.  CreateEmptyTiles() uses this to lay a grid based on the starting
-    # point it chooses to best align the AoI, the UTM grid and the half-degree
-    # grid.
-    #---------------------------------------------------------------------------
-    # def imposeGridOnAoI(self, ulx, uly, lrx, lry):
-    #
-    #     #---
-    #     # Start at the upper-left corner of the AoI, and create 1/2-degree
-    #     # square tiles.  Adjust initial lon and lat by 0.5, so the loop's test
-    #     # lets the tiles encompass the far edges of the AoI.
-    #     #---
-    #     lons   = []
-    #     curLon = float(self.request.ulx) - 0.5
-    #     maxLon = float(self.request.lrx)
-    #
-    #     while curLon <= maxLon:
-    #
-    #         curLon += 0.5
-    #         lons.append(curLon)
-    #
-    #     lats   = []
-    #     curLat = float(self.request.uly) + 0.5
-    #     minLat = float(self.request.lry)
-    #
-    #     while curLat >= minLat:
-    #
-    #         curLat -= 0.5
-    #         lats.append(curLat)
-    #
-    #     # We have the lats and longs comprising the grid.  Form them into tiles.
-    #     corners = []
-    #
-    #     for x in range(len(lons) - 1):
-    #         for y in range(len(lats) - 1):
-    #             corners.append((lons[x], lats[y], lons[x+1], lats[y+1]))
-    #
-    #     return corners
-
     #---------------------------------------------------------------------------
     # listConstituents
     #---------------------------------------------------------------------------
@@ -504,61 +396,6 @@ class EvhrMosaicRetriever(GeoRetriever):
     # def listConstituents(self):
     #
     #     #---
-    #     # constituents = {'/path/to/scene1.tif' : [/path/to/scene1.ntf],
-    #     #                 '/path/to/scene2.tif' : [/path/to/scene2.ntf],
-    #     #                 ...
-    #     #                }
-    #     #
-    #     # If a saved constituent list exists. use it.
-    #     #---
-    #     constituents = None
-    #
-    #     constituentFile = os.path.join(self.request.destination.name,
-    #                                    'constituents.txt')
-    #
-    #     if os.path.exists(constituentFile):
-    #
-    #         with open(constituentFile) as f:
-    #             constituentsString = f.read()
-    #
-    #         constituents = json.loads(constituentsString)
-    #
-    #         if self.logger:
-    #             self.logger.info('Using saved constituent list.')
-    #
-    #     else:
-    #
-    #         # Query FOOTPRINTS using the AoI.
-    #         MAX_FEATS = 10
-    #
-    #         scenes = self.queryFootprints(self.retrievalUlx,
-    #                                       self.retrievalUly,
-    #                                       self.retrievalLrx,
-    #                                       self.retrievalLry,
-    #                                       self.retrievalSRS,
-    #                                       MAX_FEATS)
-    #
-    #         constituents = {}
-    #
-    #         for scene in scenes:
-    #
-    #             consName = scene.replace('.ntf', '.tif')
-    #             constituents[consName] = [scene]
-    #
-    #         # The FOOTPRINTS query is lengthy, so save the results.
-    #         jsonConstituents = json.dumps(constituents)
-    #
-    #         with open(constituentFile, 'w+') as f:
-    #             f.write(jsonConstituents)
-    #
-    #     return constituents
-            
-    #---------------------------------------------------------------------------
-    # listConstituents
-    #---------------------------------------------------------------------------
-    # def listConstituents(self):
-    #
-    #     #---
     #     # Impose 1/2 degree by 1/2 degree tiling on AoI.  Create an empty output
     #     # file for each tile.  These empty files will have the extent of their
     #     # 1/2 degree tiles.  RetrieveOne() will clip the files in its fileList
@@ -620,7 +457,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # mergeBands
     #---------------------------------------------------------------------------
-    def mergeBands(self, bandFiles, outFileName, deleteBands = True):
+    def mergeBands(self, bandFiles, outFileName):
 
         if self.logger:
             self.logger.info('Merging bands into ' + str(outFileName))
@@ -633,11 +470,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                        ' '.join(bandFiles))
 
         self.runSystemCmd(cmd)
-
-        # Remove the band files.
-        if deleteBands:
-            for bandFile in bandFiles:
-                os.remove(bandFile)
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -693,22 +525,23 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Orthorectifying ' + str(bandFile))
 
-        clippedDEM = self.createDemForOrthos(origDgFile.ulx,
-                                             origDgFile.uly,
-                                             origDgFile.lrx,
-                                             origDgFile.lry,
-                                             origDgFile.srs)
-        # Orthorectify.
         baseName  = os.path.splitext(os.path.basename(bandFile))[0]
         orthoFile = os.path.join(self.orthoDir, baseName + '-ortho.tif')
-        orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
-
-        # get band name from bandFile
-        ds = gdal.Open(bandFile, gdal.GA_ReadOnly)
-        bandName =  ds.GetMetadataItem('bandName')
-        ds = None
 
         if not os.path.exists(orthoFile):
+
+            clippedDEM = self.createDemForOrthos(origDgFile.ulx,
+                                                 origDgFile.uly,
+                                                 origDgFile.lrx,
+                                                 origDgFile.lry,
+                                                 origDgFile.srs)
+            # Orthorectify.
+            orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
+
+            # get band name from bandFile
+            ds = gdal.Open(bandFile, gdal.GA_ReadOnly)
+            bandName =  ds.GetMetadataItem('bandName')
+            ds = None
 
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
@@ -749,32 +582,28 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Get the output name to see if it exists.
         bname = os.path.basename(inputNitf).replace('.ntf', '-ortho.tif')
-
-        toaFinal = os.path.join(self.request.destination.name, \
-                                self.toaDir,
-                                bname.replace('.tif', '-toa.tif'))
+        toaFinal = os.path.join(self.toaDir, bname.replace('.tif', '-toa.tif'))
 
         # If the output file exists, don't bother running it again.
-        if os.path.exists(toaFinal):
-            return toaFinal
+        if not os.path.exists(toaFinal):
 
-        dgFile    = DgFile(inputNitf)
-        bandFiles = self.extractBands(dgFile)
-        toaBands  = []
+            dgFile    = DgFile(inputNitf)
+            bandFiles = self.extractBands(dgFile)
+            toaBands  = []
 
-        for bandFile in bandFiles:
+            for bandFile in bandFiles:
             
-            orthoBand = self.orthoOne(bandFile, dgFile)
+                orthoBand = self.orthoOne(bandFile, dgFile)
             
-            toaBands.append(TOA.run(orthoBand, 
-                                    self.toaDir, 
-                                    inputNitf, 
-                                    self.logger))
+                toaBands.append(TOA.run(orthoBand, 
+                                        self.toaDir, 
+                                        inputNitf, 
+                                        self.logger))
             
-            os.remove(bandFile)
-            os.remove(orthoBand)
+                # os.remove(bandFile)
+                # os.remove(orthoBand)
             
-        self.mergeBands(toaBands, toaFinal)
+            self.mergeBands(toaBands, toaFinal)
             
         return toaFinal
 
@@ -855,6 +684,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         # and covert to Geotiff.
         #---
         completedScenes = [self.processScene(nitf) for nitf in fileList]
+
+        self.deleteFiles(self.bandDir)
+        self.deleteFiles(self.orthoDir)
 
         # Mosaic the scenes into a single file.
         return None   # This is temporary, so retrieveOne returns something.
