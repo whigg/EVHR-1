@@ -116,6 +116,17 @@ class Command(BaseCommand):
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
 
+        # Create features for each band file.
+        bandDir = os.path.join(str(request.destination.name), 'bands')
+        bands = glob.glob(os.path.join(bandDir, '*.tif'))
+        
+        for band in bands:
+    
+            polygon = Command.tifToPolygon(band)
+            outFeature = ogr.Feature(layerDefn)
+            outFeature.SetGeometry(polygon)
+            outLayer.CreateFeature(outFeature)
+        
         # Add the UTM zones.
         
     #---------------------------------------------------------------------------
