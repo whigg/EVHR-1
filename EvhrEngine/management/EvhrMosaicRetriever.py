@@ -85,10 +85,14 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.runSensors = ['WV01', 'WV02', 'WV03']
 
         # Ensure the orthos and toa directories exists.
-        self.bandDir  = os.path.join(self.request.destination.name, '1-bands')
-        self.demDir   = os.path.join(self.request.destination.name, '2-dems')
-        self.orthoDir = os.path.join(self.request.destination.name, '3-orthos')
-        self.toaDir   = os.path.join(self.request.destination.name, '4-toas')
+        self.tileDir  = os.path.join(self.request.destination.name, '1-tiles')
+        self.bandDir  = os.path.join(self.request.destination.name, '2-bands')
+        self.demDir   = os.path.join(self.request.destination.name, '3-dems')
+        self.orthoDir = os.path.join(self.request.destination.name, '4-orthos')
+        self.toaDir   = os.path.join(self.request.destination.name, '5-toas')
+
+        if not os.path.exists(self.tileDir):
+            os.mkdir(self.tileDir)
 
         if not os.path.exists(self.bandDir):
             os.mkdir(self.bandDir)
@@ -192,12 +196,6 @@ class EvhrMosaicRetriever(GeoRetriever):
     # createEmptyTile
     #---------------------------------------------------------------------------
     def createEmptyTile(self, tileGeometry, srs, tileNum):
-
-        # Ensure the clippedDEMs subdirectory exists.
-        # tileDir = os.path.join(self.request.destination.name, 'tiles')
-        #
-        # if not os.path.exists(tileDir):
-        #     os.mkdir(tileDir)
 
         ulx = tileGeometry.GetGeometryRef(0).GetPoint(0)[0]
         uly = tileGeometry.GetGeometryRef(0).GetPoint(0)[1]
