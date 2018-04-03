@@ -9,6 +9,7 @@ from osgeo.osr import SpatialReference
 
 from django.core.management.base import BaseCommand
 
+from EvhrEngine.management.DgFile import DgFile
 from GeoProcessingEngine.models import GeoRequest
 
 #-------------------------------------------------------------------------------
@@ -135,27 +136,23 @@ class Command(BaseCommand):
     @staticmethod
     def tifToPolygon(tif):
         
-    	dataset = gdal.Open(tif, gdalconst.GA_ReadOnly)
+        # dataset = gdal.Open(tif, gdalconst.GA_ReadOnly)
+        #
+        # if not dataset:
+        #             raise RuntimeError('Unable to open ' + str(tif))
+        #
+        # # Get the basics.
+        # xform  = dataset.GetGeoTransform()
+        # xScale = xform[1]
+        # yScale = xform[5]
+        # width  = dataset.RasterXSize
+        # height = dataset.RasterYSize
+        # ulx = xform[0]
+        # uly = xform[3]
+        # lrx = ulx + width  * xScale
+        # lry = uly + height * yScale
         
-    	if not dataset:
-            raise RuntimeError('Unable to open ' + str(tif))
-            
-    	# Get the basics.
-    	xform  = dataset.GetGeoTransform()
-    	xScale = xform[1]
-    	yScale = xform[5]
-    	width  = dataset.RasterXSize
-    	height = dataset.RasterYSize
-    	ulx = xform[0]
-    	uly = xform[3]	
-    	lrx = ulx + width  * xScale
-    	lry = uly + height * yScale
-        
-        return Command.cornersToPolygon(ulx, 
-                                        uly, 
-                                        lrx, 
-                                        lry, 
-                                        Command.constructSrs(dataset. \
-                                                             GetProjection()))
+        dg = DgFile(tif)
+        return Command.cornersToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry, dg.srs)
         
         
