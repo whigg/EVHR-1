@@ -21,7 +21,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('-r', help = 'Request ID')
+        parser.add_argument('--id', help = 'Request ID')
 
     #---------------------------------------------------------------------------
     # constructSrs
@@ -83,7 +83,7 @@ class Command(BaseCommand):
         # Create the output Shapefile.
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         
-        tileDir = os.path.join(str(request.destination.name), 'tiles')
+        tileDir = os.path.join(str(request.destination.name), '1-tiles')
         gridFile = os.path.join(tileDir, 'grids.shp')
         
         outDataSource = outDriver.CreateDataSource(gridFile)
@@ -117,7 +117,7 @@ class Command(BaseCommand):
             outLayer.CreateFeature(outFeature)
 
         # Create features for each band file.
-        bandDir = os.path.join(str(request.destination.name), 'bands')
+        bandDir = os.path.join(str(request.destination.name), '2-bands')
         bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
         for band in bands:
