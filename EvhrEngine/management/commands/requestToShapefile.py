@@ -78,7 +78,7 @@ class Command(BaseCommand):
     def handle(*args, **options):
 
         # Get the request.
-        request = GeoRequest.objects.get(id = options['r'])
+        request = GeoRequest.objects.get(id = options['id'])
         
         # Create the output Shapefile.
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
