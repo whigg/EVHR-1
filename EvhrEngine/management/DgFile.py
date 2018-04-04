@@ -4,14 +4,15 @@ from osgeo.osr import SpatialReference
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+#-------------------------------------------------------------------------------
+# class DgFile
+#-------------------------------------------------------------------------------
 class DgFile:
-
 
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
     def __init__(self, fileName):
-
 
         # Check that the file is NITF or TIFF
         extension = os.path.splitext(fileName)[1]
@@ -19,35 +20,25 @@ class DgFile:
         self.xmlFileName = self.fileName.replace(extension, '.xml')
 
         if extension != '.ntf' and extension != '.tif':
-            raise RuntimeError('{} is not a NITF or TIFF file'.format\
-                                                                (self.fileName))
+            
+            raise RuntimeError('{} is not a NITF or TIFF file'. \
+                               format(self.fileName))
 
         if not os.path.isfile(self.fileName):
             raise RuntimeError('{} does not exist'.format(self.fileName))
-
-        if not os.path.isfile(self.xmlFileName):
-            raise RuntimeError('{} does not exist'.format(self.xmlFileName))
-
 
         dataset = gdal.Open(self.fileName, gdal.GA_ReadOnly)
 
         if not dataset:
             raise RuntimeError("Could not open {}".format(self.fileName))
 
-        tree = ET.parse(self.xmlFileName)
-
         # firstLineTime
         t = dataset.GetMetadataItem('NITF_CSDIDA_TIME')
         self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
 
-        # bandNameList #* added this for getBand --> [BAND_B, BAND_R, etc...]
-        elem = tree.getroot().find('IMD')
-        self.bandNameList = [node.tag for node in elem if node.tag. \
-                                                            startswith('BAND_')]
-
         # meanSunElevation
-        self.meanSunElevation = float(dataset.GetMetadataItem \
-                                                ('NITF_CSEXRA_SUN_ELEVATION'))
+        self.meanSunElevation = \
+            float(dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION'))
 
         # specType
         self.specTypeCode = dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
@@ -60,28 +51,43 @@ class DgFile:
 
         # extent / SRS
         if dataset.GetProjection():
-            self.srs    =   SpatialReference(dataset.GetProjection())
 
-            geoTransform    =   dataset.GetGeoTransform()
-            self.ulx    =   geoTransform[0]
-            self.uly    =   geoTransform[3]
-            self.lrx    =   self.ulx + geoTransform[1] * dataset.RasterXSize
-            self.lry    =   self.uly + geoTransform[5] * dataset.RasterYSize
+            geoTransform = dataset.GetGeoTransform()
+            self.ulx = geoTransform[0]
+            self.uly = geoTransform[3]
+            self.lrx = self.ulx + geoTransform[1] * dataset.RasterXSize
+            self.lry = self.uly + geoTransform[5] * dataset.RasterYSize
+            self.srs = SpatialReference(dataset.GetProjection())
 
         elif dataset.GetGCPProjection():
-            self.srs    =   SpatialReference(dataset.GetGCPProjection())
 
-            self.ulx    =   dataset.GetGCPs()[0].GCPX
-            self.uly    =   dataset.GetGCPs()[0].GCPY
-            self.lrx    =   dataset.GetGCPs()[2].GCPX
-            self.lry    =   dataset.GetGCPs()[2].GCPY
+            self.ulx = dataset.GetGCPs()[0].GCPX
+            self.uly = dataset.GetGCPs()[0].GCPY
+            self.lrx = dataset.GetGCPs()[2].GCPX
+            self.lry = dataset.GetGCPs()[2].GCPY
+            self.srs = SpatialReference(dataset.GetGCPProjection())
 
         else:
             raise RuntimeError("Could not get projection or corner coordinates")
 
         # numBands
-        self.numBands   =   dataset.RasterCount
+        self.numBands = dataset.RasterCount
 
+        # These data member require the XML file counterpart to the TIF.
+        self.imdTag = None
+        
+        if os.path.isfile(self.xmlFileName):
+
+            # bandNameList #* added this for getBand --> [BAND_B, BAND_R, etc...]
+            tree = ET.parse(self.xmlFileName)
+            self.imdTag = tree.getroot().find('IMD')
+        
+            self.bandNameList = \
+                [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
+
+        else:
+            # raise RuntimeError('{} does not exist'.format(self.xmlFileName))
+            print 'Warning: ' + self.xmlFileName + ' does not exist.'
 
     #---------------------------------------------------------------------------
     # isMultispectral()
@@ -105,6 +111,7 @@ class DgFile:
         gdalBandIndex = int(self.bandNameList.index(bandName)) + 1
 
         extension = os.path.splitext(self.fileName)[1]
+        
         baseName = os.path.basename(self.fileName.replace(extension, \
                                             '_b{}.tif'.format(gdalBandIndex)))
 
@@ -128,29 +135,27 @@ class DgFile:
     #---------------------------------------------------------------------------
     def abscalFactor(self, bandName):
 
-        if isinstance(bandName, str) and bandName.startswith('BAND_'):
+        if self.imdTag and \
+           isinstance(bandName, str) and \
+           bandName.startswith('BAND_'):
 
-            tree = ET.parse(self.xmlFileName).getroot().find('IMD')
-            abscalFactor = float(tree.find(bandName).find('ABSCALFACTOR').text)
-            return abscalFactor
+            return = float(self.imdTag.find(bandName).find('ABSCALFACTOR').text)
 
         else:
-            raise RuntimeError('Band name {} not valid. Could not retrieve \
-                                                abscal factor'.format(bandName))
-
+            raise RuntimeError('Could not retrieve abscal factor.')
 
     #---------------------------------------------------------------------------
     # effectiveBandwidth()
     #---------------------------------------------------------------------------
     def effectiveBandwidth(self, bandName):
 
-        if isinstance(bandName, str) and bandName.startswith('BAND_'):
+        if self.imdTag and \
+           isinstance(bandName, str) and \
+           bandName.startswith('BAND_'):
 
-            tree = ET.parse(self.xmlFileName).getroot().find('IMD')
-            effectiveBandwidth = float(tree.find(bandName).find \
-                                                    ('EFFECTIVEBANDWIDTH').text)
-            return effectiveBandwidth
+            return = float(self.imdTag.    \
+                           find(bandName). \
+                           find('EFFECTIVEBANDWIDTH').text)
 
         else:
-            raise RuntimeError('Band name {} not valid. Could not retrieve \
-                                        effective bandwidth'.format(bandName))
+            raise RuntimeError('Could not retrieve effective bandwidth.)
