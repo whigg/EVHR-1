@@ -139,7 +139,7 @@ class DgFile:
            isinstance(bandName, str) and \
            bandName.startswith('BAND_'):
 
-            return = float(self.imdTag.find(bandName).find('ABSCALFACTOR').text)
+            return float(self.imdTag.find(bandName).find('ABSCALFACTOR').text)
 
         else:
             raise RuntimeError('Could not retrieve abscal factor.')
@@ -153,9 +153,9 @@ class DgFile:
            isinstance(bandName, str) and \
            bandName.startswith('BAND_'):
 
-            return = float(self.imdTag.    \
+            return float(self.imdTag.      \
                            find(bandName). \
                            find('EFFECTIVEBANDWIDTH').text)
 
         else:
-            raise RuntimeError('Could not retrieve effective bandwidth.)
+            raise RuntimeError('Could not retrieve effective bandwidth.')
