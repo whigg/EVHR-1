@@ -1,13 +1,15 @@
 import os
-from osgeo import gdal
-from osgeo.osr import SpatialReference
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
 #-------------------------------------------------------------------------------
 # class DgFile
+#
+# This class represents a Digital Globe file.  It is a single NITF file or a
+# GeoTiff with an XML counterpart.  It is uniqure because of the metadata tags
+# within.
 #-------------------------------------------------------------------------------
-class DgFile:
+class DgFile(GdalFile):
 
     #---------------------------------------------------------------------------
     # __init__
@@ -20,14 +22,27 @@ class DgFile:
         if extension != '.ntf' and extension != '.tif':
             raise RuntimeError('{} is not a NITF or TIFF file'.format(fileName))
 
-        if not os.path.isfile(fileName):
-            raise RuntimeError('{} does not exist'.format(fileName))
+        # Ensure the XML file exists.
+        self.xmlFileName = self.fileName.replace(extension, '.xml')
 
-        self.fileName = fileName
-        dataset = gdal.Open(self.fileName, gdal.GA_ReadOnly)
+        if not os.path.isfile(self.xmlFileName):
+            raise RuntimeError('{} does not exist'.format(self.xmlFileName))
 
-        if not dataset:
-            raise RuntimeError("Could not open {}".format(self.fileName))
+        # Initialize the base class.
+        super(DgFile, self).__init__(fileName)
+
+        # These data member require the XML file counterpart to the TIF.
+        tree = ET.parse(self.xmlFileName)
+        self.imdTag = tree.getroot().find('IMD')
+        
+        if not self.imdTag:
+            
+            raise RuntimeError('Unable to locate the "IMD" tag in ' + \
+                               self.xmlFileName)
+    
+        # bandNameList #* added this for getBand --> [BAND_B, BAND_R, etc...]
+        self.bandNameList = \
+            [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
 
         # firstLineTime
         t = dataset.GetMetadataItem('NITF_CSDIDA_TIME')
@@ -46,46 +61,8 @@ class DgFile:
         # year
         self.year = dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
 
-        # extent / SRS
-        if dataset.GetProjection():
-
-            geoTransform = dataset.GetGeoTransform()
-            self.ulx = geoTransform[0]
-            self.uly = geoTransform[3]
-            self.lrx = self.ulx + geoTransform[1] * dataset.RasterXSize
-            self.lry = self.uly + geoTransform[5] * dataset.RasterYSize
-            self.srs = SpatialReference(dataset.GetProjection())
-
-        elif dataset.GetGCPProjection():
-
-            self.ulx = dataset.GetGCPs()[0].GCPX
-            self.uly = dataset.GetGCPs()[0].GCPY
-            self.lrx = dataset.GetGCPs()[2].GCPX
-            self.lry = dataset.GetGCPs()[2].GCPY
-            self.srs = SpatialReference(dataset.GetGCPProjection())
-
-        else:
-            raise RuntimeError("Could not get projection or corner coordinates")
-
         # numBands
         self.numBands = dataset.RasterCount
-
-        # These data member require the XML file counterpart to the TIF.
-        self.imdTag = None
-        self.xmlFileName = self.fileName.replace(extension, '.xml')
-        
-        if os.path.isfile(self.xmlFileName):
-
-            # bandNameList #* added this for getBand --> [BAND_B, BAND_R, etc...]
-            tree = ET.parse(self.xmlFileName)
-            self.imdTag = tree.getroot().find('IMD')
-        
-            self.bandNameList = \
-                [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
-
-        else:
-            # raise RuntimeError('{} does not exist'.format(self.xmlFileName))
-            print 'Warning: ' + self.xmlFileName + ' does not exist.'
 
     #---------------------------------------------------------------------------
     # isMultispectral()
@@ -133,9 +110,7 @@ class DgFile:
     #---------------------------------------------------------------------------
     def abscalFactor(self, bandName):
 
-        if self.imdTag and \
-           isinstance(bandName, str) and \
-           bandName.startswith('BAND_'):
+        if isinstance(bandName, str) and bandName.startswith('BAND_'):
 
             return float(self.imdTag.find(bandName).find('ABSCALFACTOR').text)
 
@@ -147,9 +122,7 @@ class DgFile:
     #---------------------------------------------------------------------------
     def effectiveBandwidth(self, bandName):
 
-        if self.imdTag and \
-           isinstance(bandName, str) and \
-           bandName.startswith('BAND_'):
+        if isinstance(bandName, str) and bandName.startswith('BAND_'):
 
             return float(self.imdTag.      \
                            find(bandName). \
