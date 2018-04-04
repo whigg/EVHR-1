@@ -9,7 +9,7 @@ from osgeo.osr import SpatialReference
 
 from django.core.management.base import BaseCommand
 
-from EvhrEngine.management.DgFile import DgFile
+from EvhrEngine.management.GdalFile import GdalFile
 from GeoProcessingEngine.models import GeoRequest
 
 #-------------------------------------------------------------------------------
@@ -152,7 +152,6 @@ class Command(BaseCommand):
         # lrx = ulx + width  * xScale
         # lry = uly + height * yScale
         
-        dg = DgFile(tif)
-        return Command.cornersToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry, dg.srs)
-        
+        gf = GdalFile(tif)
+        return Command.cornersToPolygon(gf.ulx, gf.uly, gf.lrx, gf.lry, gf.srs)
         
