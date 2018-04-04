@@ -16,17 +16,14 @@ class DgFile:
 
         # Check that the file is NITF or TIFF
         extension = os.path.splitext(fileName)[1]
-        self.fileName = fileName
-        self.xmlFileName = self.fileName.replace(extension, '.xml')
 
         if extension != '.ntf' and extension != '.tif':
-            
-            raise RuntimeError('{} is not a NITF or TIFF file'. \
-                               format(self.fileName))
+            raise RuntimeError('{} is not a NITF or TIFF file'.format(fileName))
 
-        if not os.path.isfile(self.fileName):
-            raise RuntimeError('{} does not exist'.format(self.fileName))
+        if not os.path.isfile(fileName):
+            raise RuntimeError('{} does not exist'.format(fileName))
 
+        self.fileName = fileName
         dataset = gdal.Open(self.fileName, gdal.GA_ReadOnly)
 
         if not dataset:
@@ -75,6 +72,7 @@ class DgFile:
 
         # These data member require the XML file counterpart to the TIF.
         self.imdTag = None
+        self.xmlFileName = self.fileName.replace(extension, '.xml')
         
         if os.path.isfile(self.xmlFileName):
 
