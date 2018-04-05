@@ -22,13 +22,15 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('-b', help = 'Full path to band file')
         parser.add_argument('--id', help = 'Request ID')
         
-        parser.add_argument('--noBands', 
-                            help = 'Do not include bands', 
-                            action = 'store_true')
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument('-b', help = 'Full path to band file')
 
+        group.add_argument('--noBands', 
+                           help = 'Do not include bands', 
+                           action = 'store_true')
+                            
     #---------------------------------------------------------------------------
     # constructSrs
     #---------------------------------------------------------------------------
@@ -129,7 +131,7 @@ class Command(BaseCommand):
             
             bands = [options['b']]
             
-        else:
+        elif not options['noBands']:
             
             bandDir = os.path.join(str(request.destination.name), '2-bands')
             bands = glob.glob(os.path.join(bandDir, '*.tif'))
