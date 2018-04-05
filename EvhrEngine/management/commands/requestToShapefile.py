@@ -125,7 +125,7 @@ class Command(BaseCommand):
             outLayer.CreateFeature(outFeature)
 
         # Create features for each band file.
-        bands = None
+        bands = []
         
         if options['b']:
             
