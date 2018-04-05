@@ -127,7 +127,7 @@ class Command(BaseCommand):
         # Create features for each band file.
         bands = None
         
-        if 'b' in options:
+        if options['b']:
             
             bands = [options['b']]
             
