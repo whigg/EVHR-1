@@ -22,7 +22,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('-b',   help = 'Show band "b" and AoI')
+        parser.add_argument('-b',   help = 'Full path to band file')
         parser.add_argument('--id', help = 'Request ID')
 
     #---------------------------------------------------------------------------
@@ -119,8 +119,16 @@ class Command(BaseCommand):
             outLayer.CreateFeature(outFeature)
 
         # Create features for each band file.
-        bandDir = os.path.join(str(request.destination.name), '2-bands')
-        bands = glob.glob(os.path.join(bandDir, '*.tif'))
+        bands = None
+        
+        if 'b' in options:
+            
+            bands = [options['b']]
+            
+        else:
+            
+            bandDir = os.path.join(str(request.destination.name), '2-bands')
+            bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
         for band in bands:
     
