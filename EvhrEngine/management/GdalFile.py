@@ -27,7 +27,15 @@ class GdalFile(object):
             raise RuntimeError("Could not open {}".format(self.fileName))
 
         # Extent / SRS
-        if self.dataset.GetProjection():
+        if self.dataset.GetGCPCount():
+            
+            self.ulx = self.dataset.GetGCPs()[0].GCPX
+            self.uly = self.dataset.GetGCPs()[0].GCPY
+            self.lrx = self.dataset.GetGCPs()[2].GCPX
+            self.lry = self.dataset.GetGCPs()[2].GCPY
+            self.srs = SpatialReference(self.dataset.GetGCPProjection())
+
+        else:
 
             geoTransform = self.dataset.GetGeoTransform()
             self.ulx = geoTransform[0]
@@ -35,14 +43,6 @@ class GdalFile(object):
             self.lrx = self.ulx + geoTransform[1] * self.dataset.RasterXSize
             self.lry = self.uly + geoTransform[5] * self.dataset.RasterYSize
             self.srs = SpatialReference(self.dataset.GetProjection())
-
-        elif dataset.GetGCPProjection():
-
-            self.ulx = self.dataset.GetGCPs()[0].GCPX
-            self.uly = self.dataset.GetGCPs()[0].GCPY
-            self.lrx = self.dataset.GetGCPs()[2].GCPX
-            self.lry = self.dataset.GetGCPs()[2].GCPY
-            self.srs = SpatialReference(self.dataset.GetGCPProjection())
 
         else:
             raise RuntimeError("Could not get projection or corner coordinates")
