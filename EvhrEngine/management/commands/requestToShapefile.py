@@ -96,7 +96,7 @@ class Command(BaseCommand):
 
         layerDefn = outLayer.GetLayerDefn()
         
-        # Add the request's corners as a polygon feature.
+        # Add the request's corners as a polygon feature. 
         polygon = Command.cornersToPolygon(request.ulx, 
                                            request.uly, 
                                            request.lrx,
