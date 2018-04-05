@@ -22,6 +22,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
+        parser.add_argument('-b',   help = 'Show band "b" and AoI')
         parser.add_argument('--id', help = 'Request ID')
 
     #---------------------------------------------------------------------------
@@ -135,22 +136,6 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     @staticmethod
     def tifToPolygon(tif):
-        
-        # dataset = gdal.Open(tif, gdalconst.GA_ReadOnly)
-        #
-        # if not dataset:
-        #             raise RuntimeError('Unable to open ' + str(tif))
-        #
-        # # Get the basics.
-        # xform  = dataset.GetGeoTransform()
-        # xScale = xform[1]
-        # yScale = xform[5]
-        # width  = dataset.RasterXSize
-        # height = dataset.RasterYSize
-        # ulx = xform[0]
-        # uly = xform[3]
-        # lrx = ulx + width  * xScale
-        # lry = uly + height * yScale
         
         gf = GdalFile(tif)
         return Command.cornersToPolygon(gf.ulx, gf.uly, gf.lrx, gf.lry, gf.srs)
