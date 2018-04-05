@@ -27,6 +27,8 @@ class GdalFile(object):
             raise RuntimeError("Could not open {}".format(self.fileName))
 
         # Extent / SRS
+        self.srs = None
+        
         if self.dataset.GetGCPCount():
             
             self.ulx = self.dataset.GetGCPs()[0].GCPX
@@ -44,7 +46,7 @@ class GdalFile(object):
             self.lry = self.uly + geoTransform[5] * self.dataset.RasterYSize
             self.srs = SpatialReference(self.dataset.GetProjection())
 
-        else:
+        if not self.srs:
             raise RuntimeError("Could not get projection or corner coordinates")
 
         
