@@ -22,8 +22,12 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('-b',   help = 'Full path to band file')
+        parser.add_argument('-b', help = 'Full path to band file')
         parser.add_argument('--id', help = 'Request ID')
+        
+        parser.add_argument('--noBands', 
+                            help = 'Do not include bands', 
+                            action = store_true)
 
     #---------------------------------------------------------------------------
     # constructSrs
