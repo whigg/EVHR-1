@@ -27,7 +27,7 @@ class Command(BaseCommand):
         
         parser.add_argument('--noBands', 
                             help = 'Do not include bands', 
-                            action = store_true)
+                            action = 'store_true')
 
     #---------------------------------------------------------------------------
     # constructSrs
