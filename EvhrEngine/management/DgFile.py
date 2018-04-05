@@ -1,6 +1,9 @@
+
+from datetime import datetime
 import os
 import xml.etree.ElementTree as ET
-from datetime import datetime
+
+from EvhrEngine.management.GdalFile import GdalFile
 
 #-------------------------------------------------------------------------------
 # class DgFile
