@@ -200,8 +200,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         ulx = tileGeometry.GetGeometryRef(0).GetPoint(0)[0]
         uly = tileGeometry.GetGeometryRef(0).GetPoint(0)[1]
-        lrx = tileGeometry.GetGeometryRef(0).GetPoint(1)[0]
-        lry = tileGeometry.GetGeometryRef(0).GetPoint(1)[1]
+        lrx = tileGeometry.GetGeometryRef(0).GetPoint(2)[0]
+        lry = tileGeometry.GetGeometryRef(0).GetPoint(2)[1]
 
         tileName = os.path.join(self.tileDir, 'tile' + str(tileNum) + '.tif')
 

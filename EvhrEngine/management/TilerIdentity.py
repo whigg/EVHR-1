@@ -11,5 +11,5 @@ class TilerIdentity(Tiler):
     #---------------------------------------------------------------------------
     def defineGrid(self):
         
-        return [self.ulx, self.uly, self.lrx, self.lry]
+        return [(self.ulx, self.uly, self.lrx, self.lry)]
     
