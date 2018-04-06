@@ -37,25 +37,20 @@ class TilerHalfDegree(Tiler):
     #---------------------------------------------------------------------------
     def defineGrid(self):
 
-        #---
-        # Start at the upper-left corner of the AoI, and create 1/2-degree
-        # square tiles.  Adjust initial lon and lat by 0.5, so the loop's test
-        # lets the tiles encompass the far edges of the AoI.
-        #---
-        lons   = []
-        curLon = float(self.gridUpperLeft()[0]) - 0.5
-        maxLon = float(self.lrx)
+        curLon  = float(self.gridUpperLeft()[0])
+        maxLon  = float(self.lrx)
+        lons    = [curLon]
 
-        while curLon <= maxLon:
+        while curLon <= maxLon or len(lons) < 2:
 
             curLon += 0.5
             lons.append(curLon)
 
-        lats   = []
-        curLat = float(self.gridUpperLeft()[1]) + 0.5
-        minLat = float(self.lry)
+        curLat  = float(self.gridUpperLeft()[1])
+        minLat  = float(self.lry)
+        lats    = [curLat]
 
-        while curLat >= minLat:
+        while curLat >= minLat or len(lats) < 2:
 
             curLat -= 0.5
             lats.append(curLat)

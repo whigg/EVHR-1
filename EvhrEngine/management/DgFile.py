@@ -26,11 +26,13 @@ class DgFile(GdalFile):
             raise RuntimeError('{} is not a NITF or TIFF file'.format(fileName))
 
         # Ensure the XML file exists.
-        self.xmlFileName = self.fileName.replace(extension, '.xml')
+        xmlFileName = fileName.replace(extension, '.xml')
 
-        if not os.path.isfile(self.xmlFileName):
-            raise RuntimeError('{} does not exist'.format(self.xmlFileName))
+        if not os.path.isfile(xmlFileName):
+            raise RuntimeError('{} does not exist'.format(xmlFileName))
 
+        self.xmlFileName = xmlFileName
+        
         # Initialize the base class.
         super(DgFile, self).__init__(fileName)
 

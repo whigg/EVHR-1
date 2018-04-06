@@ -1,10 +1,10 @@
 
-from EvhrEngine.management import Tiler
+from EvhrEngine.management.Tiler import Tiler
 
 #-------------------------------------------------------------------------------
 # class TilerIdentity
 #-------------------------------------------------------------------------------
-def TilerIdentity(Tiler):
+class TilerIdentity(Tiler):
     
     #---------------------------------------------------------------------------
     # defineGrid
