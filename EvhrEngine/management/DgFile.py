@@ -55,7 +55,7 @@ class DgFile(GdalFile):
 
         # meanSunElevation
         self.meanSunElevation = \
-            float(dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION'))
+            float(self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION'))
 
         # specType
         self.specTypeCode = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
