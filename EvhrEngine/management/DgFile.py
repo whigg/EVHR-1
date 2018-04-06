@@ -50,7 +50,7 @@ class DgFile(GdalFile):
             [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
 
         # firstLineTime
-        t = dataset.GetMetadataItem('NITF_CSDIDA_TIME')
+        t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
         self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
 
         # meanSunElevation
@@ -58,16 +58,16 @@ class DgFile(GdalFile):
             float(dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION'))
 
         # specType
-        self.specTypeCode = dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
+        self.specTypeCode = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
 
         # sensor
-        self.sensor = dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
+        self.sensor = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
 
         # year
-        self.year = dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
+        self.year = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
 
         # numBands
-        self.numBands = dataset.RasterCount
+        self.numBands = self.dataset.RasterCount
 
     #---------------------------------------------------------------------------
     # isMultispectral()
