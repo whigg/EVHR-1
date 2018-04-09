@@ -331,7 +331,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         else:
 
             # AoI + FOOTPRINTS = scenes
-            MAX_FEATS = 10
+            MAX_FEATS = 100
 
             scenes = self.queryFootprints(self.retrievalUlx,
                                           self.retrievalUly,
