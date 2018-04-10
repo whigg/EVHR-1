@@ -339,10 +339,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                                           MAX_FEATS)
                       
             # Save the scenes because the query takes a long time to process.
-            jsonConstituents = json.dumps(scenes)
+            jsonSceness = json.dumps(scenes)
 
-            with open(constituentFile, 'w+') as f:
-                f.write(jsonConstituents)
+            with open(sceneFile, 'w+') as f:
+                f.write(jsonScenes)
 
         sceneGeoms = {}
         
