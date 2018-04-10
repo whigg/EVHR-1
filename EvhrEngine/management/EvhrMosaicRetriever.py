@@ -318,9 +318,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         if os.path.exists(sceneFile):
 
-            with open(sceneFile) as f:
-                sceneString = f.read()
-
+            with open(sceneFile) as f: sceneString = f.read()
             scenes = json.loads(sceneString)
 
             if self.logger:
@@ -339,10 +337,8 @@ class EvhrMosaicRetriever(GeoRetriever):
                                           MAX_FEATS)
                       
             # Save the scenes because the query takes a long time to process.
-            jsonSceness = json.dumps(scenes)
-
-            with open(sceneFile, 'w+') as f:
-                f.write(jsonScenes)
+            jsonScenes = json.dumps(scenes)
+            with open(sceneFile, 'w+') as f: f.write(jsonScenes)
 
         sceneGeoms = {}
         
