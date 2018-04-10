@@ -124,6 +124,18 @@ class Command(BaseCommand):
             outFeature.SetGeometry(polygon)
             outLayer.CreateFeature(outFeature)
 
+        # Create features for each scene.
+        sceneFile = os.path.join(self.request.destination.name, 'scenes.txt')
+        with open(sceneFile) as f: sceneString = f.read()
+        scenes = json.loads(sceneString)
+        
+        for scene in scenes:
+            
+            polygon = Command.tifToPolygon(tile)
+            outFeature = ogr.Feature(layerDefn)
+            outFeature.SetGeometry(polygon)
+            outLayer.CreateFeature(outFeature)
+        
         # Create features for each band file.
         bands = []
         
