@@ -25,9 +25,9 @@ class Command(BaseCommand):
 
         parser.add_argument('--id', help = 'Request ID')
         
-        group.add_argument('--noTiles', 
-                           help = 'Do not include tiles', 
-                           action = 'store_true')
+        parser.add_argument('--noTiles', 
+                            help = 'Do not include tiles', 
+                            action = 'store_true')
                             
         group = parser.add_mutually_exclusive_group()
         group.add_argument('-b', help = 'Full path to band file')
