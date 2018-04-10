@@ -312,21 +312,19 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        # If a saved constituent list exists. use it.
-        constituents = None
+        # If a saved scene list exists. use it.
+        scenes = None
+        sceneFile = os.path.join(self.request.destination.name, 'scenes.txt')
 
-        constituentFile = os.path.join(self.request.destination.name,
-                                       'constituents.txt')
+        if os.path.exists(sceneFile):
 
-        if os.path.exists(constituentFile):
+            with open(sceneFile) as f:
+                sceneString = f.read()
 
-            with open(constituentFile) as f:
-                constituentsString = f.read()
-
-            constituents = json.loads(constituentsString)
+            scenes = json.loads(sceneString)
 
             if self.logger:
-                self.logger.info('Using saved constituent list.')
+                self.logger.info('Using saved scene list.')
 
         else:
 
@@ -339,120 +337,55 @@ class EvhrMosaicRetriever(GeoRetriever):
                                           self.retrievalLry,
                                           self.retrievalSRS,
                                           MAX_FEATS)
-                                          
-            sceneGeoms = {}
-            
-            for scene in scenes:
-                
-                dg = DgFile(scene)
-                geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
-                sceneGeoms[scene] = geom
-                                          
-            # Define the tiles.
-            tiler = TilerHalfDegree(self.retrievalUlx,
-                                    self.retrievalUly,
-                                    self.retrievalLrx,
-                                    self.retrievalLry,
-                                    self.retrievalSRS, 
-                                    self.logger)
-
-            grid  = tiler.defineGrid()
-            tiles = tiler.gridToPolygons(grid)
-            
-            # Tiles + scenes = constituents.
-            constituents = {}
-            tileNum = 0
-            
-            for tile in tiles:
-                
-                tileNum += 1
-                tileFile = self.createEmptyTile(tile, self.retrievalSRS, tileNum)
-
-                constituents[tileFile] = []
-                
-                for scene in scenes:
-                    
-                    if not tile.GetSpatialReference(). \
-                           IsSame(sceneGeoms[scene].GetSpatialReference()):
-                           
-                        raise RuntimeError('Tile and scene must be in the '
-                                           'same SRS.')
-                                           
-                    if tile.Intersects(sceneGeoms[scene]):
-                        constituents[tileFile].append(scene)
-                        
-            # The FOOTPRINTS query is lengthy, so save the results.
-            jsonConstituents = json.dumps(constituents)
+                      
+            # Save the scenes because the query takes a long time to process.
+            jsonConstituents = json.dumps(scenes)
 
             with open(constituentFile, 'w+') as f:
                 f.write(jsonConstituents)
+
+        sceneGeoms = {}
+        
+        for scene in scenes:
+            
+            dg = DgFile(scene)
+            geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
+            sceneGeoms[scene] = geom
+                                      
+        # Define the tiles.
+        tiler = TilerHalfDegree(self.retrievalUlx,
+                                self.retrievalUly,
+                                self.retrievalLrx,
+                                self.retrievalLry,
+                                self.retrievalSRS, 
+                                self.logger)
+
+        grid  = tiler.defineGrid()
+        tiles = tiler.gridToPolygons(grid)
+        
+        # Tiles + scenes = constituents.
+        constituents = {}
+        tileNum = 0
+        
+        for tile in tiles:
+            
+            tileNum += 1
+            tileFile = self.createEmptyTile(tile, self.retrievalSRS, tileNum)
+            constituents[tileFile] = []
+            
+            for scene in scenes:
                 
+                if not tile.GetSpatialReference(). \
+                       IsSame(sceneGeoms[scene].GetSpatialReference()):
+                       
+                    raise RuntimeError('Tile and scene must be in the '
+                                       'same SRS.')
+                                       
+                if tile.Intersects(sceneGeoms[scene]):
+                    constituents[tileFile].append(scene)
+                    
         return constituents
         
-    #---------------------------------------------------------------------------
-    # listConstituents
-    #---------------------------------------------------------------------------
-    # def listConstituents(self):
-    #
-    #     #---
-    #     # Impose 1/2 degree by 1/2 degree tiling on AoI.  Create an empty output
-    #     # file for each tile.  These empty files will have the extent of their
-    #     # 1/2 degree tiles.  RetrieveOne() will clip the files in its fileList
-    #     # to this.
-    #     #
-    #     # constituents = {'/path/to/outputTile1.tif' : [],
-    #     #                 '/path/to/outputTile2.tif' : [], ...}
-    #     #
-    #     # The list of constituents associated with each tile contains the full
-    #     # path to each NITF scene overlapping the tile.  The NITF could cover a
-    #     # much larger area than the tile.  Clipping happens later.
-    #     #
-    #     # If a saved constituent list exists. use it.
-    #     #---
-    #     constituentFile = os.path.join(self.request.destination.name,
-    #                                   'constituents.txt')
-    #
-    #     if os.path.exists(constituentFile):
-    #
-    #         with open(constituentFile) as f:
-    #             constituentsString = f.read()
-    #
-    #         constituents = json.loads(constituentsString)
-    #
-    #         if self.logger:
-    #             self.logger.info('Using saved constituent list.')
-    #
-    #     else:
-    #
-    #         #---
-    #         # Create a list of empty tile files which define the overall tiling
-    #         # scheme.
-    #         #---
-    #         tiles = self.createEmptyTiles()
-    #
-    #         #---
-    #         # Make a dictionary where the key is a tile file and the values
-    #         # are blank.  The values will become a list of scenes from
-    #         # FOOTPRINTS.
-    #         #---
-    #         constituents = {key : [] for key in tiles}
-    #
-    #         # Query FOOTPRINTS for each tile.
-    #         MAX_FEATS = 10
-    #
-    #         for key in constituents.iterkeys():
-    #
-    #             outFile = key
-    #             constituents[outFile] = self.queryFootprintsFromFile(outFile, MAX_FEATS)
-    #
-    #         # The FOOTPRINTS query is lengthy, so save the results.
-    #         jsonConstituents = json.dumps(constituents)
-    #
-    #         with open(constituentFile, 'w+') as f:
-    #             f.write(jsonConstituents)
-    #
-    #     return constituents
-
     #---------------------------------------------------------------------------
     # mergeBands
     #---------------------------------------------------------------------------
