@@ -123,13 +123,13 @@ class Command(BaseCommand):
         sceneFile = os.path.join(request.destination.name, 'scenes.txt')
         with open(sceneFile) as f: sceneString = f.read()
         scenes = json.loads(sceneString)
-        Command.tifsToFeature(scenes, outLayer, layerDefn, masterSRS)
+        Command.tifsToFeature(scenes, outLayer, layerDefn, srs)
         
         # Create features for each tile.
         if not options['noTiles']:
         
             tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
-            Command.tifsToFeature(scenes, outLayer, layerDefn)
+            Command.tifsToFeature(scenes, outLayer, layerDefn, srs)
 
         # Create features for each band file.
         bands = []
@@ -143,7 +143,7 @@ class Command(BaseCommand):
             bandDir = os.path.join(str(request.destination.name), '2-bands')
             bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
-        Command.tifsToFeature(scenes, outLayer, layerDefn)
+        Command.tifsToFeature(scenes, outLayer, layerDefn, srs)
         
         # Add the UTM zones.
         
