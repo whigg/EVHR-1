@@ -25,6 +25,10 @@ class Command(BaseCommand):
 
         parser.add_argument('--id', help = 'Request ID')
         
+        group.add_argument('--noTiles', 
+                           help = 'Do not include tiles', 
+                           action = 'store_true')
+                            
         group = parser.add_mutually_exclusive_group()
         group.add_argument('-b', help = 'Full path to band file')
 
@@ -115,28 +119,18 @@ class Command(BaseCommand):
         outFeature.SetGeometry(polygon)
         outLayer.CreateFeature(outFeature)
         
-        # Create features for each tile.
-        tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
-        
-        for tile in tiles:
-    
-            polygon = Command.tifToPolygon(tile)
-            outFeature = ogr.Feature(layerDefn)
-            outFeature.SetGeometry(polygon)
-            outLayer.CreateFeature(outFeature)
-
         # Create features for each scene.
         sceneFile = os.path.join(request.destination.name, 'scenes.txt')
         with open(sceneFile) as f: sceneString = f.read()
         scenes = json.loads(sceneString)
+        self.tifsToFeature(scenes, outFeature)
         
-        for scene in scenes:
-            
-            polygon = Command.tifToPolygon(tile)
-            outFeature = ogr.Feature(layerDefn)
-            outFeature.SetGeometry(polygon)
-            outLayer.CreateFeature(outFeature)
+        # Create features for each tile.
+        if options['t']:
         
+            tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
+            self.tifsToFeature(tiles, outFeature)
+
         # Create features for each band file.
         bands = []
         
@@ -149,21 +143,26 @@ class Command(BaseCommand):
             bandDir = os.path.join(str(request.destination.name), '2-bands')
             bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
-        for band in bands:
-    
-            polygon = Command.tifToPolygon(band)
-            outFeature = ogr.Feature(layerDefn)
-            outFeature.SetGeometry(polygon)
-            outLayer.CreateFeature(outFeature)
+        self.tifsToFeature(bands, outFeature)
         
         # Add the UTM zones.
         
     #---------------------------------------------------------------------------
-    # tifToPolygon
+    # tifsToFeature
     #---------------------------------------------------------------------------
-    @staticmethod
-    def tifToPolygon(tif):
+    def tifsToFeature(tifs, outLayer):
         
-        gf = GdalFile(tif)
-        return Command.cornersToPolygon(gf.ulx, gf.uly, gf.lrx, gf.lry, gf.srs)
+        for tif in tifs:
+            
+            gf = GdalFile(tif)
+            
+            polygon = Command.cornersToPolygon(gf.ulx, 
+                                               gf.uly, 
+                                               gf.lrx, 
+                                               gf.lry, 
+                                               gf.srs)
+            
+            outFeature = ogr.Feature(layerDefn)
+            outFeature.SetGeometry(polygon)
+            outLayer.CreateFeature(outFeature)
         
