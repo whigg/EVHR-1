@@ -126,7 +126,7 @@ class Command(BaseCommand):
         Command.tifsToFeature(scenes, outLayer, layerDefn)
         
         # Create features for each tile.
-        if options['t']:
+        if not options['noTiles']:
         
             tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
             Command.tifsToFeature(scenes, outLayer, layerDefn)
