@@ -125,7 +125,7 @@ class Command(BaseCommand):
             outLayer.CreateFeature(outFeature)
 
         # Create features for each scene.
-        sceneFile = os.path.join(self.request.destination.name, 'scenes.txt')
+        sceneFile = os.path.join(request.destination.name, 'scenes.txt')
         with open(sceneFile) as f: sceneString = f.read()
         scenes = json.loads(sceneString)
         
