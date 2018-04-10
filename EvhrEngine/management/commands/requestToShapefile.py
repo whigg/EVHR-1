@@ -123,7 +123,7 @@ class Command(BaseCommand):
         sceneFile = os.path.join(request.destination.name, 'scenes.txt')
         with open(sceneFile) as f: sceneString = f.read()
         scenes = json.loads(sceneString)
-        Command.tifsToFeature(scenes, outLayer, layerDefn)
+        Command.tifsToFeature(scenes, outLayer, layerDefn, masterSRS)
         
         # Create features for each tile.
         if not options['noTiles']:
@@ -151,11 +151,14 @@ class Command(BaseCommand):
     # tifsToFeature
     #---------------------------------------------------------------------------
     @staticmethod
-    def tifsToFeature(tifs, outLayer, layerDefn):
+    def tifsToFeature(tifs, outLayer, layerDefn, masterSRS):
         
         for tif in tifs:
             
             gf = GdalFile(tif)
+            
+            if not gf.srs.IsSame(masterSRS):
+                raise RuntimeError('SRS is different from the master SRS.')
             
             polygon = Command.cornersToPolygon(gf.ulx, 
                                                gf.uly, 
