@@ -89,18 +89,22 @@ class Command(BaseCommand):
                                            srs)
 
         aoiLayer = dataSource.CreateLayer('AoI', srs, geom_type =ogr.wkbPolygon)
-
-        fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
-        fieldDef.SetWidth(32)
-
-        if aoiLayer.CreateField (fieldDef) != 0:
-            raise RuntimeError('Unable to create field.')
-
-        layerDefn = aoiLayer.GetLayerDefn()  
-        outFeature = ogr.Feature(layerDefn)
-        outFeature.SetField('Name', 'AoI')      
-        outFeature.SetGeometry(polygon)
-        aoiLayer.CreateFeature(outFeature)
+        # layerDefn = aoiLayer.GetLayerDefn()
+        # outFeature = ogr.Feature(layerDefn)
+        # fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
+        # fieldDef.SetWidth(32)
+        # aoiLayer.CreateField(fieldDef)
+        # outFeature.SetField('Name', 'AoI')
+        # outFeature.SetGeometry(polygon)
+        # aoiLayer.CreateFeature(outFeature)
+        
+        Command.createFeature(request.ulx,
+                              request.uly,
+                              request.lrx,
+                              request.lry,
+                              request.srs,
+                              'AoI',
+                              aoiLayer)
         
         #---
         # Create features for each scene.
@@ -139,6 +143,21 @@ class Command(BaseCommand):
         #---
         
     #---------------------------------------------------------------------------
+    # createFeature
+    #---------------------------------------------------------------------------
+    @staticmethod
+    def createFeature(ulx, uly, lrx, lry, srs, name, layer):
+        
+        polygon = Command.cornersToPolygon(ulx, uly, lrx, lry, srs)
+        feature = ogr.Feature(layer.GetLayerDefn())
+        fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
+        fieldDef.SetWidth(160)
+        layer.CreateField(fieldDef)
+        feature.SetField('Name', gf.fileName)      
+        feature.SetGeometry(polygon)
+        layer.CreateFeature(feature)
+
+    #---------------------------------------------------------------------------
     # tifsToFeature
     #---------------------------------------------------------------------------
     @staticmethod
@@ -148,7 +167,7 @@ class Command(BaseCommand):
             return
             
         layer = dataSource.CreateLayer(name, masterSRS,geom_type=ogr.wkbPolygon)
-        layerDefn = layer.GetLayerDefn()        
+        # layerDefn = layer.GetLayerDefn()    
 
         for tif in tifs:
             
@@ -157,13 +176,24 @@ class Command(BaseCommand):
             if not gf.srs.IsSame(masterSRS):
                 raise RuntimeError('SRS is different from the master SRS.')
             
-            polygon = Command.cornersToPolygon(gf.ulx, 
-                                               gf.uly, 
-                                               gf.lrx, 
-                                               gf.lry, 
-                                               gf.srs)
-            
-            feature = ogr.Feature(layerDefn)
-            feature.SetGeometry(polygon)
-            layer.CreateFeature(feature)
-        
+            # polygon = Command.cornersToPolygon(gf.ulx,
+            #                                    gf.uly,
+            #                                    gf.lrx,
+            #                                    gf.lry,
+            #                                    gf.srs)
+            #
+            # feature = ogr.Feature(layerDef)
+            # fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
+            # fieldDef.SetWidth(160)
+            # aoiLayer.CreateField(fieldDef)
+            # feature.SetField('Name', gf.fileName)
+            # feature.SetGeometry(polygon)
+            # layer.CreateFeature(feature)
+
+            Command.createFeature(gf.ulx,
+                                  gf.uly,
+                                  gf.lrx,
+                                  gf.lry,
+                                  gf.srs,
+                                  gf.fileName,
+                                  layer)
