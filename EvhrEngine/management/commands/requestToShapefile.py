@@ -64,6 +64,19 @@ class Command(BaseCommand):
         return poly
         
     #---------------------------------------------------------------------------
+    # createFeature
+    #---------------------------------------------------------------------------
+    @staticmethod
+    def createFeature(ulx, uly, lrx, lry, srs, name, layer):
+        
+        polygon = Command.cornersToPolygon(ulx, uly, lrx, lry, srs)
+        feature = ogr.Feature(layer.GetLayerDefn())
+        # layer.CreateField(Command.fieldDef)
+        feature.SetField('Name', name)      
+        feature.SetGeometry(polygon)
+        layer.CreateFeature(feature)
+
+    #---------------------------------------------------------------------------
     # handle
     #---------------------------------------------------------------------------
     def handle(*args, **options):
@@ -146,19 +159,6 @@ class Command(BaseCommand):
         #---
         
     #---------------------------------------------------------------------------
-    # createFeature
-    #---------------------------------------------------------------------------
-    @staticmethod
-    def createFeature(ulx, uly, lrx, lry, srs, name, layer):
-        
-        polygon = Command.cornersToPolygon(ulx, uly, lrx, lry, srs)
-        feature = ogr.Feature(layer.GetLayerDefn())
-        layer.CreateField(Command.fieldDef)
-        feature.SetField('Name', name)      
-        feature.SetGeometry(polygon)
-        layer.CreateFeature(feature)
-
-    #---------------------------------------------------------------------------
     # tifsToFeature
     #---------------------------------------------------------------------------
     @staticmethod
@@ -169,6 +169,7 @@ class Command(BaseCommand):
             
         layer = dataSource.CreateLayer(name, masterSRS,geom_type=ogr.wkbPolygon)
         # layerDefn = layer.GetLayerDefn()    
+        layer.CreateField(Command.fieldDef)
 
         for tif in tifs:
             
