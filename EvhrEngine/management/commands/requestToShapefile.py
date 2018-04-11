@@ -153,7 +153,7 @@ class Command(BaseCommand):
         fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
         fieldDef.SetWidth(160)
         layer.CreateField(fieldDef)
-        feature.SetField('Name', gf.fileName)      
+        feature.SetField('Name', name)      
         feature.SetGeometry(polygon)
         layer.CreateFeature(feature)
 
