@@ -37,31 +37,6 @@ class Command(BaseCommand):
                            action = 'store_true')
                             
     #---------------------------------------------------------------------------
-    # constructSrs
-    #---------------------------------------------------------------------------
-    @staticmethod
-    def constructSrs(srsString):
-        
-        srs = SpatialReference(str(srsString))  # str() in case it's unicode
-        
-        #---
-        # The SRS can exist, but be invalid such that any method called on it
-        # will raise an exception.  Use Fixup because it will either reveal
-        # this error or potentially improve the object.
-        #---
-        try:
-            srs.Fixup()
-        
-        except TypeError, e:
-            
-            raise RuntimeError('Invalid SRS object created for ' + srsString)
-
-        if srs.Validate() != ogr.OGRERR_NONE:
-            raise RuntimeError('Unable to construct valid SRS for ' + srsString)
-
-        return srs
-        
-    #---------------------------------------------------------------------------
     # cornersToPolygon
     #---------------------------------------------------------------------------
     @staticmethod
@@ -90,48 +65,54 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
 
+        #---
         # Get the request.
+        #---
         request = GeoRequest.objects.get(id = options['id'])
         
+        #---
         # Create the output Shapefile.
-        outDriver = ogr.GetDriverByName('ESRI Shapefile')
-        
+        #---
         tileDir = os.path.join(str(request.destination.name), '1-tiles')
         gridFile = os.path.join(tileDir, 'grids.shp')
-        
-        outDataSource = outDriver.CreateDataSource(gridFile)
-        srs = Command.constructSrs(request.srs)
+        outDriver = ogr.GetDriverByName('ESRI Shapefile')
+        dataSource = outDriver.CreateDataSource(gridFile)
+        srs = SpatialReference(str(request.srs))  # str() in case it's unicode
 
-        outLayer = outDataSource.CreateLayer(gridFile, 
-                                             srs, 
-                                             geom_type = ogr.wkbPolygon)
-
-        layerDefn = outLayer.GetLayerDefn()
-        
-        # Add the request's corners as a polygon feature. 
+        #---
+        # Add the request's corners as a layer with a polygon feature. 
+        #---
         polygon = Command.cornersToPolygon(request.ulx, 
                                            request.uly, 
                                            request.lrx,
                                            request.lry,
                                            srs)
 
+        aoiLayer = dataSource.CreateLayer('AoI', srs, geom_type =ogr.wkbPolygon)
+        layerDefn = aoiLayer.GetLayerDefn()        
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
         outLayer.CreateFeature(outFeature)
         
+        #---
         # Create features for each scene.
+        #---
         sceneFile = os.path.join(request.destination.name, 'scenes.txt')
         with open(sceneFile) as f: sceneString = f.read()
         scenes = json.loads(sceneString)
-        Command.tifsToFeature(scenes, outLayer, layerDefn, srs)
+        Command.tifsToFeature(scenes, srs, dataSource)
         
+        #---
         # Create features for each tile.
+        #---
         if not options['noTiles']:
         
             tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
-            Command.tifsToFeature(scenes, outLayer, layerDefn, srs)
+            Command.tifsToFeature(scenes, srs, dataSource)
 
+        #---
         # Create features for each band file.
+        #---
         bands = []
         
         if options['b']:
@@ -143,16 +124,21 @@ class Command(BaseCommand):
             bandDir = os.path.join(str(request.destination.name), '2-bands')
             bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
-        Command.tifsToFeature(scenes, outLayer, layerDefn, srs)
+        Command.tifsToFeature(scenes, srs, dataSource)
         
+        #---
         # Add the UTM zones.
+        #---
         
     #---------------------------------------------------------------------------
     # tifsToFeature
     #---------------------------------------------------------------------------
     @staticmethod
-    def tifsToFeature(tifs, outLayer, layerDefn, masterSRS):
+    def tifsToFeature(name, tifs, masterSRS, dataSource):
         
+        layer = dataSource.CreateLayer(name, masterSRS,geom_type=ogr.wkbPolygon)
+        layerDefn = layer.GetLayerDefn()        
+
         for tif in tifs:
             
             gf = GdalFile(tif)
