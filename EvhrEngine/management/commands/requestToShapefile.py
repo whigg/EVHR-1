@@ -102,7 +102,7 @@ class Command(BaseCommand):
                               request.uly,
                               request.lrx,
                               request.lry,
-                              request.srs,
+                              srs,
                               'AoI',
                               aoiLayer)
         
