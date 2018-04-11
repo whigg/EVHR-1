@@ -88,10 +88,14 @@ class Command(BaseCommand):
                                            request.lry,
                                            srs)
 
+        aoiLayer = dataSource.CreateLayer('AoI', srs, geom_type =ogr.wkbPolygon)
+
         fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
         fieldDef.SetWidth(32)
 
-        aoiLayer = dataSource.CreateLayer('AoI', srs, geom_type =ogr.wkbPolygon)
+        if aoiLayer.CreateField (fieldDef) != 0:
+            raise RuntimeError('Unable to create field.')
+
         layerDefn = aoiLayer.GetLayerDefn()  
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetField('Name', 'AoI')      
