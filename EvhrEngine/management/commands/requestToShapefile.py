@@ -152,7 +152,7 @@ class Command(BaseCommand):
                                                gf.lry, 
                                                gf.srs)
             
-            outFeature = ogr.Feature(layerDefn)
-            outFeature.SetGeometry(polygon)
-            outLayer.CreateFeature(outFeature)
+            feature = ogr.Feature(layerDefn)
+            feature.SetGeometry(polygon)
+            layer.CreateFeature(feature)
         
