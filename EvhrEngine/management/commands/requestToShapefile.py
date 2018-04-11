@@ -74,7 +74,7 @@ class Command(BaseCommand):
         # Create the output Shapefile.
         #---
         tileDir = os.path.join(str(request.destination.name), '1-tiles')
-        gridFile = os.path.join(tileDir, 'grids.shp')
+        gridFile = os.path.join(tileDir, 'AoI.shp')
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(gridFile)
         srs = SpatialReference(str(request.srs))  # str() in case it's unicode
@@ -88,9 +88,13 @@ class Command(BaseCommand):
                                            request.lry,
                                            srs)
 
+        fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
+        fieldDef.SetWidth(32)
+
         aoiLayer = dataSource.CreateLayer('AoI', srs, geom_type =ogr.wkbPolygon)
-        layerDefn = aoiLayer.GetLayerDefn()        
+        layerDefn = aoiLayer.GetLayerDefn()  
         outFeature = ogr.Feature(layerDefn)
+        outFeature.SetField('Name', 'AoI')      
         outFeature.SetGeometry(polygon)
         aoiLayer.CreateFeature(outFeature)
         
@@ -136,6 +140,9 @@ class Command(BaseCommand):
     @staticmethod
     def tifsToFeature(name, tifs, masterSRS, dataSource):
         
+        if not len(tifs):
+            return
+            
         layer = dataSource.CreateLayer(name, masterSRS,geom_type=ogr.wkbPolygon)
         layerDefn = layer.GetLayerDefn()        
 
