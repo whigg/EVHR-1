@@ -18,6 +18,9 @@ from GeoProcessingEngine.models import GeoRequest
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
+    fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
+    fieldDef.SetWidth(160)
+
     #---------------------------------------------------------------------------
     # add_arguments
     #---------------------------------------------------------------------------
@@ -150,9 +153,7 @@ class Command(BaseCommand):
         
         polygon = Command.cornersToPolygon(ulx, uly, lrx, lry, srs)
         feature = ogr.Feature(layer.GetLayerDefn())
-        fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
-        fieldDef.SetWidth(160)
-        layer.CreateField(fieldDef)
+        layer.CreateField(Command.fieldDef)
         feature.SetField('Name', name)      
         feature.SetGeometry(polygon)
         layer.CreateFeature(feature)
