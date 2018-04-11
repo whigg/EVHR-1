@@ -92,7 +92,7 @@ class Command(BaseCommand):
         layerDefn = aoiLayer.GetLayerDefn()        
         outFeature = ogr.Feature(layerDefn)
         outFeature.SetGeometry(polygon)
-        outLayer.CreateFeature(outFeature)
+        aoiLayer.CreateFeature(outFeature)
         
         #---
         # Create features for each scene.
