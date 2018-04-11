@@ -74,7 +74,7 @@ class Command(BaseCommand):
         # Create the output Shapefile.
         #---
         tileDir = os.path.join(str(request.destination.name), '1-tiles')
-        gridFile = os.path.join(tileDir, 'AoI.shp')
+        gridFile = os.path.join(tileDir, 'aoi.shp')
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(gridFile)
         srs = SpatialReference(str(request.srs))  # str() in case it's unicode
@@ -132,7 +132,7 @@ class Command(BaseCommand):
             bandDir = os.path.join(str(request.destination.name), '2-bands')
             bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
-        Command.tifsToFeature('bands', scenes, srs, dataSource)
+        Command.tifsToFeature('bands', bands, srs, dataSource)
         
         #---
         # Add the UTM zones.
