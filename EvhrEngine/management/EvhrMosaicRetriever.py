@@ -347,18 +347,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         for scene in scenes:
         
-            try:
-                
-                dg = DgFile(scene)
-                geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
-                sceneGeoms[scene] = geom
-
-            except Exception, e:
-                
-                if self.logger:
-                    self.logger.info(' Scene: ' + str(scene))
-                    
-                raise e
+            dg = DgFile(scene)
+            geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
+            sceneGeoms[scene] = geom
                 
         # Define the tiles.
         tiler = TilerHalfDegree(self.retrievalUlx,
