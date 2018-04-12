@@ -385,6 +385,10 @@ class EvhrMosaicRetriever(GeoRetriever):
             
             for scene in scenes:
                 
+                # Scenes could be rejected due to missing information.
+                if not scene in sceneGeoms:
+                    continue
+                    
                 if not tile.GetSpatialReference(). \
                        IsSame(sceneGeoms[scene].GetSpatialReference()):
                        
