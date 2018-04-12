@@ -576,27 +576,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         return nitfs
 
     #---------------------------------------------------------------------------
-    # queryFootprintsFromFile
-    #---------------------------------------------------------------------------
-    # def queryFootprintsFromFile(self, clipFile, maxFeatures = None):
-    #
-    #     # Get the extent of the clip file.
-    #     dataset = gdal.Open(clipFile, gdal.GA_ReadOnly)
-    #
-    #     if not dataset:
-    #         raise RuntimeError('Unable to open ' + str(clipFile))
-    #
-    #     geoTransform = dataset.GetGeoTransform()
-    #     ulx          = geoTransform[0]
-    #     uly          = geoTransform[3]
-    #     lrx          = ulx + geoTransform[1] * dataset.RasterXSize
-    #     lry          = uly + geoTransform[5] * dataset.RasterYSize
-    #     srs          = SpatialReference(dataset.GetProjection())
-    #     dataset      = None
-    #
-    #     return self.queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures)
-
-    #---------------------------------------------------------------------------
     # retrieveOne
     #
     # This receives a 1/2 degree tile file and the list of NITF files that
