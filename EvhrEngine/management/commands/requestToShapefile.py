@@ -71,7 +71,6 @@ class Command(BaseCommand):
         
         polygon = Command.cornersToPolygon(ulx, uly, lrx, lry, srs)
         feature = ogr.Feature(layer.GetLayerDefn())
-        # layer.CreateField(Command.fieldDef)
         feature.SetField('Name', name)      
         feature.SetGeometry(polygon)
         layer.CreateFeature(feature)
@@ -104,15 +103,8 @@ class Command(BaseCommand):
                                            request.lry,
                                            srs)
 
-        aoiLayer = dataSource.CreateLayer('AoI', srs, geom_type =ogr.wkbPolygon)
-        # layerDefn = aoiLayer.GetLayerDefn()
-        # outFeature = ogr.Feature(layerDefn)
-        # fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
-        # fieldDef.SetWidth(32)
-        # aoiLayer.CreateField(fieldDef)
-        # outFeature.SetField('Name', 'AoI')
-        # outFeature.SetGeometry(polygon)
-        # aoiLayer.CreateFeature(outFeature)
+        layer = dataSource.CreateLayer('AoI', srs, geom_type = ogr.wkbPolygon)
+        layer.CreateField(Command.fieldDef)
         
         Command.createFeature(request.ulx,
                               request.uly,
@@ -120,7 +112,7 @@ class Command(BaseCommand):
                               request.lry,
                               srs,
                               'AoI',
-                              aoiLayer)
+                              layer)
         
         #---
         # Create features for each scene.
@@ -128,7 +120,7 @@ class Command(BaseCommand):
         sceneFile = os.path.join(request.destination.name, 'scenes.txt')
         with open(sceneFile) as f: sceneString = f.read()
         scenes = json.loads(sceneString)
-        Command.tifsToFeature('scenes', scenes, srs, dataSource)
+        Command.filesToFeatures('scenes', scenes, srs, dataSource)
         
         #---
         # Create features for each tile.
@@ -136,7 +128,7 @@ class Command(BaseCommand):
         if not options['noTiles']:
         
             tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
-            Command.tifsToFeature('tiles', scenes, srs, dataSource)
+            Command.filesToFeatures('tiles', scenes, srs, dataSource)
 
         #---
         # Create features for each band file.
@@ -152,23 +144,22 @@ class Command(BaseCommand):
             bandDir = os.path.join(str(request.destination.name), '2-bands')
             bands = glob.glob(os.path.join(bandDir, '*.tif'))
         
-        Command.tifsToFeature('bands', bands, srs, dataSource)
+        Command.filesToFeatures('bands', bands, srs, dataSource)
         
         #---
         # Add the UTM zones.
         #---
         
     #---------------------------------------------------------------------------
-    # tifsToFeature
+    # filesToFeatures
     #---------------------------------------------------------------------------
     @staticmethod
-    def tifsToFeature(name, tifs, masterSRS, dataSource):
+    def filesToFeatures(name, tifs, masterSRS, dataSource):
         
         if not len(tifs):
             return
             
         layer = dataSource.CreateLayer(name, masterSRS,geom_type=ogr.wkbPolygon)
-        # layerDefn = layer.GetLayerDefn()    
         layer.CreateField(Command.fieldDef)
 
         for tif in tifs:
@@ -178,20 +169,6 @@ class Command(BaseCommand):
             if not gf.srs.IsSame(masterSRS):
                 raise RuntimeError('SRS is different from the master SRS.')
             
-            # polygon = Command.cornersToPolygon(gf.ulx,
-            #                                    gf.uly,
-            #                                    gf.lrx,
-            #                                    gf.lry,
-            #                                    gf.srs)
-            #
-            # feature = ogr.Feature(layerDef)
-            # fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
-            # fieldDef.SetWidth(160)
-            # aoiLayer.CreateField(fieldDef)
-            # feature.SetField('Name', gf.fileName)
-            # feature.SetGeometry(polygon)
-            # layer.CreateFeature(feature)
-
             Command.createFeature(gf.ulx,
                                   gf.uly,
                                   gf.lrx,
