@@ -355,7 +355,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             except Exception, e:
                 
-                msg = e.msg + ' Scene: ' + str(scene)
+                msg = str(e) + ' Scene: ' + str(scene)
                 raise RuntimeError(msg)
                 
         # Define the tiles.
