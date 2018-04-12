@@ -355,8 +355,10 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             except Exception, e:
                 
-                msg = str(e) + ' Scene: ' + str(scene)
-                raise RuntimeError(msg)
+                if self.logger:
+                    self.logger.info(' Scene: ' + str(scene))
+                    
+                raise e
                 
         # Define the tiles.
         tiler = TilerHalfDegree(self.retrievalUlx,
