@@ -347,7 +347,18 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         for scene in scenes:
         
-            dg = DgFile(scene)
+            try:
+                dg = DgFile(scene)
+                
+            except:
+                
+                if self.logger:
+                    
+                    self.logger.info('Unable to construct DgFile for ' + \
+                                     str(scene))
+                
+                continue
+                
             geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
             sceneGeoms[scene] = geom
                 
