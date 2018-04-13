@@ -125,7 +125,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         # To filter scenes that only overlap the AoI slightly, decrease both
         # corners of the query AoI.
         #---
-        MIN_OVERLAP_IN_DEGREES = 0.1
+        MIN_OVERLAP_IN_DEGREES = 0.2
         ulx = float(ulx) + MIN_OVERLAP_IN_DEGREES
         uly = float(uly) - MIN_OVERLAP_IN_DEGREES
         lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
