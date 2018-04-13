@@ -41,7 +41,7 @@ class TilerHalfDegree(Tiler):
         maxLon  = float(self.lrx)
         lons    = [curLon]
 
-        while curLon <= maxLon or len(lons) < 2:
+        while curLon < maxLon or len(lons) < 2:
 
             curLon += 0.5
             lons.append(curLon)
@@ -50,7 +50,7 @@ class TilerHalfDegree(Tiler):
         minLat  = float(self.lry)
         lats    = [curLat]
 
-        while curLat >= minLat or len(lats) < 2:
+        while curLat > minLat or len(lats) < 2:
 
             curLat -= 0.5
             lats.append(curLat)
