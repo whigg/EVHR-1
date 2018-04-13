@@ -126,10 +126,10 @@ class EvhrMosaicRetriever(GeoRetriever):
         # corners of the query AoI.
         #---
         MIN_OVERLAP_IN_DEGREES = 0.1
-        ulx = ulx + MIN_OVERLAP_IN_DEGREES
-        uly = uly - MIN_OVERLAP_IN_DEGREES
-        lrx = lrx - MIN_OVERLAP_IN_DEGREES
-        lry = lry + MIN_OVERLAP_IN_DEGREES
+        ulx = float(ulx) + MIN_OVERLAP_IN_DEGREES
+        uly = float(uly) - MIN_OVERLAP_IN_DEGREES
+        lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
+        lry = float(lry) + MIN_OVERLAP_IN_DEGREES
 
         # Clip.  The debug option somehow prevents an occasional seg. fault!
         cmd = 'ogr2ogr'                        + \
