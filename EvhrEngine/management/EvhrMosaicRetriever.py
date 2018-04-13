@@ -120,6 +120,16 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Create a temporary file for the clip output.
         tempClipFile = tempfile.mkstemp()[1]
+        
+        #---
+        # To filter scenes that only overlap the AoI slightly, decrease both
+        # corners of the query AoI.
+        #---
+        MIN_OVERLAP_IN_DEGREES = 0.1
+        ulx = ulx + MIN_OVERLAP_IN_DEGREES
+        uly = uly - MIN_OVERLAP_IN_DEGREES
+        lrx = lrx - MIN_OVERLAP_IN_DEGREES
+        lry = lry + MIN_OVERLAP_IN_DEGREES
 
         # Clip.  The debug option somehow prevents an occasional seg. fault!
         cmd = 'ogr2ogr'                        + \
@@ -395,11 +405,11 @@ class EvhrMosaicRetriever(GeoRetriever):
                     raise RuntimeError('Tile and scene must be in the '
                                        'same SRS.')
                                        
-                # if tile.Intersects(sceneGeoms[scene]):
-                #     constituents[tileFile].append(scene)
-                    
-                if sceneGeoms[scene].Intersection(tile).Area() > 0.1:
+                if tile.Intersects(sceneGeoms[scene]):
                     constituents[tileFile].append(scene)
+                    
+                # if sceneGeoms[scene].Intersection(tile).Area() > 0.1:
+                #     constituents[tileFile].append(scene)
                     
         return constituents
         
