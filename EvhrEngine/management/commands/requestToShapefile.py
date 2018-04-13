@@ -128,7 +128,7 @@ class Command(BaseCommand):
         if not options['noTiles']:
         
             tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
-            Command.filesToFeatures('tiles', scenes, srs, dataSource)
+            Command.filesToFeatures('tiles', tiles, srs, dataSource)
 
         #---
         # Create features for each band file.
