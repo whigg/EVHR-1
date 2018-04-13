@@ -43,7 +43,7 @@ class TilerHalfDegree(Tiler):
         # the tile is clipped to the AoI.  The overlap threshold defines how
         # much overlap is required to add a tile.
         #---
-        OVERLAP_THRESHOLD_IN_DEGREES = 0.1
+        OVERLAP_THRESHOLD_IN_DEGREES = 0.0
         
         curLon = float(self.gridUpperLeft()[0])
         maxLon = float(self.lrx) - OVERLAP_THRESHOLD_IN_DEGREES
