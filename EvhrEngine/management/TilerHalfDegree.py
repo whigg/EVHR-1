@@ -37,18 +37,26 @@ class TilerHalfDegree(Tiler):
     #---------------------------------------------------------------------------
     def defineGrid(self):
 
-        curLon  = float(self.gridUpperLeft()[0])
-        maxLon  = float(self.lrx)
-        lons    = [curLon]
+        #---
+        # Define an overlap threshold.  There is a case where a tile slightly
+        # overlaps the AoI.  Adding a tile will cause slivers of imagery when
+        # the tile is clipped to the AoI.  The overlap threshold defines how
+        # much overlap is required to add a tile.
+        #---
+        OVERLAP_THRESHOLD_IN_DEGREES = 0.1
+        
+        curLon = float(self.gridUpperLeft()[0])
+        maxLon = float(self.lrx) - OVERLAP_THRESHOLD_IN_DEGREES
+        lons   = [curLon]
 
         while curLon < maxLon or len(lons) < 2:
 
             curLon += 0.5
             lons.append(curLon)
 
-        curLat  = float(self.gridUpperLeft()[1])
-        minLat  = float(self.lry)
-        lats    = [curLat]
+        curLat = float(self.gridUpperLeft()[1])
+        minLat = float(self.lry) + OVERLAP_THRESHOLD_IN_DEGREES
+        lats   = [curLat]
 
         while curLat > minLat or len(lats) < 2:
 
