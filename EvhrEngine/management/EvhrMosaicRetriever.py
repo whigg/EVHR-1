@@ -395,7 +395,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                     raise RuntimeError('Tile and scene must be in the '
                                        'same SRS.')
                                        
-                if tile.Intersects(sceneGeoms[scene]):
+                # if tile.Intersects(sceneGeoms[scene]):
+                #     constituents[tileFile].append(scene)
+                    
+                if sceneGeoms[scene].Intersection(tile).Area() > 0.1:
                     constituents[tileFile].append(scene)
                     
         return constituents
