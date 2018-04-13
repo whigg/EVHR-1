@@ -88,12 +88,12 @@ class Command(BaseCommand):
         #---
         # Create the output Shapefile.
         #---
-        tileDir = os.path.join(str(request.destination.name), 'grids')
+        gridDir = os.path.join(str(request.destination.name), 'grids')
         
-        if not os.path.isdir(tileDir):
-            os.mkdir(tileDir)
+        if not os.path.isdir(gridDir):
+            os.mkdir(gridDir)
             
-        gridFile = os.path.join(tileDir, 'aoi.shp')
+        gridFile = os.path.join(gridDir, 'aoi.shp')
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(gridFile)
         srs = SpatialReference(str(request.srs))  # str() in case it's unicode
@@ -131,6 +131,7 @@ class Command(BaseCommand):
         #---
         if not options['noTiles']:
         
+            tileDir = os.path.join(str(request.destination.name), '1-tiles')
             tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
             Command.filesToFeatures('tiles', tiles, srs, dataSource)
 
