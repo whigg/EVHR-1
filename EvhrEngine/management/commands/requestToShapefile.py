@@ -88,7 +88,11 @@ class Command(BaseCommand):
         #---
         # Create the output Shapefile.
         #---
-        tileDir = os.path.join(str(request.destination.name), '1-tiles')
+        tileDir = os.path.join(str(request.destination.name), 'grids')
+        
+        if not os.path.isdir(tileDir):
+            os.mkdir(tileDir)
+            
         gridFile = os.path.join(tileDir, 'aoi.shp')
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(gridFile)
