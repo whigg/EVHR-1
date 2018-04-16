@@ -507,7 +507,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             except RuntimeError, e:
 
                 msg = str(e) + ' Band file: ' + str(bandFile) + \
-                      ' DgFile: ' + str(DgFile.fileName)
+                      ' DgFile: ' + str(origDgFile.fileName)
                       
                 raise RuntimeError(msg)
 
