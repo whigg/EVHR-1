@@ -449,6 +449,14 @@ class EvhrMosaicRetriever(GeoRetriever):
                                  'SRTM/srtm.shp')
 
         features = self.clipShp(SHP_INDEX, ulx, uly, lrx, lry, srs)
+        
+        if not features or len(features) == 0:
+            
+            msg = 'Clipping rectangle to SRTM did not return any features. ' + \
+                  'Corners: (' + str(ulx) + ', ' + str(uly) + '), ('         + \
+                  str(lrx) + ', ' + str(lry) + ')'
+                  
+            raise RuntimeError(msg)
 
         # Get the list of tiles.
         tiles = []
@@ -489,11 +497,20 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         if not os.path.exists(orthoFile):
 
-            clippedDEM = self.createDemForOrthos(origDgFile.ulx,
-                                                 origDgFile.uly,
-                                                 origDgFile.lrx,
-                                                 origDgFile.lry,
-                                                 origDgFile.srs)
+            try:
+                clippedDEM = self.createDemForOrthos(origDgFile.ulx,
+                                                     origDgFile.uly,
+                                                     origDgFile.lrx,
+                                                     origDgFile.lry,
+                                                     origDgFile.srs)
+
+            except RuntimeError, e:
+
+                msg = str(e) + ' Band file: ' + str(bandFile) + \
+                      ' DgFile: ' + str(DgFile.fileName)
+                      
+                raise RuntimeError(msg)
+
             # Orthorectify.
             orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
 
