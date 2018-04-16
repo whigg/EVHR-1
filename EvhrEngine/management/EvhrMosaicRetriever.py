@@ -146,6 +146,9 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' "' + tempClipFile + '"'        + \
               ' "' + shpFile + '"'
 
+        if self.logger:
+            self.logger.info('Command: ' + cmd)
+            
         self.runSystemCmd(cmd)
 
         xml      = minidom.parse(tempClipFile)
