@@ -41,6 +41,9 @@ from django.conf import settings
 # To build the SRTM index file:
 # gdaltindex -t_srs "EPSG:4326" -src_srs_name SRS srtm.shp /att/pubrepo/DEM/SRTM/1-ArcSec/*.hgt
 #
+# To build the ASTERDEM index file:
+# gdaltindex -t_srs "EPSG:4326" -src_srs_name SRS astergdem.shp /att/pubrepo/DEM/ASTERGDEM/v2/*dem.tif
+#
 # https://github.com/NeoGeographyToolkit/StereoPipeline
 #
 # --- Crystal Fire ---
@@ -51,10 +54,8 @@ from django.conf import settings
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
-    DEM_FILE        = '/att/pubrepo/DEM/SRTM/1-ArcSec'
     FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/10_05_2017/geodatabase/nga_inventory_10_05_2017.gdb'
     # FOOTPRINTS_FILE = '/att/nobackup/dslaybac/PublicMD/DG_28Nov2017.gdb'
-    QUERY_LAYER     = 'nga_inventory_10_05_2017'
 
     #---------------------------------------------------------------------------
     # __init__
@@ -121,6 +122,16 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Create a temporary file for the clip output.
         tempClipFile = tempfile.mkstemp()[1]
         
+        #---
+        # To filter scenes that only overlap the AoI slightly, decrease both
+        # corners of the query AoI.
+        #---
+        MIN_OVERLAP_IN_DEGREES = 0.2
+        ulx = float(ulx) + MIN_OVERLAP_IN_DEGREES
+        uly = float(uly) - MIN_OVERLAP_IN_DEGREES
+        lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
+        lry = float(lry) + MIN_OVERLAP_IN_DEGREES
+
         # Clip.  The debug option somehow prevents an occasional seg. fault!
         cmd = 'ogr2ogr'                        + \
               ' -f "GML"'                      + \
@@ -428,16 +439,34 @@ class EvhrMosaicRetriever(GeoRetriever):
     #
     # To build the SRTM index file:
     # gdaltindex -t_srs "EPSG:4326" -src_srs_name SRS srtm.shp /att/pubrepo/DEM/SRTM/1-ArcSec/*.hgt
+    #
+    # To build the ASTERGDEM index file:
+    # gdaltindex -t_srs "EPSG:4326" -src_srs_name SRS astergdem.shp /att/pubrepo/DEM/ASTERGDEM/v2/*dem.tif
     #---------------------------------------------------------------------------
     def mosaicAndClipDemTiles(self, outDemName, ulx, uly, lrx, lry, srs):
 
         if self.logger:
             self.logger.info('Creating DEM ' + str(outDemName))
 
-        # Get the SRTM tile Shapefile and intersect it with the AoI.
-        SHP_INDEX = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                 'SRTM/srtm.shp')
+        #---
+        # SRTM was collected between -54 and 60 degrees of latitude.  Use
+        # ASTERGDEM where SRTM is unavailable.
+        #---
+        SHP_INDEX = None
+        
+        if ulx >= -54.0 and ulx <= 60.0 and lrx >= -54.0 and lrx <= 60.0:
 
+            SHP_INDEX = \
+                os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             'SRTM/srtm.shp')
+                             
+        else:
+
+            SHP_INDEX = \
+                os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             'ASTERGDEM/astergdem.shp')
+                             
+        # Get the SRTM tile Shapefile and intersect it with the AoI.
         features = self.clipShp(SHP_INDEX, ulx, uly, lrx, lry, srs)
         
         if not features or len(features) == 0:
