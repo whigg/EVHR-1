@@ -121,16 +121,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Create a temporary file for the clip output.
         tempClipFile = tempfile.mkstemp()[1]
         
-        #---
-        # To filter scenes that only overlap the AoI slightly, decrease both
-        # corners of the query AoI.
-        #---
-        MIN_OVERLAP_IN_DEGREES = 0.2
-        ulx = float(ulx) + MIN_OVERLAP_IN_DEGREES
-        uly = float(uly) - MIN_OVERLAP_IN_DEGREES
-        lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
-        lry = float(lry) + MIN_OVERLAP_IN_DEGREES
-
         # Clip.  The debug option somehow prevents an occasional seg. fault!
         cmd = 'ogr2ogr'                        + \
               ' -f "GML"'                      + \
@@ -146,9 +136,6 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' "' + tempClipFile + '"'        + \
               ' "' + shpFile + '"'
 
-        if self.logger:
-            self.logger.info('Command: ' + cmd)
-            
         self.runSystemCmd(cmd)
 
         xml      = minidom.parse(tempClipFile)
@@ -458,7 +445,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             msg = 'Clipping rectangle to SRTM did not return any features. ' + \
                   'Corners: (' + str(ulx) + ', ' + str(uly) + '), ('         + \
                   str(lrx) + ', ' + str(lry) + ')'
-                  
+                
             raise RuntimeError(msg)
 
         # Get the list of tiles.
