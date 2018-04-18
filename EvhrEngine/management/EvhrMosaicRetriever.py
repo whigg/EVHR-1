@@ -271,8 +271,18 @@ class EvhrMosaicRetriever(GeoRetriever):
         for band in bands:
 
             bandFileName = nitfFile.getBand(self.bandDir, band)
-            bandFiles.append(bandFileName)
+            
+            if bandFileName:
+                
+                bandFiles.append(bandFileName)
 
+            else:
+                
+                self.logger.error('Unable to extract band '  + \
+                                  str(band)                  + \
+                                  ' from '                   + \
+                                  nitfFile.fileName)
+                
         return bandFiles
 
     #---------------------------------------------------------------------------
@@ -656,12 +666,12 @@ class EvhrMosaicRetriever(GeoRetriever):
         #---
         completedScenes = [self.processScene(nitf) for nitf in fileList]
 
-        # self.deleteFiles(self.bandDir)
-        self.deleteFiles(self.orthoDir)
+        self.deleteFiles(self.bandDir)
+        self.deleteFiles(self.demDir)
         self.deleteFiles(self.orthoDir)
 
         # Mosaic the scenes into a single file.
-        return None   # This is temporary, so retrieveOne returns something.
+        return None
 
     #---------------------------------------------------------------------------
     # runSystemCmd

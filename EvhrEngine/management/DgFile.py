@@ -106,8 +106,11 @@ class DgFile(GdalFile):
                   ' ' + self.fileName                   + \
                   ' ' + tempBandFile
 
-            os.system(cmd)
+            status = os.system(cmd)
 
+            if status != 0:
+                tempBandFile = None
+                
         return tempBandFile
 
     #---------------------------------------------------------------------------
