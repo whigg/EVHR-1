@@ -70,50 +70,6 @@ class DgFile(GdalFile):
         self.numBands = self.dataset.RasterCount
 
     #---------------------------------------------------------------------------
-    # isMultispectral()
-    #---------------------------------------------------------------------------
-    def isMultispectral(self):
-
-        return self.specTypeCode == 'MS'
-
-    #---------------------------------------------------------------------------
-    # isPanchromatic()
-    #---------------------------------------------------------------------------
-    def isPanchromatic(self):
-
-        return self.specTypeCode == 'PAN'
-
-    #---------------------------------------------------------------------------
-    # getBand()
-    #---------------------------------------------------------------------------
-    def getBand(self, outputDir, bandName):
-
-        gdalBandIndex = int(self.bandNameList.index(bandName)) + 1
-
-        extension = os.path.splitext(self.fileName)[1]
-        
-        baseName = os.path.basename(self.fileName.replace(extension, \
-                                            '_b{}.tif'.format(gdalBandIndex)))
-
-        tempBandFile = os.path.join(outputDir, baseName)
-
-        if not os.path.exists(tempBandFile):
-
-            cmd = 'gdal_translate'                      + \
-                  ' -b {}'.format(gdalBandIndex)        + \
-                  ' -a_nodata 0'                        + \
-                  ' -mo "bandName={}"'.format(bandName) + \
-                  ' ' + self.fileName                   + \
-                  ' ' + tempBandFile
-
-            status = os.system(cmd)
-
-            if status != 0:
-                tempBandFile = None
-                
-        return tempBandFile
-
-    #---------------------------------------------------------------------------
     # abscalFactor()
     #---------------------------------------------------------------------------
     def abscalFactor(self, bandName):
@@ -138,3 +94,50 @@ class DgFile(GdalFile):
 
         else:
             raise RuntimeError('Could not retrieve effective bandwidth.')
+            
+    #---------------------------------------------------------------------------
+    # getBand()
+    #---------------------------------------------------------------------------
+    def getBand(self, outputDir, bandName):
+
+        gdalBandIndex = int(self.bandNameList.index(bandName)) + 1
+
+        extension = os.path.splitext(self.fileName)[1]
+        
+        baseName = os.path.basename(self.fileName.replace(extension, \
+                                            '_b{}.tif'.format(gdalBandIndex)))
+
+        tempBandFile = os.path.join(outputDir, baseName)
+
+        if not os.path.exists(tempBandFile):
+
+            cmd = 'gdal_translate'                      + \
+                  ' -b {}'.format(gdalBandIndex)        + \
+                  ' -a_nodata 0'                        + \
+                  ' -strict'                            + \
+                  ' -mo "bandName={}"'.format(bandName) + \
+                  ' ' + self.fileName                   + \
+                  ' ' + tempBandFile
+
+            status = os.system(cmd)
+
+            if status != 0:
+                tempBandFile = None
+                
+        return tempBandFile
+
+    #---------------------------------------------------------------------------
+    # isMultispectral()
+    #---------------------------------------------------------------------------
+    def isMultispectral(self):
+
+        return self.specTypeCode == 'MS'
+
+    #---------------------------------------------------------------------------
+    # isPanchromatic()
+    #---------------------------------------------------------------------------
+    def isPanchromatic(self):
+
+        return self.specTypeCode == 'PAN'
+
+        
