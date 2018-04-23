@@ -5,6 +5,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 from EvhrEngine.management.GdalFile import GdalFile
+from EvhrEngine.management.SystemCommand import SystemCommand
 
 #-------------------------------------------------------------------------------
 # class DgFile
