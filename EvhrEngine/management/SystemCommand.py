@@ -11,7 +11,7 @@ class SystemCommand(object):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, cmd, constituent, inFile, logger):
+    def __init__(self, cmd, inFile, logger, constituent = None):
 
         self.cmd        = cmd
         self.logger     = logger
