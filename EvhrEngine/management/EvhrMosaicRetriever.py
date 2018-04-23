@@ -369,7 +369,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         for scene in scenes:
         
             try:
-                dg = DgFile(scene)
+                dg = DgFile(scene, self.logger)
                 
             except:
                 
@@ -592,7 +592,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
 
-            dgFile    = DgFile(inputNitf)
+            dgFile    = DgFile(inputNitf, self.logger)
             bandFiles = self.extractBands(dgFile)
             toaBands  = []
 
