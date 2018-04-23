@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from ProcessingEngine.models import Constituent
 from ProcessingEngine.models import EndPoint
 from ProcessingEngine.models import Protocol
 
