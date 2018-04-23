@@ -120,25 +120,25 @@ class DgFile(GdalFile):
                   ' ' + self.fileName                   + \
                   ' ' + tempBandFile
 
-            # status = os.system(cmd)
+            status = os.system(cmd)
 
-            # if status != 0:
-            #     tempBandFile = None
-
-            process = subprocess.Popen(cmd, 
-                                       shell = True,
-                                       stderr = subprocess.PIPE,
-                                       stdout = subprocess.PIPE,
-                                       close_fds = True)
-
-            outdata = process.communicate()
-            
-            if outdata[1]:
-                
+            if status != 0:
                 tempBandFile = None
-                
-                if self.logger:
-                    self.logger.info(outdata[1])
+
+            # process = subprocess.Popen(cmd,
+            #                            shell = True,
+            #                            stderr = subprocess.PIPE,
+            #                            stdout = subprocess.PIPE,
+            #                            close_fds = True)
+            #
+            # outdata = process.communicate()
+            #
+            # if outdata[1]:
+            #
+            #     tempBandFile = None
+            #
+            #     if self.logger:
+            #         self.logger.info(outdata[1])
                 
         return tempBandFile
 
