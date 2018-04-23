@@ -15,10 +15,12 @@ class GdalFile(object):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, fileName):
+    def __init__(self, fileName, logger = None):
 
         if not os.path.isfile(fileName):
             raise RuntimeError('{} does not exist'.format(fileName))
+
+        self.logger = logger
 
         self.fileName = fileName
         self.dataset  = gdal.Open(self.fileName, gdal.GA_ReadOnly)
