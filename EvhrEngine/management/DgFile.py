@@ -138,7 +138,7 @@ class DgFile(GdalFile):
                 tempBandFile = None
                 
                 if self.logger:
-                    self.logger.error(outdata[1])
+                    self.logger.info(outdata[1])
                 
         return tempBandFile
 
