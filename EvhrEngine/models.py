@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from ProcessingEngine.models import Constituent
 from ProcessingEngine.models import EndPoint
 from ProcessingEngine.models import Protocol
 
@@ -24,7 +23,9 @@ class EvhrEndPoint(EndPoint):
 #-------------------------------------------------------------------------------
 class EvhrError(models.Model):
     
-    constituent = models.ForeignKey('Constituent')
+    constituent = models.ForeignKey('ProcessingEngine.Constituent', 
+                                    on_delete = models.CASCADE)
+
     inputFile   = models.FileField()
     command     = models.TextField()
     errorOutput = models.TextField()
