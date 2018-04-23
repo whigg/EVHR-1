@@ -17,7 +17,7 @@ class DgFile(GdalFile):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, fileName):
+    def __init__(self, fileName, logger = None):
 
         # Check that the file is NITF or TIFF
         extension = os.path.splitext(fileName)[1]
@@ -34,7 +34,7 @@ class DgFile(GdalFile):
         self.xmlFileName = xmlFileName
         
         # Initialize the base class.
-        super(DgFile, self).__init__(fileName)
+        super(DgFile, self).__init__(fileName, logger)
 
         # These data member require the XML file counterpart to the TIF.
         tree = ET.parse(self.xmlFileName)
@@ -119,10 +119,25 @@ class DgFile(GdalFile):
                   ' ' + self.fileName                   + \
                   ' ' + tempBandFile
 
-            status = os.system(cmd)
+            # status = os.system(cmd)
 
-            if status != 0:
+            # if status != 0:
+            #     tempBandFile = None
+
+            process = subprocess.Popen(cmd, 
+                                       shell = True,
+                                       stderr = subprocess.PIPE,
+                                       stdout = subprocess.PIPE,
+                                       close_fds = True)
+
+            outdata = process.communicate()
+            
+            if outdata[1]:
+                
                 tempBandFile = None
+                
+                if self.logger:
+                    self.logger.error(outdata[1])
                 
         return tempBandFile
 
