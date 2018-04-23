@@ -19,6 +19,23 @@ class EvhrEndPoint(EndPoint):
         verbose_name_plural = 'EVHR End Points'
 
 #-------------------------------------------------------------------------------
+# EvhrError
+#-------------------------------------------------------------------------------
+class EvhrError(models.Model):
+    
+    constituent = models.ForeignKey('Constituent')
+    inputFile   = models.FileField()
+    command     = models.TextField()
+    errorOutput = models.TextField()
+    
+    #---------------------------------------------------------------------------
+    # Meta
+    #---------------------------------------------------------------------------
+    class Meta:
+        verbose_name        = 'EVHR Error'
+        verbose_name_plural = 'EVHR Errors'
+    
+#-------------------------------------------------------------------------------
 # EvhrProtocol
 #-------------------------------------------------------------------------------
 class EvhrProtocol(Protocol):

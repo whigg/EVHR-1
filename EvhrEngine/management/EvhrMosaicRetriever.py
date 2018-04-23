@@ -592,9 +592,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
 
-            dgFile    = DgFile(inputNitf, self.logger)
+            dgFile = DgFile(inputNitf, self.logger)
             bandFiles = self.extractBands(dgFile)
-            toaBands  = []
+            toaBands = []
 
             for bandFile in bandFiles:
             

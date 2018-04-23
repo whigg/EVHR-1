@@ -121,27 +121,14 @@ class DgFile(GdalFile):
                   ' ' + tempBandFile
 
             # status = os.system(cmd)
-
+            #
             # if status != 0:
             #     tempBandFile = None
 
-            process = subprocess.Popen(cmd, 
-                                       shell = True,
-                                       stderr = subprocess.PIPE,
-                                       stdout = subprocess.PIPE,
-                                       close_fds = True)
+            sCmd = SystemCommand(cmd)
 
-            outdata = process.communicate()
-
-            import pdb
-            pdb.set_trace()
-            
-            if outdata[1]:
-                
+            if sCmd.returnCode():
                 tempBandFile = None
-                
-                if self.logger:
-                    self.logger.info(outdata[1])
                 
         return tempBandFile
 
