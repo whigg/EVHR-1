@@ -128,7 +128,7 @@ class DgFile(GdalFile):
 
             sCmd = SystemCommand(cmd, self.fileName, self.logger)
 
-            if sCmd.returnCode():
+            if sCmd.returnCode:
                 tempBandFile = None
                 
         return tempBandFile
