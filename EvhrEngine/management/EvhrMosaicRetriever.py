@@ -15,6 +15,7 @@ from osgeo.osr import SpatialReference
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.DgFile import DgFile
+from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
 from EvhrEngine.management.commands.TOA import TOA
 from django.conf import settings
