@@ -121,11 +121,6 @@ class DgFile(GdalFile):
                   ' ' + self.fileName                   + \
                   ' ' + tempBandFile
 
-            # status = os.system(cmd)
-            #
-            # if status != 0:
-            #     tempBandFile = None
-
             sCmd = SystemCommand(cmd, self.fileName, self.logger)
 
             if sCmd.returnCode:

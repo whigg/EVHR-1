@@ -23,7 +23,7 @@ class EvhrEndPoint(EndPoint):
 #-------------------------------------------------------------------------------
 class EvhrError(models.Model):
     
-    constituent = models.ForeignKey('ProcessingEngine.Constituent', 
+    request     = models.ForeignKey('ProcessingEngine.Request', 
                                     on_delete = models.CASCADE)
 
     inputFile   = models.FileField()

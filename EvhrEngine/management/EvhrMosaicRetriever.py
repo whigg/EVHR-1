@@ -147,7 +147,7 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' "' + tempClipFile + '"'        + \
               ' "' + shpFile + '"'
 
-        self.runSystemCmd(cmd)
+        sCmd = SystemCommand(cmd, shpFile, self.logger, self.request, True)
 
         xml      = minidom.parse(tempClipFile)
         features = xml.getElementsByTagName('gml:featureMember')
@@ -173,7 +173,7 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' ' + tempBandFile                             + \
               ' ' + orthoBand
 
-        self.runSystemCmd(cmd)
+        sCmd = SystemCommand(cmd, orthoBand, self.logger, self.request, True)
 
     #---------------------------------------------------------------------------
     # createDemForOrthos
@@ -419,9 +419,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                 if tile.Intersects(sceneGeoms[scene]):
                     constituents[tileFile].append(scene)
                     
-                # if sceneGeoms[scene].Intersection(tile).Area() > 0.1:
-                #     constituents[tileFile].append(scene)
-                    
         return constituents
         
     #---------------------------------------------------------------------------
@@ -439,7 +436,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                        outFileName, \
                        ' '.join(bandFiles))
 
-        self.runSystemCmd(cmd)
+        sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, True)
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -509,7 +506,7 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' ' + str(lry)      + \
               ' ' + ' '.join(tiles)
 
-        self.runSystemCmd(cmd)
+        sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
 
     #---------------------------------------------------------------------------
     # orthoOne
@@ -555,14 +552,18 @@ class EvhrMosaicRetriever(GeoRetriever):
                   ' ' + origDgFile.xmlFileName                          + \
                   ' ' + orthoFileTemp
 
-            self.runSystemCmd(cmd)
+                  sCmd = SystemCommand(cmd, 
+                                       orthoFileTemp, 
+                                       self.logger, 
+                                       self.request, 
+                                       True)
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
                         --output-nodata-value {} -o {}'.format(orthoFileTemp,  \
                                             settings.NO_DATA_VALUE, orthoFile)
 
-            self.runSystemCmd(cmd)
+            sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,True)
 
             os.remove(orthoFileTemp)
 
@@ -676,16 +677,16 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # runSystemCmd
     #---------------------------------------------------------------------------
-    def runSystemCmd(self, cmd):
-
-        if not cmd:
-            return
-
-        if self.logger:
-            self.logger.info('Command: ' + cmd)
-
-        status = os.system(cmd)
-
-        if status != 0:
-            raise RuntimeError('System command failed.')
+    # def runSystemCmd(self, cmd):
+    #
+    #     if not cmd:
+    #         return
+    #
+    #     if self.logger:
+    #         self.logger.info('Command: ' + cmd)
+    #
+    #     status = os.system(cmd)
+    #
+    #     if status != 0:
+    #         raise RuntimeError('System command failed.')
 

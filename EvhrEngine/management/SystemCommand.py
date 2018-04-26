@@ -11,11 +11,11 @@ class SystemCommand(object):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, cmd, inFile, logger, constituent = None):
+    def __init__(self, cmd, inFile, logger, request = None, 
+                 raiseException = False):
 
-        self.cmd        = cmd
-        self.logger     = logger
-        self.returnCode = None
+        self.cmd    = cmd
+        self.logger = logger
         
         process = subprocess.Popen(self.cmd, 
                                    shell = True,
@@ -24,8 +24,14 @@ class SystemCommand(object):
                                    close_fds = True)
 
         self.returnCode = process.returncode
+        self.msg = process.communicate()[1]
         
         if self.returnCode:
             
-            err = EvhrError(constituent, inFile, cmd, process.communicate()[1])
+            err = EvhrError(request, inFile, cmd, self.msg)
             err.save()
+            
+            if raiseException:
+                
+                msg = 'A system command error occurred.  ' + str(self.msg)
+                raise RuntimeError(msg)
