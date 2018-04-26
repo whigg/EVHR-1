@@ -552,11 +552,11 @@ class EvhrMosaicRetriever(GeoRetriever):
                   ' ' + origDgFile.xmlFileName                          + \
                   ' ' + orthoFileTemp
 
-                  sCmd = SystemCommand(cmd, 
-                                       orthoFileTemp, 
-                                       self.logger, 
-                                       self.request, 
-                                       True)
+              sCmd = SystemCommand(cmd, 
+                                   orthoFileTemp, 
+                                   self.logger, 
+                                   self.request, 
+                                   True)
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
