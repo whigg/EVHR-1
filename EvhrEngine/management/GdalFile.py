@@ -38,6 +38,16 @@ class GdalFile(object):
             self.lrx = self.dataset.GetGCPs()[2].GCPX
             self.lry = self.dataset.GetGCPs()[2].GCPY
             self.srs = SpatialReference(self.dataset.GetGCPProjection())
+            
+            #---
+            # Sometimes the input file will have ulx and lrx swapped.  Detect
+            # and fix this.
+            #---
+            if self.ulx > self.lrx:
+                
+                temp = self.ulx
+                self.ulx = self.uly
+                self.uly = temp
 
         else:
 
