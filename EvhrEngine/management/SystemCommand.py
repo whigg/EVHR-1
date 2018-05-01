@@ -14,10 +14,10 @@ class SystemCommand(object):
     def __init__(self, cmd, inFile, logger, request = None, 
                  raiseException = False):
 
-        self.cmd    = cmd
-        self.logger = logger
-        
-        process = subprocess.Popen(self.cmd, 
+        if logger:
+            logger.info(cmd)
+            
+        process = subprocess.Popen(cmd, 
                                    shell = True,
                                    stderr = subprocess.PIPE,
                                    stdout = subprocess.PIPE,
@@ -26,6 +26,11 @@ class SystemCommand(object):
         self.returnCode = process.returncode
         self.msg = process.communicate()[1]
         
+        if logger:
+
+            logger.info('Return code: ' + str(self.returnCode))
+            logger.info('Message: ' + str(self.message))
+            
         if self.returnCode:
             
             err = EvhrError(request, inFile, cmd, self.msg)

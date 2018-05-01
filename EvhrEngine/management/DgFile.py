@@ -42,7 +42,7 @@ class DgFile(GdalFile):
         tree = ET.parse(self.xmlFileName)
         self.imdTag = tree.getroot().find('IMD')
         
-        if not self.imdTag:
+        if self.imdTag is None:
             
             raise RuntimeError('Unable to locate the "IMD" tag in ' + \
                                self.xmlFileName)
