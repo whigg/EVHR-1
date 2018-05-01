@@ -29,7 +29,7 @@ class SystemCommand(object):
         if logger:
 
             logger.info('Return code: ' + str(self.returnCode))
-            logger.info('Message: ' + str(self.message))
+            logger.info('Message: ' + str(self.msg))
             
         if self.returnCode:
             
