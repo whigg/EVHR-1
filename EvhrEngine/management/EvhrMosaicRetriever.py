@@ -377,12 +377,14 @@ class EvhrMosaicRetriever(GeoRetriever):
             try:
                 dg = DgFile(scene, self.logger)
                 
-            except:
+            except Exception, e:
                 
                 if self.logger:
                     
-                    self.logger.info('Unable to construct DgFile for ' + \
+                    self.logger.error('Unable to construct DgFile for ' + \
                                      str(scene))
+
+                    self.logger.error(e)
                 
                 continue
                 
