@@ -46,8 +46,8 @@ class GdalFile(object):
             if self.ulx > self.lrx:
                 
                 temp = self.ulx
-                self.ulx = self.uly
-                self.uly = temp
+                self.ulx = self.lrx
+                self.lrx = temp
 
         else:
 

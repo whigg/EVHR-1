@@ -114,6 +114,11 @@ class EvhrMosaicRetriever(GeoRetriever):
 
     #---------------------------------------------------------------------------
     # clipShp
+    #
+    # listConstituents -> queryFootprints -> clipShp
+    #
+    # retrieveOne -> processScene -> orthoOne -> createDemForOrthos
+    # -> mosaicAndClipDemTiles -> clipShp
     #---------------------------------------------------------------------------
     def clipShp(self, shpFile, ulx, uly, lrx, lry, srs, extraQueryParams = ''):
 
@@ -613,6 +618,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
     #---------------------------------------------------------------------------
     # queryFootprints
+    #
+    # listConstituents -> queryFootprints
     #---------------------------------------------------------------------------
     def queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures = None):
 
