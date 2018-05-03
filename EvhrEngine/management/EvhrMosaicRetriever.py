@@ -388,11 +388,6 @@ class EvhrMosaicRetriever(GeoRetriever):
                 err.errorOutput = traceback.format_exc()
                 err.save()
                 
-                if self.logger:
-                    
-                    self.logger.error('Unable to construct DgFile for ' + \
-                                     str(scene))
-                
                 continue
                 
             geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)

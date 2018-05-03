@@ -33,7 +33,11 @@ class SystemCommand(object):
             
         if self.returnCode:
             
-            err = EvhrError(request, inFile, cmd, self.msg)
+            err             = EvhrError()
+            err.request     = request
+            err.inputFile   = inFile
+            err.errorOutput = self.msg
+            err.command     = cmd
             err.save()
             
             if raiseException:
