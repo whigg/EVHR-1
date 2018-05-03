@@ -5,6 +5,7 @@ import math
 import os
 import shutil
 import tempfile
+import traceback
 from xml.dom import minidom
 
 import numpy
@@ -379,12 +380,16 @@ class EvhrMosaicRetriever(GeoRetriever):
                 
             except Exception, e:
                 
+                err             = EvhrError()
+                err.request     = self.request
+                err.inputFile   = scene
+                err.errorOutput = traceback.format_exc()
+                err.save()
+                
                 if self.logger:
                     
                     self.logger.error('Unable to construct DgFile for ' + \
                                      str(scene))
-
-                    self.logger.error(e)
                 
                 continue
                 

@@ -27,7 +27,7 @@ class EvhrError(models.Model):
                                     on_delete = models.CASCADE)
 
     inputFile   = models.FileField()
-    command     = models.TextField()
+    command     = models.TextField(blank = True, null = True)
     errorOutput = models.TextField()
     
     #---------------------------------------------------------------------------
