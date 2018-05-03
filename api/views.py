@@ -144,5 +144,15 @@ def status(request):
 
     return JsonResponse({'success': success, 'msg': msg})
         
+#-------------------------------------------------------------------------------
+# test
+#
+# curl --url "http://localhost:8000/api/status"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def test():
+
+    return JsonResponse({'success': True, 'msg': 'EVHR API is ready.'})
+        
     
         
