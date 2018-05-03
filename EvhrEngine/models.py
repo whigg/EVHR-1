@@ -26,7 +26,7 @@ class EvhrError(models.Model):
     request     = models.ForeignKey('ProcessingEngine.Request', 
                                     on_delete = models.CASCADE)
 
-    inputFile   = models.FileField()
+    inputFile   = models.FileField(primary_key = True)
     command     = models.TextField(blank = True, null = True)
     errorOutput = models.TextField()
     
