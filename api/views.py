@@ -150,8 +150,7 @@ def status(request):
 # curl --url "http://evhr102/api/test"
 #-------------------------------------------------------------------------------
 @csrf_exempt
-def test(request):
-
+def test():
     return JsonResponse({'success': True, 'msg': 'EVHR API is ready.'})
         
     
