@@ -123,6 +123,18 @@ def percentageComplete(request):
     return JsonResponse({'success': success, 'msg': msg})
 
 #-------------------------------------------------------------------------------
+# ping
+#
+# curl --url "http://evhr102/api/ping"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def ping():
+
+    success = True
+    msg = 'EVHR is ready.'
+    return JsonResponse({'success': success, 'msg': msg})
+        
+#-------------------------------------------------------------------------------
 # status
 #
 # curl --url "http://evhr102/api/status/?request=36"
@@ -142,18 +154,6 @@ def status(request):
 
         msg = 'Request ' + str(requestId) + ' does not exist.'
 
-    return JsonResponse({'success': success, 'msg': msg})
-        
-#-------------------------------------------------------------------------------
-# apiReady
-#
-# curl --url "http://evhr102/api/apiReady"
-#-------------------------------------------------------------------------------
-@csrf_exempt
-def apiReady(request):
-
-    success = True
-    msg = 'EVHR is ready.'
     return JsonResponse({'success': success, 'msg': msg})
         
     
