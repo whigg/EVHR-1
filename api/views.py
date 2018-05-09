@@ -123,12 +123,12 @@ def percentageComplete(request):
     return JsonResponse({'success': success, 'msg': msg})
 
 #-------------------------------------------------------------------------------
-# ping
+# ready
 #
-# curl --url "http://evhr102/api/ping"
+# curl --url "http://evhr102/api/ready"
 #-------------------------------------------------------------------------------
 @csrf_exempt
-def ping():
+def ready():
 
     success = True
     msg = 'EVHR is ready.'
