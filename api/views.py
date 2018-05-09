@@ -125,7 +125,7 @@ def percentageComplete(request):
 #-------------------------------------------------------------------------------
 # status
 #
-# curl --url "http://localhost:8000/api/status/?request=36"
+# curl --url "http://evhr102/api/status/?request=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def status(request):
@@ -147,10 +147,10 @@ def status(request):
 #-------------------------------------------------------------------------------
 # test
 #
-# curl --url "http://localhost:8000/api/status"
+# curl --url "http://evhr102/api/test"
 #-------------------------------------------------------------------------------
 @csrf_exempt
-def test():
+def test(request):
 
     return JsonResponse({'success': True, 'msg': 'EVHR API is ready.'})
         
