@@ -151,7 +151,10 @@ def status(request):
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def test():
-    return JsonResponse({'success': True, 'msg': 'EVHR API is ready.'})
+
+    success = True
+    msg = 'EVHR is ready.'
+    return JsonResponse({'success': success, 'msg': msg})
         
     
         
