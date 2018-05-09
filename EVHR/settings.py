@@ -26,7 +26,7 @@ SECRET_KEY = '9t8##+l+s9f*@9*+xaak5wdjm0xtd^t797lapu0y3-3wo4!k^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['evhr102']
 
 
 # Application definition
@@ -127,7 +127,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # EVHR Settings
-BASE_DIRECTORY   = '/home/rlgill/testing'
+BASE_DIRECTORY   = '/att/nobackup/rlgill/evhrDevelopmentOutput'
 DOWNLOAD_DIR     = os.path.join(BASE_DIRECTORY, 'downloads')
 OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, 'requests')
 LOG_DIRECTORY    = os.path.join(BASE_DIRECTORY, 'logs')
