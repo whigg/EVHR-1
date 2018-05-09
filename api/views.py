@@ -145,12 +145,12 @@ def status(request):
     return JsonResponse({'success': success, 'msg': msg})
         
 #-------------------------------------------------------------------------------
-# test
+# apiReady
 #
-# curl --url "http://evhr102/api/test"
+# curl --url "http://evhr102/api/apiReady"
 #-------------------------------------------------------------------------------
 @csrf_exempt
-def test():
+def apiReady():
 
     success = True
     msg = 'EVHR is ready.'
