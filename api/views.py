@@ -128,7 +128,7 @@ def percentageComplete(request):
 # curl --url "http://evhr102/api/ready"
 #-------------------------------------------------------------------------------
 @csrf_exempt
-def ready():
+def ready(request):
 
     success = True
     msg = 'EVHR is ready.'
