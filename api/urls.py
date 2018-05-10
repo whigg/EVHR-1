@@ -5,7 +5,7 @@ import api.views
 
 urlpatterns = [
 
-    url(r'^getOutput/$',          api.views.download),
+    url(r'^download/$',           api.views.download),
     url(r'^orderMosaic/$',        api.views.orderMosaic),
     url(r'^percentageComplete/$', api.views.percentageComplete),
     url(r'^ready/$',              api.views.ready),

@@ -20,7 +20,7 @@ from api import utils
 #-------------------------------------------------------------------------------
 # download
 #
-# curl --url "http://localhost:8000/api/download/?id=36"
+# curl --url "http://evhr102/api/download/?id=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def download(request):
