@@ -20,12 +20,12 @@ from api import utils
 #-------------------------------------------------------------------------------
 # download
 #
-# curl --url "http://localhost:8000/api/download/?request=36"
+# curl --url "http://localhost:8000/api/download/?id=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def download(request):
 
-    requestId = request.GET.get('request')
+    requestId = request.GET.get('id')
     
     try:
         req = GeoRequest.objects.get(id = requestId)
@@ -105,12 +105,12 @@ def orderMosaic(request):
 #-------------------------------------------------------------------------------
 # percentageComplete
 #
-# curl --url "http://localhost:8000/api/percentageComplete/?request=36"
+# curl --url "http://localhost:8000/api/percentageComplete/?id=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def percentageComplete(request):
 
-    requestId = request.GET.get('request')
+    requestId = request.GET.get('id')
     success = False
     
     try:
@@ -139,12 +139,12 @@ def ready(request):
 #-------------------------------------------------------------------------------
 # status
 #
-# curl --url "http://evhr102/api/status/?request=36"
+# curl --url "http://evhr102/api/status/?id=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def status(request):
 
-    requestId = request.GET.get('request')
+    requestId = request.GET.get('id')
     success = False
     
     try:
