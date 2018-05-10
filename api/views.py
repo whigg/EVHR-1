@@ -69,7 +69,9 @@ def downloadHelper(requestId):
 #
 # http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
 #
-# curl --url "http://localhost:8000/api/orderMosaic/?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039"
+# curl --url "http://localhost:8000/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&outEpsg=102039"
+#
+# curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def orderMosaic(request):
@@ -92,9 +94,9 @@ def orderMosaic(request):
                      constructSrsFromIntCode(request.GET.get('epsg')). \
                      ExportToWkt()
     
-    geoRequest.outSRS = \
-        GeoRetriever.constructSrsFromIntCode(request.GET.get('outEpsg')). \
-        ExportToWkt()
+    # geoRequest.outSRS = \
+    #     GeoRetriever.constructSrsFromIntCode(request.GET.get('outEpsg')). \
+    #     ExportToWkt()
     
     geoRequest.save()
     
@@ -125,7 +127,7 @@ def percentageComplete(request):
 #-------------------------------------------------------------------------------
 # ready
 #
-# curl --url "http://evhr102/api/ready"
+# curl --url "http://evhr102/api/ready/"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def ready(request):
