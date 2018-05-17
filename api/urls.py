@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^ready/$',              api.views.ready),
     url(r'^status/$',             api.views.status),
 
-    url(r'^simulateOrderMosaic/$',       api.views.simulateOrderMosaic),
-    url(r'^simulateercentageComplete/$', api.views.simulatePercentageComplete),
+    url(r'^simulateOrderMosaic/$',        api.views.simulateOrderMosaic),
+    url(r'^simulatePercentageComplete/$', api.views.simulatePercentageComplete),
 ]
