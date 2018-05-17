@@ -160,7 +160,7 @@ def simulateOrderMosaic(request):
 @csrf_exempt
 def simulatePercentageComplete(request):
 
-    msg = 50.0 if time.time() % 2 == 0 else 100.0
+    msg = 50.0 if int(time.time()) % 2 == 0 else 100.0
     return JsonResponse({'success': True, 'msg': msg})
 
 #-------------------------------------------------------------------------------
