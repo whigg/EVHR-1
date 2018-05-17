@@ -123,7 +123,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = '/static/'
 
 # EVHR Settings
@@ -131,6 +130,8 @@ BASE_DIRECTORY   = '/att/nobackup/rlgill/evhrDevelopmentOutput'
 DOWNLOAD_DIR     = os.path.join(BASE_DIRECTORY, 'downloads')
 OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, 'requests')
 LOG_DIRECTORY    = os.path.join(BASE_DIRECTORY, 'logs')
+
+STATIC_ROOT      = os.path.join(BASE_DIRECTORY, 'EVHR/static_root').replace('\\', '/')
 
 LOGGING = {
 	'version': 1,
