@@ -69,8 +69,6 @@ def downloadHelper(requestId):
 #
 # http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
 #
-# curl --url "http://localhost:8000/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&outEpsg=102039"
-#
 # curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
 #-------------------------------------------------------------------------------
 @csrf_exempt
