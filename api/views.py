@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import time # for simulatePercentageComplete
 import uuid
 
 from django.http import JsonResponse
@@ -92,10 +93,6 @@ def orderMosaic(request):
                      constructSrsFromIntCode(request.GET.get('epsg')). \
                      ExportToWkt()
     
-    # geoRequest.outSRS = \
-    #     GeoRetriever.constructSrsFromIntCode(request.GET.get('outEpsg')). \
-    #     ExportToWkt()
-    
     geoRequest.save()
     
     return JsonResponse({'id': geoRequest.id})
@@ -103,7 +100,7 @@ def orderMosaic(request):
 #-------------------------------------------------------------------------------
 # percentageComplete
 #
-# curl --url "http://localhost:8000/api/percentageComplete/?id=36"
+# curl --url "http://evhr102/api/percentageComplete/?id=36"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def percentageComplete(request):
@@ -134,6 +131,38 @@ def ready(request):
     msg = 'EVHR is ready.'
     return JsonResponse({'success': success, 'msg': msg})
         
+#-------------------------------------------------------------------------------
+# simulateOrderMosaic
+#
+# curl --url "http://evhr102/api/simulateOrderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def simulateOrderMosaic(request):
+
+    ulx  = request.GET.get('ulx')
+    uly  = request.GET.get('uly')
+    lrx  = request.GET.get('lrx')
+    lry  = request.GET.get('lry')
+    epsg = request.GET.get('epsg')
+
+    return JsonResponse({'ulx'  : ulx,
+                         'uly'  : uly,
+                         'lrx'  : lrx,
+                         'lry'  : lry,
+                         'epsg' : epsg,
+                         'id'   : 'simID'})
+
+#-------------------------------------------------------------------------------
+# simulatePercentageComplete
+#
+# curl --url "http://evhr102/api/simulatePercentageComplete/?id=36"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def simulatePercentageComplete(request):
+
+    msg = 50.0 if time.time() % 2 == 0 else 100.0
+    return JsonResponse({'success': success, 'msg': msg})
+
 #-------------------------------------------------------------------------------
 # status
 #
