@@ -130,8 +130,7 @@ BASE_DIRECTORY   = '/att/nobackup/rlgill/evhrDevelopmentOutput'
 DOWNLOAD_DIR     = os.path.join(BASE_DIRECTORY, 'downloads')
 OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, 'requests')
 LOG_DIRECTORY    = os.path.join(BASE_DIRECTORY, 'logs')
-
-STATIC_ROOT      = os.path.join(BASE_DIRECTORY, 'EVHR/static_root').replace('\\', '/')
+STATIC_ROOT      = '/att/nobackup/rlgill/evhrDevelopment/EVHR/static_root').replace('\\', '/')
 
 LOGGING = {
 	'version': 1,
