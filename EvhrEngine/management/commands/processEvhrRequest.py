@@ -65,7 +65,7 @@ class Command(BaseCommand):
         
         request.save()
         
-        scenes = options['scenes']
+        scenes = options['scenes'] or []
         
         for scene in scenes:
             
