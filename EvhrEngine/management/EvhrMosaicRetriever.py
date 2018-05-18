@@ -305,10 +305,16 @@ class EvhrMosaicRetriever(GeoRetriever):
     def getScenes(self):
 
         # Check if there are already scenes associated with this request.
-        scenes = EvhrScene.objects.filter(request = self.request)
+        evhrScenes = EvhrScene.objects.filter(request = self.request)
+        scenes = []
 
-        if not scenes:
+        if evhrScenes:
+            
+            for es in evhrScenes:
+                scenes.append(es.sceneFile)
 
+        else:
+            
             MAX_FEATS = 100
 
             # AoI + FOOTPRINTS = scenes
