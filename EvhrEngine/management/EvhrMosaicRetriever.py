@@ -51,10 +51,8 @@ from EvhrEngine.models import EvhrScene
 #
 # https://github.com/NeoGeographyToolkit/StereoPipeline
 #
-# --- Crystal Fire ---
 # ./manage.py processEvhrRequest --name testCrystal --epName "EVHR Mosaic" --ulx -113.39250146 --uly 43.35041085 --lrx -112.80953835 --lry 42.93059617 --epsg 4326 --outEpsg 102039 -n 1
 #
-# --- Fairbanks ---
 # ./manage.py processEvhrRequest --name testFairbanks --epName "EVHR Mosaic" --ulx -148 --uly 65 --lrx -147.5 --lry 64.5 --epsg 4326 --outEpsg 4326 -n 1
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):

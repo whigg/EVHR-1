@@ -13,6 +13,10 @@ from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # Command
+#
+# ./manage.py processEvhrRequest --name testFairbanks --epName "EVHR Mosaic" --ulx -148 --uly 65 --lrx -147.5 --lry 64.5 --epsg 4326 --outEpsg 4326 -n 1
+#
+# ./manage.py processEvhrRequest --name testFairbanks --epName "EVHR Mosaic" --ulx -148 --uly 65 --lrx -147.5 --lry 64.5 --epsg 4326 --outEpsg 4326 --scenes -n 1
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
@@ -32,8 +36,8 @@ class Command(BaseCommand):
         parser.add_argument('--outEpsg', type = int)
         
         parser.add_argument('--scenes', 
-                            help = 'A comma-separated list of ' \
-                                   'fully-qualified scene files.')
+                            nargs = '*',
+                            help = 'A list of fully-qualified scene files.')
 
         CommandHelper.addCommonArgs(parser)
                        
