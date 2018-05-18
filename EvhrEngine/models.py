@@ -60,5 +60,5 @@ class EvhrScene(models.Model):
     request = models.ForeignKey('ProcessingEngine.Request', 
                                 on_delete = models.CASCADE)
 
-    sceneFile = models.FieldFile()
+    sceneFile = models.FileField()
 
