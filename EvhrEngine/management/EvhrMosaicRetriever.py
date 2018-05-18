@@ -311,7 +311,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         if evhrScenes:
             
             for es in evhrScenes:
-                scenes.append(es.sceneFile)
+                scenes.append(es.sceneFile.destination)
 
         else:
             
