@@ -22,6 +22,7 @@ from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
 from EvhrEngine.management.commands.TOA import TOA
 from EvhrEngine.models import EvhrError
+from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
@@ -301,6 +302,35 @@ class EvhrMosaicRetriever(GeoRetriever):
         return [GeoRetriever.GEOG_4326]
 
     #---------------------------------------------------------------------------
+    # getScenes
+    #---------------------------------------------------------------------------
+    def getScenes(self):
+
+        # Check if there are already scenes associated with this request.
+        scenes = EvhrScene.objects.filter(request = self.request)
+
+        if not scenes:
+
+            MAX_FEATS = 100
+
+            # AoI + FOOTPRINTS = scenes
+            scenes = self.queryFootprints(self.retrievalUlx,
+                                          self.retrievalUly,
+                                          self.retrievalLrx,
+                                          self.retrievalLry,
+                                          self.retrievalSRS,
+                                          MAX_FEATS)
+                                          
+            for scene in scenes:
+                
+                evhrScene = EvhrScene()
+                evhrScene.request = self.request
+                evhrScene.sceneFile = scene
+                evhrScene.save()
+                
+        return scenes
+                
+    #---------------------------------------------------------------------------
     # getUtmSrs
     #
     # This method finds the UTM zone covering the most of the request's AoI.
@@ -343,36 +373,100 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # listConstituents
     #---------------------------------------------------------------------------
+    # def listConstituents(self):
+    #
+    #     # If a saved scene list exists. use it.
+    #     scenes = None
+    #     sceneFile = os.path.join(self.request.destination.name, 'scenes.txt')
+    #
+    #     if os.path.exists(sceneFile):
+    #
+    #         with open(sceneFile) as f: sceneString = f.read()
+    #         scenes = json.loads(sceneString)
+    #
+    #         if self.logger:
+    #             self.logger.info('Using saved scene list.')
+    #
+    #     else:
+    #
+    #         # AoI + FOOTPRINTS = scenes
+    #         MAX_FEATS = 100
+    #
+    #         scenes = self.queryFootprints(self.retrievalUlx,
+    #                                       self.retrievalUly,
+    #                                       self.retrievalLrx,
+    #                                       self.retrievalLry,
+    #                                       self.retrievalSRS,
+    #                                       MAX_FEATS)
+    #
+    #         # Save the scenes because the query takes a long time to process.
+    #         jsonScenes = json.dumps(scenes)
+    #         with open(sceneFile, 'w+') as f: f.write(jsonScenes)
+    #
+    #     sceneGeoms = {}
+    #
+    #     for scene in scenes:
+    #
+    #         try:
+    #             dg = DgFile(scene, self.logger)
+    #
+    #         except Exception, e:
+    #
+    #             err             = EvhrError()
+    #             err.request     = self.request
+    #             err.inputFile   = scene
+    #             err.errorOutput = traceback.format_exc()
+    #             err.save()
+    #
+    #             continue
+    #
+    #         geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
+    #         sceneGeoms[scene] = geom
+    #
+    #     # Define the tiles.
+    #     tiler = TilerHalfDegree(self.retrievalUlx,
+    #                             self.retrievalUly,
+    #                             self.retrievalLrx,
+    #                             self.retrievalLry,
+    #                             self.retrievalSRS,
+    #                             self.logger)
+    #
+    #     grid  = tiler.defineGrid()
+    #     tiles = tiler.gridToPolygons(grid)
+    #
+    #     # Tiles + scenes = constituents.
+    #     constituents = {}
+    #     tileNum = 0
+    #
+    #     for tile in tiles:
+    #
+    #         tileNum += 1
+    #         tileFile = self.createEmptyTile(tile, self.retrievalSRS, tileNum)
+    #         constituents[tileFile] = []
+    #
+    #         for scene in scenes:
+    #
+    #             # Scenes could be rejected due to missing information.
+    #             if not scene in sceneGeoms:
+    #                 continue
+    #
+    #             if not tile.GetSpatialReference(). \
+    #                    IsSame(sceneGeoms[scene].GetSpatialReference()):
+    #
+    #                 raise RuntimeError('Tile and scene must be in the '
+    #                                    'same SRS.')
+    #
+    #             if tile.Intersects(sceneGeoms[scene]):
+    #                 constituents[tileFile].append(scene)
+    #
+    #     return constituents
+        
+    #---------------------------------------------------------------------------
+    # listConstituents
+    #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        # If a saved scene list exists. use it.
-        scenes = None
-        sceneFile = os.path.join(self.request.destination.name, 'scenes.txt')
-
-        if os.path.exists(sceneFile):
-
-            with open(sceneFile) as f: sceneString = f.read()
-            scenes = json.loads(sceneString)
-
-            if self.logger:
-                self.logger.info('Using saved scene list.')
-
-        else:
-
-            # AoI + FOOTPRINTS = scenes
-            MAX_FEATS = 100
-
-            scenes = self.queryFootprints(self.retrievalUlx,
-                                          self.retrievalUly,
-                                          self.retrievalLrx,
-                                          self.retrievalLry,
-                                          self.retrievalSRS,
-                                          MAX_FEATS)
-                      
-            # Save the scenes because the query takes a long time to process.
-            jsonScenes = json.dumps(scenes)
-            with open(sceneFile, 'w+') as f: f.write(jsonScenes)
-
+        scenes     = self.getScenes()
         sceneGeoms = {}
         
         for scene in scenes:

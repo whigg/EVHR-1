@@ -49,4 +49,16 @@ class EvhrProtocol(Protocol):
         verbose_name        = 'EVHR Protocol'
         verbose_name_plural = 'EVHR Protocols'
 
+#-------------------------------------------------------------------------------
+# EvhrScene
+#
+# An EvhrScene represents a single input scene file path.  EVHR requests can
+# optionally include a list of input scenes.  EvhrScene represents one of them.
+#-------------------------------------------------------------------------------
+class EvhrScene(models.Model):
+
+    request = models.ForeignKey('ProcessingEngine.Request', 
+                                on_delete = models.CASCADE)
+
+    sceneFile = models.FieldFile()
 
