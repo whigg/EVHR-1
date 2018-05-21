@@ -16,6 +16,8 @@ from ProcessingEngine.models import EndPoint
 from GeoProcessingEngine.models import GeoRequest
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
+from JobDaemon.models import JobDaemonProcess
+
 from EvhrEngine.models import EvhrScene
 
 from api import utils
@@ -66,6 +68,24 @@ def downloadHelper(requestId):
         msg = e
 
     return JsonResponse({'success': success, 'msg': str(msg)})
+    
+#-------------------------------------------------------------------------------
+# isDaemonRunning
+#-------------------------------------------------------------------------------
+def isDaemonRunning():
+    
+    try:
+        # Get the job daemon process from the DB.
+        jdProcs = JobDaemonProcess.objects.all()
+        
+        for jdProc in jdProcs:
+            if jdProc.pidRunning():
+                return True
+                
+    except Exception, e:
+        pass
+        
+    return False
     
 #-------------------------------------------------------------------------------
 # orderMosaic
@@ -149,7 +169,15 @@ def percentageComplete(request):
 def ready(request):
 
     success = True
-    msg = 'EVHR is ready.'
+    msg = 'EVHR API is ready.'
+    
+    if isDaemonRunning():
+        
+        msg += '  EVHR is ready to process requests.'
+        
+    else:
+        msg += '  EVHR is not ready to process requests.'
+        
     return JsonResponse({'success': success, 'msg': msg})
         
 #-------------------------------------------------------------------------------
