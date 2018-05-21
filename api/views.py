@@ -159,7 +159,7 @@ def ready(request):
 #-------------------------------------------------------------------------------
 # simulateOrderMosaic
 #
-# curl --url "http://evhr102/api/simulateOrderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
+# curl --url "http://evhr102/api/simulateOrderComposite/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def simulateOrderMosaic(request):
