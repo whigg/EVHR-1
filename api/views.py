@@ -72,11 +72,7 @@ def downloadHelper(requestId):
 #
 # http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
 #
-# curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
-#
-# ./manage.py processEvhrRequest --name testFairbanks --epName "EVHR Mosaic" --ulx -148 --uly 65 --lrx -147.5 --lry 64.5 --epsg 4326 --outEpsg 4326 --scenes "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf" "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf" "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205614_1020010001076500_08FEB28205614-P1BS-005733445010_03_P002.ntf" -n 1
-#
-# curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf"
+# curl --data "ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf" http://evhr102/api/orderComposite/
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def orderMosaic(request):
@@ -160,6 +156,8 @@ def ready(request):
 # simulateOrderMosaic
 #
 # curl --url "http://evhr102/api/simulateOrderComposite/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
+#
+# curl --data "ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf" http://evhr102/api/simulateOrderComposite/
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def simulateOrderMosaic(request):
@@ -170,12 +168,20 @@ def simulateOrderMosaic(request):
     lry  = request.GET.get('lry')
     epsg = request.GET.get('epsg')
 
-    return JsonResponse({'ulx'  : ulx,
-                         'uly'  : uly,
-                         'lrx'  : lrx,
-                         'lry'  : lry,
-                         'epsg' : epsg,
-                         'id'   : 'simID'})
+    request.ulx    = request.POST['ulx']
+    request.uly    = request.POST['uly']
+    request.lrx    = request.POST['lrx']
+    request.lry    = request.POST['lry']
+    request.epsg   = request.POST['epsg']
+    request.scenes = request.POST['scenes']
+    
+    return JsonResponse({'ulx'    : ulx,
+                         'uly'    : uly,
+                         'lrx'    : lrx,
+                         'lry'    : lry,
+                         'epsg'   : epsg,
+                         'scenes' : scenes,
+                         'id'     : 'simID'})
 
 #-------------------------------------------------------------------------------
 # simulatePercentageComplete
