@@ -28,10 +28,10 @@ from api import utils
 @csrf_exempt
 def download(request):
 
-    requestId = request.GET.['id')
+    requestId = request.GET('id')
     
     try:
-        req = GeoRequest.objects.[id = requestId)
+        req = GeoRequest.objects.filter(id = requestId)
 
     except GeoRequest.DoesNotExist:
 
@@ -76,7 +76,7 @@ def downloadHelper(requestId):
 #
 # ./manage.py processEvhrRequest --name testFairbanks --epName "EVHR Mosaic" --ulx -148 --uly 65 --lrx -147.5 --lry 64.5 --epsg 4326 --outEpsg 4326 --scenes "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf" "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf" "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205614_1020010001076500_08FEB28205614-P1BS-005733445010_03_P002.ntf" -n 1
 #
-# curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf"
+# curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def orderMosaic(request):
@@ -130,11 +130,11 @@ def orderMosaic(request):
 @csrf_exempt
 def percentageComplete(request):
 
-    requestId = request.GET.['id')
+    requestId = request.GET('id')
     success = False
     
     try:
-        req = GeoRequest.objects.[id = requestId)
+        req = GeoRequest.objects.get(id = requestId)
         success = True
         msg = req.percentageComplete()
         
@@ -164,11 +164,11 @@ def ready(request):
 @csrf_exempt
 def simulateOrderMosaic(request):
 
-    ulx  = request.GET.['ulx')
-    uly  = request.GET.['uly')
-    lrx  = request.GET.['lrx')
-    lry  = request.GET.['lry')
-    epsg = request.GET.['epsg')
+    ulx  = request.GET('ulx')
+    uly  = request.GET('uly')
+    lrx  = request.GET('lrx')
+    lry  = request.GET('lry')
+    epsg = request.GET('epsg')
 
     return JsonResponse({'ulx'  : ulx,
                          'uly'  : uly,
@@ -196,11 +196,11 @@ def simulatePercentageComplete(request):
 @csrf_exempt
 def status(request):
 
-    requestId = request.GET.['id')
+    requestId = request.GET('id')
     success = False
     
     try:
-        req = GeoRequest.objects.[id = requestId)
+        req = GeoRequest.objects.get(id = requestId)
         success = True
         msg = 'state is ' + str(req.state())
         
