@@ -28,7 +28,7 @@ from api import utils
 @csrf_exempt
 def download(request):
 
-    requestId = request.GET('id')
+    requestId = request.GET.get('id')
     
     try:
         req = GeoRequest.objects.filter(id = requestId)
@@ -130,7 +130,7 @@ def orderMosaic(request):
 @csrf_exempt
 def percentageComplete(request):
 
-    requestId = request.GET('id')
+    requestId = request.GET.get('id')
     success = False
     
     try:
@@ -164,11 +164,11 @@ def ready(request):
 @csrf_exempt
 def simulateOrderMosaic(request):
 
-    ulx  = request.GET('ulx')
-    uly  = request.GET('uly')
-    lrx  = request.GET('lrx')
-    lry  = request.GET('lry')
-    epsg = request.GET('epsg')
+    ulx  = request.GET.get('ulx')
+    uly  = request.GET.get('uly')
+    lrx  = request.GET.get('lrx')
+    lry  = request.GET.get('lry')
+    epsg = request.GET.get('epsg')
 
     return JsonResponse({'ulx'  : ulx,
                          'uly'  : uly,
@@ -196,7 +196,7 @@ def simulatePercentageComplete(request):
 @csrf_exempt
 def status(request):
 
-    requestId = request.GET('id')
+    requestId = request.GET.get('id')
     success = False
     
     try:
