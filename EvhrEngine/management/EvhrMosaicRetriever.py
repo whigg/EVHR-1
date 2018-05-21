@@ -782,21 +782,5 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.deleteFiles(self.orthoDir)
 
         # Mosaic the scenes into a single file.
-        return None
-
-    #---------------------------------------------------------------------------
-    # runSystemCmd
-    #---------------------------------------------------------------------------
-    # def runSystemCmd(self, cmd):
-    #
-    #     if not cmd:
-    #         return
-    #
-    #     if self.logger:
-    #         self.logger.info('Command: ' + cmd)
-    #
-    #     status = os.system(cmd)
-    #
-    #     if status != 0:
-    #         raise RuntimeError('System command failed.')
+        return completedScenes[0]
 
