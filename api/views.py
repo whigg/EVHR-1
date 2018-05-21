@@ -16,6 +16,8 @@ from ProcessingEngine.models import EndPoint
 from GeoProcessingEngine.models import GeoRequest
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
+from EvhrEngine.models import EvhrScene
+
 from api import utils
 
 #-------------------------------------------------------------------------------
@@ -26,10 +28,10 @@ from api import utils
 @csrf_exempt
 def download(request):
 
-    requestId = request.GET.get('id')
+    requestId = request.GET.['id')
     
     try:
-        req = GeoRequest.objects.get(id = requestId)
+        req = GeoRequest.objects.[id = requestId)
 
     except GeoRequest.DoesNotExist:
 
@@ -71,30 +73,53 @@ def downloadHelper(requestId):
 # http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
 #
 # curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
+#
+# ./manage.py processEvhrRequest --name testFairbanks --epName "EVHR Mosaic" --ulx -148 --uly 65 --lrx -147.5 --lry 64.5 --epsg 4326 --outEpsg 4326 --scenes "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf" "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf" "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205614_1020010001076500_08FEB28205614-P1BS-005733445010_03_P002.ntf" -n 1
+#
+# curl --url "http://evhr102/api/orderMosaic/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf"
 #-------------------------------------------------------------------------------
 @csrf_exempt
 def orderMosaic(request):
 
+    if request.method != 'POST':
+
+        return JsonResponse({'success': False,
+                             'msg': 'Please use a "POST" request.'})
+
     geoRequest             = GeoRequest()
     geoRequest.name        = 'API_' + str(uuid.uuid4())
-    geoRequest.destination = None #settings.OUTPUT_DIRECTORY
-    geoRequest.startDate   = None                      # N/A
-    geoRequest.endDate     = None                      # N/A
+    geoRequest.destination = None   # settings.OUTPUT_DIRECTORY
+    geoRequest.startDate   = None   # N/A
+    geoRequest.endDate     = None   # N/A
     geoRequest.started     = False
-    geoRequest.ulx         = request.GET.get('ulx')
-    geoRequest.uly         = request.GET.get('uly')
-    geoRequest.lrx         = request.GET.get('lrx')
-    geoRequest.lry         = request.GET.get('lry')
+    geoRequest.ulx         = request.POST['ulx']
+    geoRequest.uly         = request.POST['uly']
+    geoRequest.lrx         = request.POST['lrx']
+    geoRequest.lry         = request.POST['lry']
     
     ep = EndPoint.objects.filter(name = 'EVHR Mosaic')[0]
     geoRequest.endPoint = ep
     
     geoRequest.srs = GeoRetriever. \
-                     constructSrsFromIntCode(request.GET.get('epsg')). \
+                     constructSrsFromIntCode(request.POST['epsg']). \
                      ExportToWkt()
     
     geoRequest.save()
     
+    print 'scenes = ' + str(request.POST['scenes'])
+    
+    if request.POST.has_key('scenes'):
+        
+        sceneStr = request.POST['scenes']
+        sceneList = sceneStr.split(',')
+        
+        for scene in sceneList:
+            
+            evhrScene = EvhrScene()
+            evhrScene.request = geoRequest
+            evhrScene.sceneFile = scene
+            evhrScene.save()
+        
     return JsonResponse({'id': geoRequest.id})
     
 #-------------------------------------------------------------------------------
@@ -105,11 +130,11 @@ def orderMosaic(request):
 @csrf_exempt
 def percentageComplete(request):
 
-    requestId = request.GET.get('id')
+    requestId = request.GET.['id')
     success = False
     
     try:
-        req = GeoRequest.objects.get(id = requestId)
+        req = GeoRequest.objects.[id = requestId)
         success = True
         msg = req.percentageComplete()
         
@@ -139,11 +164,11 @@ def ready(request):
 @csrf_exempt
 def simulateOrderMosaic(request):
 
-    ulx  = request.GET.get('ulx')
-    uly  = request.GET.get('uly')
-    lrx  = request.GET.get('lrx')
-    lry  = request.GET.get('lry')
-    epsg = request.GET.get('epsg')
+    ulx  = request.GET.['ulx')
+    uly  = request.GET.['uly')
+    lrx  = request.GET.['lrx')
+    lry  = request.GET.['lry')
+    epsg = request.GET.['epsg')
 
     return JsonResponse({'ulx'  : ulx,
                          'uly'  : uly,
@@ -171,11 +196,11 @@ def simulatePercentageComplete(request):
 @csrf_exempt
 def status(request):
 
-    requestId = request.GET.get('id')
+    requestId = request.GET.['id')
     success = False
     
     try:
-        req = GeoRequest.objects.get(id = requestId)
+        req = GeoRequest.objects.[id = requestId)
         success = True
         msg = 'state is ' + str(req.state())
         
