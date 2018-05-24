@@ -112,10 +112,10 @@
 #---
 # Set variables.
 #---
-JD_PATH=/mnt/data-store/WrangleAndMunge
+JD_PATH=/att/nobackup/rlgill/evhrDevelopment/EVHR
 JD_SCRIPT=jobDaemon
-JD_SCRIPT_TEST_PATH=$JD_PATH/WrangleProcess/management/commands/$JD_SCRIPT.py
-JD_USER=ubuntu
+JD_SCRIPT_TEST_PATH=$JD_PATH/JobDaemon/management/commands/$JD_SCRIPT.py
+JD_USER=rlgill
 MGMT_SCRIPT=$JD_PATH/manage.py
 PYTHON_BIN=/usr/bin/python
 
