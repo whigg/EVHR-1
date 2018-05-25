@@ -183,7 +183,7 @@ def ready(request):
 #-------------------------------------------------------------------------------
 # simulateOrderMosaic
 #
-# curl --url "http://evhr102/api/simulateOrderComposite/?ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326"
+# curl --data "ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&" http://evhr102/api/simulateOrderComposite/
 #
 # curl --data "ulx=-148&uly=65&lrx=-147.5&lry=64.5&epsg=4326&scenes=/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf,/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf" http://evhr102/api/simulateOrderComposite/
 #-------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ def simulateOrderMosaic(request):
     request.lrx    = request.POST['lrx']
     request.lry    = request.POST['lry']
     request.epsg   = request.POST['epsg']
-    request.scenes = request.POST['scenes']
+    request.scenes = request.POST['scenes'] | None
     
     return JsonResponse({'ulx'    : ulx,
                          'uly'    : uly,
