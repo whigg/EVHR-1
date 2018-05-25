@@ -190,19 +190,17 @@ def ready(request):
 @csrf_exempt
 def simulateOrderMosaic(request):
 
-    ulx  = request.GET.get('ulx')
-    uly  = request.GET.get('uly')
-    lrx  = request.GET.get('lrx')
-    lry  = request.GET.get('lry')
-    epsg = request.GET.get('epsg')
-
-    request.ulx    = request.POST['ulx']
-    request.uly    = request.POST['uly']
-    request.lrx    = request.POST['lrx']
-    request.lry    = request.POST['lry']
-    request.epsg   = request.POST['epsg']
-    request.scenes = request.POST['scenes'] | None
+    ulx    = request.POST['ulx']
+    uly    = request.POST['uly']
+    lrx    = request.POST['lrx']
+    lry    = request.POST['lry']
+    epsg   = request.POST['epsg']
+    scenes = None
     
+    if request.POST.hasKey('scenes'):
+        
+        request.scenes = request.POST['scenes']
+        
     return JsonResponse({'ulx'    : ulx,
                          'uly'    : uly,
                          'lrx'    : lrx,
