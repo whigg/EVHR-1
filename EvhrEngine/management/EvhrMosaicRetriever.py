@@ -11,6 +11,7 @@ from xml.dom import minidom
 import numpy
 
 from osgeo import gdal
+from osgeo import ogr
 from osgeo.osr import CoordinateTransformation
 from osgeo.osr import SpatialReference
 
