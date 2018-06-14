@@ -281,8 +281,8 @@ case "$1" in
 	## the return value is set appropriately by startproc.
 	
     umask 0000
-    source /att/gpfsfs/opt/debian/8/static_gdal_pyExtended-2.2.2-1/init_gdal.sh
-    sudo -u $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
+    # sudo -u $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
+    sudo su -l $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
     
 	# Remember status and be verbose
 	rc_status -v
