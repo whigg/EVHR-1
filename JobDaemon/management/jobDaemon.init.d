@@ -280,9 +280,8 @@ case "$1" in
 	## Start daemon with startproc(8). If this fails
 	## the return value is set appropriately by startproc.
 	
-	#sudo -u ubuntu $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
-
     umask 0000
+    source /att/gpfsfs/opt/debian/8/static_gdal_pyExtended-2.2.2-1/init_gdal.sh
     sudo -u $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
     
 	# Remember status and be verbose
@@ -294,7 +293,7 @@ case "$1" in
 	## killproc sets the return value according to LSB.
 
 	#sudo -u ubuntu pkill $JD_PID
-
+    
 	# Remember status and be verbose
 	rc_status -v
 	;;
