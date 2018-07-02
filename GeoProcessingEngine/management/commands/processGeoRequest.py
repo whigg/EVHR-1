@@ -15,6 +15,8 @@ from GeoProcessingEngine.models import GeoRequest
 # --- Crystal Fire ---
 # ./manage.py processGeoRequest --name testCrystal --epName "Airports" -o ~/Desktop/SystemTesting/GeoRequest/Crystal --ulx -113.39250146 --uly 43.35041085 --lrx -112.80953835 --lry 42.93059617 --epsg 4326 --outEpsg 102039 --startDate 08-04-2016 --endDate 01-31-2017 -n 1
 #
+# ./manage.py processGeoRequest --name testCrystal --epName "Biophysical Setting" --ulx -113.39250146 --uly 43.35041085 --lrx -112.80953835 --lry 42.93059617 --epsg 4326 --outEpsg 102039 --startDate 08-04-2016 --endDate 01-31-2017 -n 1
+#
 # --- GSENM ---
 # ./manage.py processGeoRequest --name testGSENM --epName "Biophysical Setting" -o ~/Desktop/SystemTesting/GeoRequest/GSENM --ulx 36719 --uly 4209000 --lrx 510000 --lry 4094000 --epsg 32612 --outEpsg 102039 --startDate 11-01-2010 --endDate 01-31-2011 -n 1
 #

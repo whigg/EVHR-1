@@ -85,7 +85,7 @@ class GeoRetriever(Retriever):
     #---------------------------------------------------------------------------
     def bBoxToVector(self, ulx, uly, lrx, lry, srs, name):
         
-        poly = self.bBoxToPolygon(ulx, uly, lrx, lry, srs, name)
+        poly = self.bBoxToPolygon(ulx, uly, lrx, lry, srs)
         
         outDriver = ogr.GetDriverByName('GML')
         
