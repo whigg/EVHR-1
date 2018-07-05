@@ -282,8 +282,9 @@ case "$1" in
 	
     umask 0000
     # sudo -u $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
-    sudo su -l $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
-    
+    # sudo su -m $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
+    su -l $JD_USER -c 'source /att/gpfsfs/opt/debian/8/static_gdal_pyExtended-2.2.2-1/init_gdal.sh; '$PYTHON_BIN' '$MGMT_SCRIPT' '$JD_SCRIPT' &'
+
 	# Remember status and be verbose
 	rc_status -v
 	;;

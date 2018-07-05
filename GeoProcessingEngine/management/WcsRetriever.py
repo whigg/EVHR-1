@@ -23,7 +23,7 @@ class WcsRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__ 
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger = None):
+    def __init__(self, request, logger, numProcesses):
 
         owslibLog = logging.getLogger('owslib')
         owslibLog.setLevel(logging.DEBUG)
@@ -40,7 +40,7 @@ class WcsRetriever(GeoRetriever):
                                ' service contents: '   + \
                                str(self.service.contents))
         
-        super(WcsRetriever, self).__init__(request, logger)
+        super(WcsRetriever, self).__init__(request, logger, numProcesses)
 
     #---------------------------------------------------------------------------
     # computeHeightWidth

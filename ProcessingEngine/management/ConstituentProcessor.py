@@ -55,57 +55,30 @@ class ConstituentProcessor():
         self.retriever = retriever
         self.inputFile = oneConstituentAndFiles[0]
         self.logger    = logger
-        self.process   = None
+        self.constituentProcess = None
         
     #---------------------------------------------------------------------------
     # __call__
     #---------------------------------------------------------------------------
     def __call__(self, errorQueue):
         
-        self.process = None
-        
-        try:
-
-            # Register that this instance is running.
-            if self.logger:
-                self.logger.info('Registering constituent process for ' + 
-                                 self.constituent.getName())
-        
-            self.process             = ConstituentProcess()
-            self.process.constituent = self.constituent
-            self.process.parent      = self.parent
-            self.process.pid         = os.getpid()
-            self.process.save()
-
-            self.constituent.started = True
-            self.constituent.save(update_fields = ['started'])
-        
-            self.constituent.destination = \
-                self.retriever.retrieveOne(self.inputFile, \
-                                           self.constituentFiles)
-                                          
-            self.constituent.save()
-        
-        except Exception as e:
-
-            msg = traceback.format_exc()
-
-            if self.logger:
-                self.logger.info(msg)
-                
-            else:
-                print msg
-                
+        success = ConstituentProcessor.process(self.retriever,
+                                               self.inputFile,
+                                               self.constituentFiles,
+                                               self.constituent,
+                                               self.parent,
+                                               self.logger)
+                                               
+        if errorQueue and not success:
             errorQueue.put(True)
-
-        self.cleanUp()
         
     #---------------------------------------------------------------------------
     # cleanUp
     #---------------------------------------------------------------------------
-    def cleanUp(self):
+    @staticmethod
+    def cleanUp(constituentProcess, constituent, logger):
         
-        if self.process and self.process.id != None:
+        if constituentProcess and constituentProcess.id != None:
 
             #---
             # This should be unnecessary; however, there is a case where
@@ -114,7 +87,7 @@ class ConstituentProcessor():
             # with no process that is unavailable has failed.  Does it have an
             # actual file here?
             #---
-            cID = self.constituent.id
+            cID = constituent.id
             
             try:
                 constituent = Constituent.objects.get(id = cID)
@@ -127,8 +100,8 @@ class ConstituentProcessor():
                           'actual file.  Constituent: ' + \
                           str(constituent.destination.name)
                          
-                    if self.logger:
-                        self.logger.info(msg)
+                    if logger:
+                        logger.info(msg)
                         
                     else:
                         print msg
@@ -137,10 +110,10 @@ class ConstituentProcessor():
                 
                 msg = 'Unable to read constituent ' + str(cID)
                 
-                if self.logger:
+                if logger:
 
-                    self.logger.info(msg)
-                    self.logger.info(traceback.format_exc())
+                    logger.info(msg)
+                    logger.info(traceback.format_exc())
                     
                 else:
 
@@ -148,14 +121,60 @@ class ConstituentProcessor():
                     print traceback.format_exc()
 
             msg = 'Deregistering constituent process for ' + \
-                  self.constituent.getName()
+                  constituent.getName()
                   
-            if self.logger:
-                self.logger.info(msg)
+            if logger:
+                logger.info(msg)
                 
             else:
                 print msg
 
-            self.process.delete()
-            self.process = None
+            constituentProcess.delete()
 
+    #---------------------------------------------------------------------------
+    # process
+    #
+    # This static version is used for distributed processing in some cases.
+    #---------------------------------------------------------------------------
+    @staticmethod
+    def process(retriever, inputFile, constituentFiles, constituent, parent, 
+                logger):
+        
+        success = False
+        
+        try:
+
+            # Register that this instance is running.
+            if logger:
+                logger.info('Registering constituent cProcess for ' + 
+                            constituent.getName())
+        
+            cProcess             = ConstituentProcess()
+            cProcess.constituent = constituent
+            cProcess.parent      = parent
+            cProcess.pid         = os.getpid()
+            cProcess.save()
+
+            constituent.started = True
+            constituent.save(update_fields = ['started'])
+        
+            constituent.destination = \
+                retriever.retrieveOne(inputFile, constituentFiles)
+                                          
+            constituent.save()
+            success = True
+        
+        except Exception as e:
+
+            msg = traceback.format_exc()
+
+            if logger:
+                logger.info(msg)
+                
+            else:
+                print msg
+                
+        ConstituentProcessor.cleanUp(cProcess, constituent, logger)
+
+        return success
+        

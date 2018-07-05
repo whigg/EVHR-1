@@ -1,12 +1,18 @@
 
 import importlib            # for import_module
 import logging
-import multiprocessing
+# import multiprocessing
 import os
 import time
 import traceback
 
-from django import db
+# from django import db
+from django.conf import settings
+
+from ProcessingEngine.management.PythonMultiprocessingDistributor \
+    import PythonMultiprocessingDistributor
+
+from ProcessingEngine.management.PythonMapDistributor import PythonMapDistributor
 
 from ProcessingEngine.management.ConstituentProcessor import ConstituentProcessor
 from ProcessingEngine.models import Constituent
@@ -41,7 +47,7 @@ class RequestProcessor():
         
         # Register that this instance is running.
         if self.logger:
-            self.logger.info('Registering process for ' +  self.request.name)
+            self.logger.info('Registering process for ' + self.request.name)
         
         self.process         = RequestProcess()
         self.process.request = self.request
@@ -53,18 +59,9 @@ class RequestProcessor():
 
         try:
 
+            # Set up the retriever.
             self.retriever = self.chooseRetriever()
 
-            #---
-            # Retrievers can set the maximum processors they allow.  For
-            # example, MODIS can only support one at a time because its
-            # access uses FTP.  When multiple processes are attempted,
-            # you are asking MODIS to work out of multiple FTP directories
-            # from a single connection.
-            #---
-            self.maxRunning = min(self.retriever.maxProcesses, self.numProcs)
-
-            # Set up the retriever.
             if self.logger:
                 self.logger.info('Getting constituents for ' +self.request.name)
         
@@ -82,26 +79,59 @@ class RequestProcessor():
             # will exist in the database and report the correct status.
             #---
             while len(constituentFileDict) > 0:
-                
+
                 oneConstituentAndFiles = constituentFileDict.popitem()
 
                 cProcessor = ConstituentProcessor(self.request,
-                                                  self.retriever, 
-                                                  self.process,   
+                                                  self.retriever,
+                                                  self.process,
                                                   oneConstituentAndFiles,
                                                   self.logger)
-                                                  
-                self.constituentProcessors.append(cProcessor)
-                
-            # Queue the predictor files that need to run.
-            exceptionOccurred = self.processQueue()
-        
-            if exceptionOccurred:
-                
-                raise RuntimeError('RequestProcessor.processQueue() thinks ' +
-                                   'an exception occurred.  It should be ' +
-                                   'logged.')
 
+                self.constituentProcessors.append(cProcessor)
+
+            #---
+            # Retrievers can set the maximum processors they allow.  For
+            # example, MODIS can only support one at a time because its
+            # access uses FTP.  When multiple processes are attempted,
+            # you are asking MODIS to work out of multiple FTP directories
+            # from a single connection.
+            #---
+            maxRunning = min(self.retriever.maxProcesses, self.numProcs)
+
+            #---
+            # Activate the constituent processors using distributed processing.
+            # Constituent errors are handled by ConstituentProcessors.  If one
+            # constituent fails, the others are still processed.  Distributor
+            # reports 'True' when all Constituents succeed, and 'False' when
+            # at least one fails.  These notifications are only informative.
+            # The logs contain the details.
+            #---
+            distributor = None
+        
+            if hasattr(settings, 'DISTRIBUTOR'):
+
+                if settings.DISTRIBUTOR == 'PythonMapDistributor':
+                
+                    distributor = \
+                        PythonMapDistributor(self.constituentProcessors,
+                                             maxRunning,
+                                             self.logger)
+
+            if not distributor:
+
+                distributor = \
+                    PythonMultiprocessingDistributor(self.constituentProcessors,
+                                                     maxRunning,
+                                                     self.logger)
+
+            success = distributor.distribute()
+            
+            if not success:
+                
+                raise RuntimeError('At least one constituent failed.  ' + \
+                                   'The details are in the log.')
+                                   
             # Reduce the constituentss to the final result.
             if self.logger:
                 self.logger.info('Aggregating constituents for ' + 
@@ -124,7 +154,6 @@ class RequestProcessor():
         except Exception as e:
             
             if self.logger:
-
                 self.logger.info(traceback.format_exc())
 
             else:
@@ -147,7 +176,7 @@ class RequestProcessor():
         
         mod = importlib.import_module(self.request.endPoint.protocol.module)
         classObj = getattr(mod, self.request.endPoint.protocol.className)
-        return classObj(self.request, self.logger)
+        return classObj(self.request, self.logger, self.numProcs)
             
     #---------------------------------------------------------------------------
     # cleanUp
@@ -165,8 +194,11 @@ class RequestProcessor():
             
         if self.process and self.process.id != None:
 
-            for constituentProcessor in self.constituentProcessors:
-                constituentProcessor.cleanUp()
+            for cProc in self.constituentProcessors:
+
+                cProc.cleanUp(cProc.constituentProcess, 
+                              cProc.constituent,
+                              self.logger)
                 
             if self.logger:
                 self.logger.info('Deregistering request process for ' + 
@@ -174,59 +206,59 @@ class RequestProcessor():
 
             self.process.delete()
         
-    #--------------------------------------------------------------------
-    # processQueue
-    #--------------------------------------------------------------------
-    def processQueue(self):
-        
-        errorQueue = multiprocessing.Queue()
-        
-        try:
-            threads = []
-
-            while len(self.constituentProcessors) > 0:
-
-                # Track when threads finish.
-                numRunning = 0
-
-                for thread in threads:
-                    
-                    if thread.is_alive():
-                        
-                        numRunning += 1
-                        
-                    else:
-                        threads.remove(thread)
-
-                # Spawn threads.
-                for i in range(numRunning + 1, self.maxRunning + 1):
-
-                    if len(self.constituentProcessors) < 1:
-                        break
-                        
-                    constituentProcessor = self.constituentProcessors.pop()
-                    
-                    thread = multiprocessing.\
-                        Process(target = constituentProcessor,
-                                args   = (errorQueue,))
-                    
-                    threads.append(thread)
-                    db.connections.close_all()
-                    thread.start()
-
-                time.sleep(1)
-        
-        except Exception as e:
-            
-            if self.logger:
-                self.logger.info(traceback.format_exc())
-
-            self.cleanUp()
-            raise e
-
-        # Await the final threads.
-        for thread in threads:
-            thread.join()
-        
-        return not errorQueue.empty()
+    # #--------------------------------------------------------------------
+    # # processQueue
+    # #--------------------------------------------------------------------
+    # def processQueue(self):
+    #
+    #     errorQueue = multiprocessing.Queue()
+    #
+    #     try:
+    #         threads = []
+    #
+    #         while len(self.constituentProcessors) > 0:
+    #
+    #             # Track when threads finish.
+    #             numRunning = 0
+    #
+    #             for thread in threads:
+    #
+    #                 if thread.is_alive():
+    #
+    #                     numRunning += 1
+    #
+    #                 else:
+    #                     threads.remove(thread)
+    #
+    #             # Spawn threads.
+    #             for i in range(numRunning + 1, self.maxRunning + 1):
+    #
+    #                 if len(self.constituentProcessors) < 1:
+    #                     break
+    #
+    #                 constituentProcessor = self.constituentProcessors.pop()
+    #
+    #                 thread = multiprocessing.\
+    #                     Process(target = constituentProcessor,
+    #                             args   = (errorQueue,))
+    #
+    #                 threads.append(thread)
+    #                 db.connections.close_all()
+    #                 thread.start()
+    #
+    #             time.sleep(1)
+    #
+    #     except Exception as e:
+    #
+    #         if self.logger:
+    #             self.logger.info(traceback.format_exc())
+    #
+    #         self.cleanUp()
+    #         raise e
+    #
+    #     # Await the final threads.
+    #     for thread in threads:
+    #         thread.join()
+    #
+    #     return not errorQueue.empty()
     

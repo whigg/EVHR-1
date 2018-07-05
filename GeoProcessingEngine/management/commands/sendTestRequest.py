@@ -9,11 +9,11 @@ from ProcessingEngine.models import EndPoint
 from GeoProcessingEngine.models import GeoRequest
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Command
 #
 # ./manage.py sendTestRequest --reqName 'crystal'
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
     REQUESTS = {

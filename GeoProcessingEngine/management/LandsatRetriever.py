@@ -62,7 +62,7 @@ class LandsatRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger):
+    def __init__(self, request, logger, numProcesses):
 
         # Landsat gets its own subdirectory because it can have multiple files.
         if not os.path.basename(request.destination.name) == 'Landsat':
@@ -75,7 +75,7 @@ class LandsatRetriever(GeoRetriever):
         if not os.path.exists(request.destination.name):
             os.mkdir(request.destination.name)
 
-        super(LandsatRetriever, self).__init__(request, logger)
+        super(LandsatRetriever, self).__init__(request, logger, numProcesses)
                      
         # Set up the API connection to ESPA.
         ep = self.request.endPoint.url

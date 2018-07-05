@@ -24,7 +24,7 @@ class WfsRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger = None):
+    def __init__(self, request, logger, numProcesses):
 
         owslibLog = logging.getLogger('owslib')
         owslibLog.setLevel(logging.DEBUG)
@@ -41,7 +41,7 @@ class WfsRetriever(GeoRetriever):
                                ' service contents: '   + \
                                str(self.service.contents))
 
-        super(WfsRetriever, self).__init__(request, logger)
+        super(WfsRetriever, self).__init__(request, logger, numProcesses)
 
     #---------------------------------------------------------------------------
     # axisOrderLonLat

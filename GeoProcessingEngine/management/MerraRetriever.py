@@ -26,9 +26,9 @@ class MerraRetriever (MerraBase):
 	#---------------------------------------------------------------------------
 	# __init__
 	#---------------------------------------------------------------------------
-    def __init__(self, request, logger):
+    def __init__(self, request, logger, numProcesses):
 
-        super(MerraRetriever, self).__init__(request, logger)
+        super(MerraRetriever, self).__init__(request, logger, numProcesses)
         self.timeIntervals = self.getTimeIntervals()
 
     #---------------------------------------------------------------------------

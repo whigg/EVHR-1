@@ -64,7 +64,7 @@ class ModisRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger):
+    def __init__(self, request, logger, numProcesses):
 
         #---
         # Strip the protocol from the end point.  Django's URL type adds one
@@ -94,7 +94,7 @@ class ModisRetriever(GeoRetriever):
         if not os.path.exists(request.destination.name):
             os.mkdir(request.destination.name)
         
-        super(ModisRetriever, self).__init__(request, logger)
+        super(ModisRetriever, self).__init__(request, logger, numProcesses)
 
     #---------------------------------------------------------------------------
     # composeMosaicName

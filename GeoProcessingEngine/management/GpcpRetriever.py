@@ -18,7 +18,7 @@ class GpcpRetriever (GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger):
+    def __init__(self, request, logger, numProcesses):
 
         # GPCP gets its own subdirectory because it can have multiple files.
         request.destination.name = os.path.join(request.destination.name,'GPCP')
@@ -28,7 +28,7 @@ class GpcpRetriever (GeoRetriever):
             os.mkdir(request.destination.name)
 
         # Initialize the base class.
-        super(GpcpRetriever, self).__init__(request, logger)
+        super(GpcpRetriever, self).__init__(request, logger, numProcesses)
 
         # Adjust the dates.
         earliestCollDate = datetime.strptime('1979-01-01','%Y-%m-%d').date()

@@ -22,7 +22,7 @@ class WmsRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger = None):
+    def __init__(self, request, logger, numProcesses):
 
         owslibLog = logging.getLogger('owslib')
         owslibLog.setLevel(logging.DEBUG)
@@ -39,7 +39,7 @@ class WmsRetriever(GeoRetriever):
                                ' service contents: '   + \
                                str(self.service.contents))
 
-        super(WmsRetriever, self).__init__(request, logger)
+        super(WmsRetriever, self).__init__(request, logger, numProcesses)
 
     #---------------------------------------------------------------------------
     # chooseAvailableFormat

@@ -86,6 +86,13 @@ class Command(BaseCommand):
                               filter(started = False).  \
                               order_by('created')[:numToRun]
 
+                # pendingReqs = Request.objects.                           \
+                #               filter(started = False).                   \
+                #               order_by('created').                       \
+                #               select_related(selectRelatedString)
+                #
+                # pendingReqs = pendingReqs[:numToRun]
+
                 for requestType in requestTypes:
                     pendingReqs = pendingReqs.select_related(requestType)
 
