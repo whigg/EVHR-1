@@ -63,7 +63,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger):
+    def __init__(self, request, logger, numProcesses):
 
         # EVHR gets its own subdirectory because it can have multiple files.
         if os.path.basename(request.destination.name) != 'EVHR':
@@ -81,7 +81,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         request.save(update_fields = ['outSRS'])
 
         # Initialize the base class.
-        super(EvhrMosaicRetriever, self).__init__(request, logger)
+        super(EvhrMosaicRetriever, self).__init__(request, logger, numProcesses)
 
         #---
         # GeoRetriever should always choose EPSG:4326 as the retrieval SRS
