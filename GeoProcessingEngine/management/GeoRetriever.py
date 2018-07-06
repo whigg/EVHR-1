@@ -36,7 +36,7 @@ class GeoRetriever(Retriever):
     #---------------------------------------------------------------------------
     def __init__(self, request, logger = None, maxProcesses = 1):
 
-        super(GeoRetriever, self).__init__(request, logger)
+        super(GeoRetriever, self).__init__(request, logger, maxProcesses)
         
         self.requestSRS    = self.constructSrs(self.request.srs)
         self.outSRS        = self.constructSrs(self.request.outSRS)
@@ -85,7 +85,20 @@ class GeoRetriever(Retriever):
     #---------------------------------------------------------------------------
     def bBoxToVector(self, ulx, uly, lrx, lry, srs, name):
         
-        poly = self.bBoxToPolygon(ulx, uly, lrx, lry, srs, name)
+        fUlx = float(ulx)
+        fUly = float(uly)
+        fLrx = float(lrx)
+        fLry = float(lry)
+
+        ring = ogr.Geometry(ogr.wkbLinearRing)
+        ring.AddPoint(fUlx, fUly)
+        ring.AddPoint(fLrx, fUly)
+        ring.AddPoint(fLrx, fLry)
+        ring.AddPoint(fUlx, fLry)
+        
+        poly = ogr.Geometry(ogr.wkbPolygon)
+        poly.AddGeometry(ring)
+        poly.AssignSpatialReference(srs)
         
         outDriver = ogr.GetDriverByName('GML')
         

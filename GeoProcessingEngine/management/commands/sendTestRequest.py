@@ -9,11 +9,11 @@ from ProcessingEngine.models import EndPoint
 from GeoProcessingEngine.models import GeoRequest
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Command
 #
 # ./manage.py sendTestRequest --reqName 'crystal'
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
     REQUESTS = {
@@ -27,6 +27,16 @@ class Command(BaseCommand):
                      'outEpsg'  : '102039',
                      'startDate': datetime.date(2016, 8, 4),
                      'endDate'  : datetime.date(2017, 1, 31)},
+                     
+        'crystalBPS' : {'epName'   : 'Biophysical Setting',
+                        'ulx'      : '-113.39250146',
+                        'uly'      : '43.35041085',
+                        'lrx'      : '-112.80953835',
+                        'lry'      : '42.93059617',
+                        'epsg'     : '4326',
+                        'outEpsg'  : '102039',
+                        'startDate': datetime.date(2016, 8, 4),
+                        'endDate'  : datetime.date(2017, 1, 31)},
                      
         'modis'   : {'epName'   : 'MODIS',
                      'ulx'      : '-113.39250146',
