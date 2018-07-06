@@ -1,6 +1,7 @@
 
 import datetime
 import logging
+import traceback
 
 from ProcessingEngine.management.RequestProcessor import RequestProcessor
 
@@ -16,7 +17,7 @@ class CommandHelper(object):
     def addCommonArgs(parser):
         
         parser.add_argument('--name')
-        parser.add_argument('-o', help = 'path to output directory')
+        parser.add_argument('-o', default = '.',help='path to output directory')
         parser.add_argument('-n', default = 5, help = 'number of proceses')
         parser.add_argument('--startDate', type = makeDate, help = 'mm-dd-yyyy')
         parser.add_argument('--endDate',   type = makeDate, help = 'mm-dd-yyyy')
@@ -64,7 +65,9 @@ class CommandHelper(object):
             try:
                 reqProc()
 
-            except:
+            except Exception as e:
+            
+                print traceback.format_exc()
                 reqProc.cleanUp()
 
     #--------------------------------------------------------------------
