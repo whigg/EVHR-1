@@ -569,7 +569,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         #---
         SHP_INDEX = None
         
-        if ulx >= -54.0 and ulx <= 60.0 and lrx >= -54.0 and lrx <= 60.0:
+        if uly >= -54.0 and uly <= 60.0 and lry >= -54.0 and lry <= 60.0:
 
             SHP_INDEX = \
                 os.path.join(os.path.dirname(os.path.realpath(__file__)),
