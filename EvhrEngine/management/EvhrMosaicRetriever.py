@@ -782,7 +782,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         import pdb
         pdb.set_trace()
 
-        for nitf in fileList
+        for nitf in fileList:
         
             completedScene = self.processScene(nitf)
             completedScenes.append(completedScene)
