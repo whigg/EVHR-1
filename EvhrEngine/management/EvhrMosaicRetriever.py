@@ -775,8 +775,18 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Orthorectify the full scene, clip to the half-degree-square tile,
         # and covert to Geotiff.
         #---
-        completedScenes = [self.processScene(nitf) for nitf in fileList]
+        # completedScenes = [self.processScene(nitf) for nitf in fileList]
 
+        completedScenes = []
+        
+        import pdb
+        pdb.set_trace()
+
+        for nitf in fileList
+        
+            completedScene = self.processScene(nitf)
+            completedScenes.append(completedScene)
+            
         self.deleteFiles(self.bandDir)
         self.deleteFiles(self.demDir)
         self.deleteFiles(self.orthoDir)
