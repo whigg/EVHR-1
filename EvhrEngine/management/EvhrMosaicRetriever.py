@@ -531,7 +531,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             if not constituents[tileFile]:
                 
                 raise RuntimeError('There were no scenes covering tile ' + \
-                                   tile)
+                                   str(tile)
                     
         return constituents
         
