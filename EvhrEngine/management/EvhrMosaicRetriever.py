@@ -527,6 +527,12 @@ class EvhrMosaicRetriever(GeoRetriever):
                 if tile.Intersects(sceneGeoms[scene]):
                     constituents[tileFile].append(scene)
                     
+            # Ensure the tile has scenes covering it.
+            if not constituents[tileFile]:
+                
+                raise RuntimeError('There were no scenes covering tile ' + \
+                                   tile)
+                    
         return constituents
         
     #---------------------------------------------------------------------------
@@ -779,9 +785,6 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         completedScenes = []
         
-        import pdb
-        pdb.set_trace()
-
         for nitf in fileList:
         
             completedScene = self.processScene(nitf)
