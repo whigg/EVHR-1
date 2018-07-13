@@ -85,7 +85,7 @@ class Command(BaseCommand):
     
         request.save()
 
-        if params.hasKey('scenes'):
+        if params.has_key('scenes'):
             
             scenes = params['scenes']
 
