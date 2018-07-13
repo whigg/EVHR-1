@@ -63,8 +63,8 @@ class Command(BaseCommand):
 
         request             = GeoRequest()
         request.name        = 'Test Request ' + str(options['reqName'])
-        request.startDate   = params['startDate']
-        request.endDate     = params['endDate']
+        # request.startDate   = params['startDate']
+        # request.endDate     = params['endDate']
         request.started     = False
         request.ulx         = params['ulx']
         request.uly         = params['uly']
