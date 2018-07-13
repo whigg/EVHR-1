@@ -27,6 +27,16 @@ class Command(BaseCommand):
                        'outEpsg'  : '102039',
                        'startDate': datetime.date(2016, 8, 4),
                        'endDate'  : datetime.date(2017, 1, 31)},
+
+        'evhrFairBanksScenes' : {
+            'epName'   : 'EVHR Mosaic',
+            'ulx'      : '-148',
+            'uly'      : '65',
+            'lrx'      : '-147.5',
+            'lry'      : '64.5',
+            'epsg'     : '4326',
+            'outEpsg'  : '4326',
+            }
     }
 
     #---------------------------------------------------------------------------
@@ -68,6 +78,15 @@ class Command(BaseCommand):
             GeoRetriever.constructSrsFromIntCode(params['outEpsg']). \
             ExportToWkt()
     
+        scenes = params['scenes'] or []
+
+        for scene in scenes:
+            
+            evhrScene = EvhrScene()
+            evhrScene.request = request
+            evhrScene.sceneFile = scene
+            evhrScene.save()
+
         request.save()
 
 
