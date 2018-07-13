@@ -127,7 +127,9 @@ class Command(BaseCommand):
         # scenes = json.loads(sceneString)
         # Command.filesToFeatures('scenes', scenes, srs, dataSource)
         
-        scenes = EvhrScene.objects.filter(request = request.id)
+        scenes = EvhrScene.objects.values_list('sceneFile') \
+                                  .filter(request = request.id)
+
         Command.filesToFeatures('scenes', scenes, srs, dataSource)
         
         #---
