@@ -28,7 +28,7 @@ class Command(BaseCommand):
                        'startDate': datetime.date(2016, 8, 4),
                        'endDate'  : datetime.date(2017, 1, 31)},
 
-        'evhrFairBanksScenes' : {
+        'evhrFairbanksScenes' : {
             'epName'   : 'EVHR Mosaic',
             'ulx'      : '-148',
             'uly'      : '65',
