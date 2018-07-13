@@ -11,6 +11,7 @@ from osgeo.osr import SpatialReference
 from django.core.management.base import BaseCommand
 
 from EvhrEngine.management.GdalFile import GdalFile
+from EvhrEngine.models import EvhrScene
 from GeoProcessingEngine.models import GeoRequest
 
 #-------------------------------------------------------------------------------
@@ -121,9 +122,12 @@ class Command(BaseCommand):
         #---
         # Create features for each scene.
         #---
-        sceneFile = os.path.join(request.destination.name, 'scenes.txt')
-        with open(sceneFile) as f: sceneString = f.read()
-        scenes = json.loads(sceneString)
+        # sceneFile = os.path.join(request.destination.name, 'scenes.txt')
+        # with open(sceneFile) as f: sceneString = f.read()
+        # scenes = json.loads(sceneString)
+        # Command.filesToFeatures('scenes', scenes, srs, dataSource)
+        
+        scenes = EvhrScene.objects.filter(request = request.id)
         Command.filesToFeatures('scenes', scenes, srs, dataSource)
         
         #---
