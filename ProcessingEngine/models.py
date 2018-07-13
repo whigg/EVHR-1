@@ -325,13 +325,13 @@ class Request(models.Model):
         
             os.mkdir(self.destination.name, 0777)
 
-            try:
-
-                # gid = grp.getgrnam('wrangler').gr_gid
-                os.chown(self.destination.name, -1, gid)
-
-            except KeyError:
-                pass
+            # try:
+            #
+            #     # gid = grp.getgrnam('wrangler').gr_gid
+            #     os.chown(self.destination.name, -1, gid)
+            #
+            # except KeyError:
+            #     pass
                 
             curPerms = os.stat(self.destination.name).st_mode
             os.chmod(self.destination.name, curPerms | stat.S_IWGRP)
