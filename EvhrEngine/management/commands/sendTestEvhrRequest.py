@@ -83,6 +83,8 @@ class Command(BaseCommand):
             GeoRetriever.constructSrsFromIntCode(params['outEpsg']). \
             ExportToWkt()
     
+        request.save()
+
         scenes = params['scenes'] or []
 
         for scene in scenes:
@@ -91,8 +93,6 @@ class Command(BaseCommand):
             evhrScene.request = request
             evhrScene.sceneFile = scene
             evhrScene.save()
-
-        request.save()
 
 
         
