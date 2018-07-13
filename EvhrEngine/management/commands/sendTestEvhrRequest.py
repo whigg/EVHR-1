@@ -85,14 +85,16 @@ class Command(BaseCommand):
     
         request.save()
 
-        scenes = params['scenes'] or []
-
-        for scene in scenes:
+        if params.hasKey('scenes'):
             
-            evhrScene = EvhrScene()
-            evhrScene.request = request
-            evhrScene.sceneFile = scene
-            evhrScene.save()
+            scenes = params['scenes']
+
+            for scene in scenes:
+            
+                evhrScene = EvhrScene()
+                evhrScene.request = request
+                evhrScene.sceneFile = scene
+                evhrScene.save()
 
 
         
