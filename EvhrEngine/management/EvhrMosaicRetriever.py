@@ -789,8 +789,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         
             completedScene = self.processScene(nitf)
             completedScenes.append(completedScene)
-
-        pdb.set_trace()
         
         self.deleteFiles(self.bandDir)
         self.deleteFiles(self.demDir)
