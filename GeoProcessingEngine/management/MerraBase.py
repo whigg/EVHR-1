@@ -277,11 +277,11 @@ class MerraBase (GeoRetriever):
     def __init__(self, request, logger):
 
         # MERRA gets its own subdirectory because it can have multiple files.
-        request.destination.name =os.path.join(request.destination.name,'MERRA')
-        request.save(update_fields = ['destination'])
-
-        if not os.path.exists(request.destination.name):
-            os.mkdir(request.destination.name)
+        # request.destination.name =os.path.join(request.destination.name,'MERRA')
+        # request.save(update_fields = ['destination'])
+        #
+        # if not os.path.exists(request.destination.name):
+        #     os.mkdir(request.destination.name)
 
         super(MerraBase, self).__init__(request, logger)
 

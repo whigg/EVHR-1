@@ -88,11 +88,11 @@ class ModisRetriever(GeoRetriever):
         self.ftp.login()
 
         # MODIS gets its own subdirectory because it can have multiple files.
-        request.destination.name = os.path.join(request.destination.name,'MODIS')
-        request.save(update_fields = ['destination'])
-
-        if not os.path.exists(request.destination.name):
-            os.mkdir(request.destination.name)
+        # request.destination.name = os.path.join(request.destination.name,'MODIS')
+        # request.save(update_fields = ['destination'])
+        #
+        # if not os.path.exists(request.destination.name):
+        #     os.mkdir(request.destination.name)
         
         super(ModisRetriever, self).__init__(request, logger, numProcesses)
 

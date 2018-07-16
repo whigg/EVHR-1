@@ -21,11 +21,11 @@ class GpcpRetriever (GeoRetriever):
     def __init__(self, request, logger, numProcesses):
 
         # GPCP gets its own subdirectory because it can have multiple files.
-        request.destination.name = os.path.join(request.destination.name,'GPCP')
-        request.save(update_fields = ['destination'])
-
-        if not os.path.exists(request.destination.name):
-            os.mkdir(request.destination.name)
+        # request.destination.name = os.path.join(request.destination.name,'GPCP')
+        # request.save(update_fields = ['destination'])
+        #
+        # if not os.path.exists(request.destination.name):
+        #     os.mkdir(request.destination.name)
 
         # Initialize the base class.
         super(GpcpRetriever, self).__init__(request, logger, numProcesses)
