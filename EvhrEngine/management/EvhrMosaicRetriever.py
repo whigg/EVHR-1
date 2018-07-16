@@ -66,15 +66,15 @@ class EvhrMosaicRetriever(GeoRetriever):
     def __init__(self, request, logger, numProcesses):
 
         # EVHR gets its own subdirectory because it can have multiple files.
-        if os.path.basename(request.destination.name) != 'EVHR':
-
-            request.destination.name = \
-                os.path.join(request.destination.name,'EVHR')
-
-            request.save(update_fields = ['destination'])
-
-        if not os.path.exists(request.destination.name):
-            os.mkdir(request.destination.name)
+        # if os.path.basename(request.destination.name) != 'EVHR':
+        #
+        #     request.destination.name = \
+        #         os.path.join(request.destination.name,'EVHR')
+        #
+        #     request.save(update_fields = ['destination'])
+        #
+        # if not os.path.exists(request.destination.name):
+        #     os.mkdir(request.destination.name)
 
         # The output SRS must be UTM, regardless of what the user chooses.
         request.outSRS = self.getUtmSrs(request)
@@ -781,14 +781,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Orthorectify the full scene, clip to the half-degree-square tile,
         # and covert to Geotiff.
         #---
-        # completedScenes = [self.processScene(nitf) for nitf in fileList]
-
-        completedScenes = []
-        
-        for nitf in fileList:
-        
-            completedScene = self.processScene(nitf)
-            completedScenes.append(completedScene)
+        completedScenes = [self.processScene(nitf) for nitf in fileList]
         
         self.deleteFiles(self.bandDir)
         self.deleteFiles(self.demDir)
