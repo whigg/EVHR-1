@@ -196,12 +196,13 @@ def simulateOrderMosaic(request):
     lry  = request.GET.get('lry')
     epsg = request.GET.get('epsg')
 
-    request.ulx    = request.POST['ulx']
-    request.uly    = request.POST['uly']
-    request.lrx    = request.POST['lrx']
-    request.lry    = request.POST['lry']
-    request.epsg   = request.POST['epsg']
+    ulx  = request.POST['ulx']
+    uly  = request.POST['uly']
+    lrx  = request.POST['lrx']
+    lry  = request.POST['lry']
+    epsg = request.POST['epsg']
     # request.scenes = request.POST['scenes']
+    scenes = None
     
     if request.POST.has_key('scenes'):
         request.scenes = request.POST['scenes']
