@@ -122,8 +122,6 @@ def orderMosaic(request):
     
     geoRequest.save()
     
-    print 'scenes = ' + str(request.POST['scenes'])
-    
     if request.POST.has_key('scenes'):
         
         sceneStr = request.POST['scenes']
