@@ -31,7 +31,12 @@ class SystemCommand(object):
             logger.info('Return code: ' + str(self.returnCode))
             logger.info('Message: ' + str(self.msg))
             
-        if self.returnCode:
+        #---
+        # There are cases where the shell command fails and still returns a 0,
+        # causing returnCode to be None.  To detect this, check if msg starts
+        # with "Traceback".
+        #---
+        if self.returnCode or self.msg.startswith('Traceback'):
             
             err             = EvhrError()
             err.request     = request

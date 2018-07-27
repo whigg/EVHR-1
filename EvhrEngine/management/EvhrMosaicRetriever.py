@@ -777,5 +777,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.deleteFiles(self.orthoDir)
 
         # Mosaic the scenes into a single file.
+        
+        # Transform the mosaic into the output SRS.
+        
         return completedScenes[0]
 
