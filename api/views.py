@@ -18,6 +18,7 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
 from JobDaemon.models import JobDaemonProcess
 
+from EvhrEngine.models import EvhrError
 from EvhrEngine.models import EvhrScene
 
 from api import utils
@@ -69,6 +70,36 @@ def downloadHelper(requestId):
 
     return JsonResponse({'success': success, 'msg': str(msg)})
     
+#-------------------------------------------------------------------------------
+# getErrors
+#
+# curl --url "http://evhr102/api/getErrors/?id=36"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def getErrors(request):
+
+    requestId = request.GET.get('id')
+    
+    try:
+        errors = EvhrError.objects.filter(request = requestId). \
+                                   values_list('errorOutput')
+
+    except EvhrError.DoesNotExist:
+
+        success = False
+        msg = 'Request ' + str(requestId) + ' has no errors.'
+        return JsonResponse({'success': success, 'msg': msg})
+        
+    errorDict = {}
+    errorNum  = 1
+    
+    for error in errors:
+
+        errorDict['Error ' + str(errorNum)] = error[0]
+        errorNum += 1
+
+    return JsonResponse(errorDict)
+
 #-------------------------------------------------------------------------------
 # isDaemonRunning
 #-------------------------------------------------------------------------------
