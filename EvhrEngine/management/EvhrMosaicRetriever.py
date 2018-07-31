@@ -696,21 +696,27 @@ class EvhrMosaicRetriever(GeoRetriever):
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
 
-            dgFile = DgFile(inputNitf, self.logger)
-            bandFiles = self.extractBands(dgFile)
-            toaBands = []
+            # Catch errors, so the constituent continues despite errors.
+            try:
+                
+                dgFile = DgFile(inputNitf, self.logger)
+                bandFiles = self.extractBands(dgFile)
+                toaBands = []
 
-            for bandFile in bandFiles:
+                for bandFile in bandFiles:
             
-                orthoBand = self.orthoOne(bandFile, dgFile)
+                    orthoBand = self.orthoOne(bandFile, dgFile)
             
-                toaBands.append(TOA.run(orthoBand, 
-                                        self.toaDir, 
-                                        inputNitf, 
-                                        self.logger))
+                    toaBands.append(TOA.run(orthoBand, 
+                                            self.toaDir, 
+                                            inputNitf, 
+                                            self.logger))
             
-            self.mergeBands(toaBands, toaFinal)
-            
+                self.mergeBands(toaBands, toaFinal)
+
+            except:
+                pass
+                
         return toaFinal
 
     #---------------------------------------------------------------------------
