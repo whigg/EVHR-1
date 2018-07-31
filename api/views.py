@@ -281,6 +281,10 @@ def status(request):
         success = True
         msg = 'state is ' + str(req.state())
         
+        # Check for errors, and indicate their presence in the message.
+        if EvhrError.objects.filter(request = requestId).count() > 0:
+            msg += '-WITH-ERRORS'
+        
     except GeoRequest.DoesNotExist:
 
         msg = 'Request ' + str(requestId) + ' does not exist.'
