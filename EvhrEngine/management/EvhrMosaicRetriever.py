@@ -57,7 +57,7 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
-    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/06_04_2018/geodatabase/nga_inventory_10_05_2017.gdb'
+    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/06_04_2018/geodatabase/nga_inventory_canon.gdb'
     # FOOTPRINTS_FILE = '/att/nobackup/dslaybac/PublicMD/DG_28Nov2017.gdb'
 
     #---------------------------------------------------------------------------
@@ -189,7 +189,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                   str(lrx) + '-'                  + \
                   str(lry) + '-'                  + \
                   str(srs.GetAuthorityCode(None)) + \
-                  '-adj.tif'
+                  '.tif'
 
         demName = os.path.join(self.demDir, demName)
 
@@ -558,8 +558,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         if self.logger:
             self.logger.info('Creating DEM ' + str(outDemName))
 
-        outDemNameTemp = outDemName.replace('.tif', '-temp.tif')
-
         #---
         # SRTM was collected between -54 and 60 degrees of latitude.  Use
         # ASTERGDEM where SRTM is unavailable.
@@ -602,27 +600,16 @@ class EvhrMosaicRetriever(GeoRetriever):
             tiles.append(tileFile)
 
         # Mosaic the tiles.
-        cmd1 = 'gdal_merge.py'        + \
-              ' -o ' + outDemNameTemp + \
-              ' -ul_lr'               + \
-              ' ' + str(ulx)          + \
-              ' ' + str(uly)          + \
-              ' ' + str(lrx)          + \
-              ' ' + str(lry)          + \
+        cmd = 'gdal_merge.py'     + \
+              ' -o ' + outDemName + \
+              ' -ul_lr'           + \
+              ' ' + str(ulx)      + \
+              ' ' + str(uly)      + \
+              ' ' + str(lrx)      + \
+              ' ' + str(lry)      + \
               ' ' + ' '.join(tiles)
 
-        sCmd1 = SystemCommand(cmd1, outDemNameTemp, \
-                                               self.logger, self.request, True)
-
-
-        # Run mosaicked DEM through geoid correction
-        cmd2 = '/opt/StereoPipeline/bin/dem_geoid '  + \
-               outDemNameTemp + ' --geoid EGM96 -o ' + \
-               outDemName.strip('-adj.tif')          + \
-               ' --reverse-adjustment'
-
-        sCmd2 = SystemCommand(cmd2, outDemName, self.logger, self.request, True)
-        os.remove(outDemNameTemp)
+        sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
 
     #---------------------------------------------------------------------------
     # orthoOne
