@@ -616,8 +616,10 @@ class EvhrMosaicRetriever(GeoRetriever):
 
 
         # Run mosaicked DEM through geoid correction
-        cmd2 = 'dem_geoid {} --geoid EGM96 -o {} --reverse-adjustment'.\
-                            format(outDemNameTemp, outDemName.strip('-adj.tif'))
+        cmd2 = '/opt/StereoPipeline/bin/dem_geoid '  + \
+               outDemNameTemp + ' --geoid EGM96 -o ' + \
+               outDemName.strip('-adj.tif')          + \
+               ' --reverse-adjustment'
 
         sCmd2 = SystemCommand(cmd2, outDemName, self.logger, self.request, True)
         os.remove(outDemNameTemp)
