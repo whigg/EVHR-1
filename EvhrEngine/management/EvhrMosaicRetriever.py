@@ -57,7 +57,7 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
-    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/06_04_2018/geodatabase/nga_inventory_canon.gdb'
+    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/05_09_2018/geodatabase/nga_inventory.gdb'
     # FOOTPRINTS_FILE = '/att/nobackup/dslaybac/PublicMD/DG_28Nov2017.gdb'
 
     #---------------------------------------------------------------------------
