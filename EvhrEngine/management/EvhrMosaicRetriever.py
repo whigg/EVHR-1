@@ -57,7 +57,7 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
-    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/10_05_2017/geodatabase/nga_inventory_10_05_2017.gdb'
+    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/06_04_2018/geodatabase/nga_inventory_10_05_2017.gdb'
     # FOOTPRINTS_FILE = '/att/nobackup/dslaybac/PublicMD/DG_28Nov2017.gdb'
 
     #---------------------------------------------------------------------------
@@ -81,7 +81,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         self.runSensors = ['WV01', 'WV02', 'WV03']
 
-        # Ensure the orthos and toa directories exists.
+        # Ensure the ortho and toa directories exist.
         self.tileDir  = os.path.join(self.request.destination.name, '1-tiles')
         self.bandDir  = os.path.join(self.request.destination.name, '2-bands')
         self.demDir   = os.path.join(self.request.destination.name, '3-dems')
