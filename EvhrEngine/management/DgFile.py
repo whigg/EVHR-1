@@ -51,23 +51,6 @@ class DgFile(GdalFile):
         self.bandNameList = \
             [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
 
-        # firstLineTime
-        t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
-        self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
-
-        # meanSunElevation
-        self.meanSunElevation = \
-            float(self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION'))
-
-        # specType
-        self.specTypeCode = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
-
-        # sensor
-        self.sensor = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
-
-        # year
-        self.year = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
-
         # numBands
         self.numBands = self.dataset.RasterCount
 
@@ -96,7 +79,19 @@ class DgFile(GdalFile):
 
         else:
             raise RuntimeError('Could not retrieve effective bandwidth.')
-            
+          
+    #---------------------------------------------------------------------------
+    # firstLineTime()
+    #---------------------------------------------------------------------------
+    def firstLineTime(self):
+
+        t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
+        if t is not None:
+            return datetime.strptime(t, "%Y%m%d%H%M%S")
+        else:    
+            t = self.imdTag.find('IMAGE').find('FIRSTLINETIME').text
+            return datetime.strptime(t, "%Y-%m-%dT%H:%M:%S.%fZ")
+
     #---------------------------------------------------------------------------
     # getBand()
     #---------------------------------------------------------------------------
@@ -142,4 +137,52 @@ class DgFile(GdalFile):
 
         return self.specTypeCode == 'PAN'
 
+    #---------------------------------------------------------------------------
+    # meanSunElevation()
+    #---------------------------------------------------------------------------
+    def meanSunElevation(self):
+     
+        mse = self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION')
+        if mse is None:
+            mse = self.imdTag.find('IMAGE').find('MEANSUNEL').text
+
+        return float(mse)
+
+    #---------------------------------------------------------------------------
+    # sensor()
+    #---------------------------------------------------------------------------
+    def sensor(self):
+
+        sens = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
+        if sens is None:
+            sens = self.imdTag.find('IMAGE').find('SATID').text
+
+        return sens
+
+    #---------------------------------------------------------------------------
+    # specTypeCode()
+    #---------------------------------------------------------------------------
+    def specTypeCode(self):
+
+        stc = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
+        if stc is None:
+            if self.imdTag.find('BANDID').text == 'P':
+                stc = 'PAN'
+            elif self.imdTag.find('BANDID').text == 'MS1' or \
+                                    self.imdTag.find('BANDID').text == 'Multi':
+                stc = 'MS'
+            else:
+                 raise RuntimeError('Could not retrieve spectral type code.') 
         
+        return stc          
+
+    #---------------------------------------------------------------------------
+    # year()
+    #---------------------------------------------------------------------------
+    def year(self):
+
+        yr = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
+        if yr is None:
+            yr = self.firstLineTime().year
+
+        return yr
