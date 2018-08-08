@@ -66,10 +66,10 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
-    def getScenes(self):
+    def getScenes(self, request):
 
         # Check if there are already scenes associated with this request.
-        evhrScenes = EvhrScene.objects.filter(request = self.request)
+        evhrScenes = EvhrScene.objects.filter(request = request)
         scenes = []
 
         if evhrScenes:
