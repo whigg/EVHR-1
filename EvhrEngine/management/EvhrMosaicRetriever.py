@@ -102,6 +102,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         if not os.path.exists(self.toaDir):
             os.mkdir(self.toaDir)
+            
+        self.evhrHelper = EvhrHelper(logger)
 
     # #---------------------------------------------------------------------------
     # # clipShp
@@ -461,7 +463,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        scenes     = self.getScenes()
+        scenes     = self.helper.getScenes()
         sceneGeoms = {}
         
         for scene in scenes:
