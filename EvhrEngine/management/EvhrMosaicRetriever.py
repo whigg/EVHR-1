@@ -464,7 +464,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        scenes     = self.helper.getScenes()
+        scenes     = self.evhrHelper.getScenes()
         sceneGeoms = {}
         
         for scene in scenes:
