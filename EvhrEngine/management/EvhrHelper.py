@@ -90,7 +90,7 @@ class EvhrHelper(object):
             for scene in scenes:
                 
                 evhrScene = EvhrScene()
-                evhrScene.request = self.request
+                evhrScene.request = request
                 evhrScene.sceneFile = scene
                 evhrScene.save()
                 
