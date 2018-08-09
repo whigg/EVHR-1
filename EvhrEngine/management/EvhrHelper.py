@@ -25,7 +25,8 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # clipShp
     #---------------------------------------------------------------------------
-    def clipShp(self, shpFile, ulx, uly, lrx, lry, srs, extraQueryParams = ''):
+    def clipShp(self, shpFile, ulx, uly, lrx, lry, srs, request, \
+                extraQueryParams = ''):
 
         if self.logger:
             self.logger.info('Clipping Shapefile.')
@@ -58,7 +59,7 @@ class EvhrHelper(object):
               ' "' + tempClipFile + '"'        + \
               ' "' + shpFile + '"'
 
-        sCmd = SystemCommand(cmd, shpFile, self.logger, self.request, True)
+        sCmd = SystemCommand(cmd, shpFile, self.logger, request, True)
 
         xml      = minidom.parse(tempClipFile)
         features = xml.getElementsByTagName('gml:featureMember')
