@@ -1,4 +1,6 @@
 
+import tempfile
+
 from xml.dom import minidom
 
 from EvhrEngine.management.SystemCommand import SystemCommand
