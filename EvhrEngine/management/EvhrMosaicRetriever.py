@@ -4,7 +4,7 @@ import json
 import math
 import os
 import shutil
-import tempfile
+# import tempfile
 import traceback
 # from xml.dom import minidom
 
@@ -582,7 +582,13 @@ class EvhrMosaicRetriever(GeoRetriever):
                              'ASTERGDEM/astergdem.shp')
                              
         # Get the SRTM tile Shapefile and intersect it with the AoI.
-        features = self.evhrHelper.clipShp(SHP_INDEX, ulx, uly, lrx, lry, srs)
+        features = self.evhrHelper.clipShp(SHP_INDEX, 
+                                           ulx, 
+                                           uly, 
+                                           lrx, 
+                                           lry, 
+                                           srs, 
+                                           self.request)
         
         if not features or len(features) == 0:
             
