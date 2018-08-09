@@ -59,7 +59,7 @@ from EvhrEngine.models import EvhrError
 class EvhrMosaicRetriever(GeoRetriever):
 
     # FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/10_05_2017/geodatabase/nga_inventory_10_05_2017.gdb'
-    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/05_09_2018/geodatabase/nga_inventory.gdb'
+    # FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/05_09_2018/geodatabase/nga_inventory.gdb'
 
     #---------------------------------------------------------------------------
     # __init__
