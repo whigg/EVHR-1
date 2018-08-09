@@ -85,7 +85,13 @@ class EvhrHelper(object):
             MAX_FEATS = 100
 
             # AoI + FOOTPRINTS = scenes
-            scenes = self.queryFootprints(ulx, uly, lrx, lry, srs, MAX_FEATS)
+            scenes = self.queryFootprints(ulx, 
+                                          uly, 
+                                          lrx, 
+                                          lry, 
+                                          srs, 
+                                          request, 
+                                          MAX_FEATS)
                                           
             for scene in scenes:
                 
@@ -99,7 +105,8 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # queryFootprints
     #---------------------------------------------------------------------------
-    def queryFootprints(self, ulx, uly, lrx, lry, srs, maxFeatures = None):
+    def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
+                        maxFeatures = None):
 
         whereClause = '-where "'
         first = True
@@ -115,8 +122,13 @@ class EvhrHelper(object):
 
         whereClause += '"'
 
-        features = self.clipShp(EvhrHelper.FOOTPRINTS_FILE, \
-                                ulx, uly, lrx, lry, srs,    \
+        features = self.clipShp(EvhrHelper.FOOTPRINTS_FILE,
+                                ulx, 
+                                uly, 
+                                lrx, 
+                                lry, 
+                                srs,
+                                request,
                                 whereClause)
 
         # Put them into a list of (row, path) tuples.
