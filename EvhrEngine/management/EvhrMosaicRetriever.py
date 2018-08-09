@@ -153,27 +153,27 @@ class EvhrMosaicRetriever(GeoRetriever):
     #     features = xml.getElementsByTagName('gml:featureMember')
     #
     #     return features
-    #
+   
     #---------------------------------------------------------------------------
     # compress
     #
     # retrieveOne -> processScene -> compress
     #---------------------------------------------------------------------------
-    def compress(self, orthoBand):
-
-        if self.logger:
-            self.logger.info('Compressing ' + orthoBand)
-
-        # To compress in place, copy the input file to a temporary file.
-        tempBandFile = tempfile.mkstemp()[1]
-        shutil.move(orthoBand, tempBandFile)
-
-        cmd = 'gdal_translate -q -ot Int16 -co COMPRESS=LZW' + \
-              ' -co BIGTIFF=YES'                             + \
-              ' ' + tempBandFile                             + \
-              ' ' + orthoBand
-
-        sCmd = SystemCommand(cmd, orthoBand, self.logger, self.request, True)
+    # def compress(self, orthoBand):
+    #
+    #     if self.logger:
+    #         self.logger.info('Compressing ' + orthoBand)
+    #
+    #     # To compress in place, copy the input file to a temporary file.
+    #     tempBandFile = tempfile.mkstemp()[1]
+    #     shutil.move(orthoBand, tempBandFile)
+    #
+    #     cmd = 'gdal_translate -q -ot Int16 -co COMPRESS=LZW' + \
+    #           ' -co BIGTIFF=YES'                             + \
+    #           ' ' + tempBandFile                             + \
+    #           ' ' + orthoBand
+    #
+    #     sCmd = SystemCommand(cmd, orthoBand, self.logger, self.request, True)
 
     #---------------------------------------------------------------------------
     # createDemForOrthos
@@ -582,7 +582,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                              'ASTERGDEM/astergdem.shp')
                              
         # Get the SRTM tile Shapefile and intersect it with the AoI.
-        features = self.clipShp(SHP_INDEX, ulx, uly, lrx, lry, srs)
+        features = self.evhrHelper.clipShp(SHP_INDEX, ulx, uly, lrx, lry, srs)
         
         if not features or len(features) == 0:
             
