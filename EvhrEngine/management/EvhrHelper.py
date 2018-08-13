@@ -3,6 +3,9 @@ import tempfile
 
 from xml.dom import minidom
 
+from osgeo.osr import CoordinateTransformation
+
+from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.models import EvhrScene
 
@@ -101,6 +104,46 @@ class EvhrHelper(object):
                 evhrScene.save()
                 
         return scenes
+
+    #---------------------------------------------------------------------------
+    # getUtmSrs
+    #
+    # This method finds the UTM zone covering the most of the request's AoI.
+    # It does this by finding the centroid of the AoI and choosing that zone.
+    #---------------------------------------------------------------------------
+    def getUtmSrs(request):
+
+        # Centroid, called below, doesn't preserve the SRS.
+        srs = GeoRetriever.constructSrs(request.srs)
+        
+        center = GeoRetriever.bBoxToPolygon(request.ulx,
+                                            request.uly,
+                                            request.lrx,
+                                            request.lry,
+                                            srs).Centroid()
+        
+        # If request is already in WGS84 UTM...
+        if srs.IsProjected() and 'UTM' in srs.GetAttrValue('PROJCS'):
+            return request.srs
+
+        # If the center is not in geographic projection, convert it.
+        xValue = None
+
+        if not GeoRetriever.GEOG_4326.IsSame(srs):
+
+            xform = CoordinateTransformation(srs, GeoRetriever.GEOG_4326)
+            xPt = xform.TransformPoint(center.GetX(), center.GetY())
+            xValue = float(xPt.GetX())
+
+        else:
+            xValue = float(center.GetX())
+
+        # Initally, use the UTM zone of the upper-left corner of the AoI.
+        zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
+        BASE_UTM_EPSG = '326'
+        epsg = int(BASE_UTM_EPSG + str(int(zone)))
+        srs = GeoRetriever.constructSrsFromIntCode(epsg)
+        return srs.ExportToWkt()
 
     #---------------------------------------------------------------------------
     # queryFootprints
