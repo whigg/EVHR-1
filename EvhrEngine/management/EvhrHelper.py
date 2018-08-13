@@ -111,7 +111,7 @@ class EvhrHelper(object):
     # This method finds the UTM zone covering the most of the request's AoI.
     # It does this by finding the centroid of the AoI and choosing that zone.
     #---------------------------------------------------------------------------
-    def getUtmSrs(request):
+    def getUtmSrs(self, request):
 
         # Centroid, called below, doesn't preserve the SRS.
         srs = GeoRetriever.constructSrs(request.srs)
