@@ -69,7 +69,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.evhrHelper = EvhrHelper(logger)
 
         # The output SRS must be UTM, regardless of what the user chooses.
-        request.outSRS = evhrHelper.getUtmSrs(request)
+        request.outSRS = self.evhrHelper.getUtmSrs(request)
         request.save(update_fields = ['outSRS'])
 
         # Initialize the base class.
