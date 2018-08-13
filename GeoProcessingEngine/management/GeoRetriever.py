@@ -58,7 +58,8 @@ class GeoRetriever(Retriever):
     #---------------------------------------------------------------------------
     # bBoxToPolygon
     #---------------------------------------------------------------------------
-    def bBoxToPolygon(self, ulx, uly, lrx, lry, srs):
+    @staticmethod
+    def bBoxToPolygon(ulx, uly, lrx, lry, srs):
         
         fUlx = float(ulx)
         fUly = float(uly)
@@ -153,7 +154,8 @@ class GeoRetriever(Retriever):
     #---------------------------------------------------------------------------
     # constructSrs
     #---------------------------------------------------------------------------
-    def constructSrs(self, srsString):
+    @staticmethod
+    def constructSrs(srsString):
         
         srs = SpatialReference(str(srsString))  # str() in case it's unicode
         
