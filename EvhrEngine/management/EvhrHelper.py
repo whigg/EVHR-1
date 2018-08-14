@@ -72,7 +72,7 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
-    def getScenes(self, request, ulx, uly, lrx, lry, srs):
+    def getScenes(self, request, ulx, uly, lrx, lry, srs, pairsOnly = False):
 
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
@@ -85,8 +85,6 @@ class EvhrHelper(object):
 
         else:
             
-            MAX_FEATS = 100
-
             # AoI + FOOTPRINTS = scenes
             scenes = self.queryFootprints(ulx, 
                                           uly, 
@@ -94,7 +92,7 @@ class EvhrHelper(object):
                                           lry, 
                                           srs, 
                                           request, 
-                                          MAX_FEATS)
+                                          pairsOnly)
                                           
             for scene in scenes:
                 
