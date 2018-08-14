@@ -147,9 +147,9 @@ class EvhrHelper(object):
     # queryFootprints
     #---------------------------------------------------------------------------
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
-                        maxFeatures = None):
+                        pairsOnly = False):
 
-        whereClause = '-where "pairname IS NOT NULL AND ('
+        whereClause = '-where "('
         first = True
 
         for sensor in EvhrHelper.RUN_SENSORS:
@@ -161,7 +161,12 @@ class EvhrHelper(object):
 
             whereClause += 'SENSOR=' + "'" + sensor + "'"
 
-        whereClause += ')"'
+        whereClause += ')'
+        
+        if pairsOnly:
+            whereClause += 'AND pairname IS NOT NULL'
+        
+        whereClause += '"'
 
         features = self.clipShp(settings.FOOTPRINTS_FILE,
                                 ulx, 
