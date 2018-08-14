@@ -179,14 +179,8 @@ class EvhrHelper(object):
 
         # Put them into a list of (row, path) tuples.
         nitfs = []
-        featureCount = 0
 
         for feature in features:
-
-            featureCount += 1
-
-            if maxFeatures and featureCount > maxFeatures:
-                break
 
             nitf = str(feature. \
                        getElementsByTagName('ogr:S_FILEPATH')[0]. \
