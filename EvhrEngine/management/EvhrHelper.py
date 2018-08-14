@@ -1,8 +1,9 @@
 
 import math
 import tempfile
-
 from xml.dom import minidom
+
+from django.conf import settings
 
 from osgeo.osr import CoordinateTransformation
 
@@ -15,8 +16,6 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrHelper(object):
 
-    # FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/10_05_2017/geodatabase/nga_inventory_10_05_2017.gdb'
-    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/05_09_2018/geodatabase/nga_inventory.gdb'
     RUN_SENSORS = ['WV01', 'WV02', 'WV03']
     
     #---------------------------------------------------------------------------
@@ -166,7 +165,7 @@ class EvhrHelper(object):
 
         whereClause += '"'
 
-        features = self.clipShp(EvhrHelper.FOOTPRINTS_FILE,
+        features = self.clipShp(settings.FOOTPRINTS_FILE,
                                 ulx, 
                                 uly, 
                                 lrx, 
