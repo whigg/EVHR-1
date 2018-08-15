@@ -101,6 +101,28 @@ def getErrors(request):
     return JsonResponse(errorDict)
 
 #-------------------------------------------------------------------------------
+# getToaPath
+#
+# curl --url "http://evhr102/api/getToaPath/?id=36"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def getToaPath(request):
+
+    requestId = request.GET.get('id')
+    success = False
+    
+    try:
+        req = GeoRequest.objects.get(id = requestId)
+        success = True
+        msg = 'path is ' + str(req.destination.name)
+        
+    except GeoRequest.DoesNotExist:
+
+        msg = 'Request ' + str(requestId) + ' does not exist.'
+
+    return JsonResponse({'success': success, 'msg': msg})
+
+#-------------------------------------------------------------------------------
 # isDaemonRunning
 #-------------------------------------------------------------------------------
 def isDaemonRunning():
