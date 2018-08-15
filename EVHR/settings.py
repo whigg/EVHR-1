@@ -176,6 +176,7 @@ LOGGING = {
 # WranglerProcess Settings
 DEFAULT_SCALE_IN_METERS = 30
 FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/08_01_2018/geodatabase/nga_inventory_canon.gdb'
+MAXIMUM_SCENES = 20
 MERRA_END_DATE = '2017-05-31'
 MERRA_START_DATE = '1980-01-01'
 WORK_DIRECTORY = OUTPUT_DIRECTORY
