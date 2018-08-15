@@ -114,7 +114,7 @@ def getToaPath(request):
     try:
         req = GeoRequest.objects.get(id = requestId)
         success = True
-        msg = 'path is ' + str(req.destination.name)
+        msg = 'path is ' + os.path.join(str(req.destination.name), '5-toas')
         
     except GeoRequest.DoesNotExist:
 
