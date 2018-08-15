@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 import time # for simulatePercentageComplete
 import uuid
 
@@ -99,6 +100,28 @@ def getErrors(request):
         errorNum += 1
 
     return JsonResponse(errorDict)
+
+#-------------------------------------------------------------------------------
+# getToaPath
+#
+# curl --url "http://evhr102/api/getToaPath/?id=36"
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def getToaPath(request):
+
+    requestId = request.GET.get('id')
+    success = False
+    
+    try:
+        req = GeoRequest.objects.get(id = requestId)
+        success = True
+        msg = 'path is ' + os.path.join(str(req.destination.name), '5-toas')
+        
+    except GeoRequest.DoesNotExist:
+
+        msg = 'Request ' + str(requestId) + ' does not exist.'
+
+    return JsonResponse({'success': success, 'msg': msg})
 
 #-------------------------------------------------------------------------------
 # isDaemonRunning

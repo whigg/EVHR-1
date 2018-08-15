@@ -1,8 +1,13 @@
 
+import math
 import tempfile
-
 from xml.dom import minidom
 
+from django.conf import settings
+
+from osgeo.osr import CoordinateTransformation
+
+from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.models import EvhrScene
 
@@ -11,8 +16,6 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrHelper(object):
 
-    # FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/10_05_2017/geodatabase/nga_inventory_10_05_2017.gdb'
-    FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/05_09_2018/geodatabase/nga_inventory.gdb'
     RUN_SENSORS = ['WV01', 'WV02', 'WV03']
     
     #---------------------------------------------------------------------------
@@ -69,7 +72,7 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
-    def getScenes(self, request, ulx, uly, lrx, lry, srs):
+    def getScenes(self, request, ulx, uly, lrx, lry, srs, pairsOnly = False):
 
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
@@ -82,8 +85,6 @@ class EvhrHelper(object):
 
         else:
             
-            MAX_FEATS = 100
-
             # AoI + FOOTPRINTS = scenes
             scenes = self.queryFootprints(ulx, 
                                           uly, 
@@ -91,7 +92,7 @@ class EvhrHelper(object):
                                           lry, 
                                           srs, 
                                           request, 
-                                          MAX_FEATS)
+                                          pairsOnly)
                                           
             for scene in scenes:
                 
@@ -103,12 +104,52 @@ class EvhrHelper(object):
         return scenes
 
     #---------------------------------------------------------------------------
+    # getUtmSrs
+    #
+    # This method finds the UTM zone covering the most of the request's AoI.
+    # It does this by finding the centroid of the AoI and choosing that zone.
+    #---------------------------------------------------------------------------
+    def getUtmSrs(self, request):
+
+        # Centroid, called below, doesn't preserve the SRS.
+        srs = GeoRetriever.constructSrs(request.srs)
+        
+        center = GeoRetriever.bBoxToPolygon(request.ulx,
+                                            request.uly,
+                                            request.lrx,
+                                            request.lry,
+                                            srs).Centroid()
+        
+        # If request is already in WGS84 UTM...
+        if srs.IsProjected() and 'UTM' in srs.GetAttrValue('PROJCS'):
+            return request.srs
+
+        # If the center is not in geographic projection, convert it.
+        xValue = None
+
+        if not GeoRetriever.GEOG_4326.IsSame(srs):
+
+            xform = CoordinateTransformation(srs, GeoRetriever.GEOG_4326)
+            xPt = xform.TransformPoint(center.GetX(), center.GetY())
+            xValue = float(xPt.GetX())
+
+        else:
+            xValue = float(center.GetX())
+
+        # Initally, use the UTM zone of the upper-left corner of the AoI.
+        zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
+        BASE_UTM_EPSG = '326'
+        epsg = int(BASE_UTM_EPSG + str(int(zone)))
+        srs = GeoRetriever.constructSrsFromIntCode(epsg)
+        return srs.ExportToWkt()
+
+    #---------------------------------------------------------------------------
     # queryFootprints
     #---------------------------------------------------------------------------
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
-                        maxFeatures = None):
+                        pairsOnly = False):
 
-        whereClause = '-where "'
+        whereClause = '-where "('
         first = True
 
         for sensor in EvhrHelper.RUN_SENSORS:
@@ -120,9 +161,14 @@ class EvhrHelper(object):
 
             whereClause += 'SENSOR=' + "'" + sensor + "'"
 
+        whereClause += ')'
+        
+        if pairsOnly:
+            whereClause += 'AND pairname IS NOT NULL'
+        
         whereClause += '"'
 
-        features = self.clipShp(EvhrHelper.FOOTPRINTS_FILE,
+        features = self.clipShp(settings.FOOTPRINTS_FILE,
                                 ulx, 
                                 uly, 
                                 lrx, 
@@ -133,14 +179,8 @@ class EvhrHelper(object):
 
         # Put them into a list of (row, path) tuples.
         nitfs = []
-        featureCount = 0
 
         for feature in features:
-
-            featureCount += 1
-
-            if maxFeatures and featureCount > maxFeatures:
-                break
 
             nitf = str(feature. \
                        getElementsByTagName('ogr:S_FILEPATH')[0]. \
