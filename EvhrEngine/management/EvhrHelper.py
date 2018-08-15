@@ -189,6 +189,9 @@ class EvhrHelper(object):
 
             nitfs.append(nitf)
 
+        if settings.is_defined('MAXIMUM_SCENES'):
+            return nitfs[:settings.MAXIMUM_SCENES]
+            
         return nitfs
 
 
