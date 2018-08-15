@@ -268,7 +268,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         for band in bands:
 
             bandFileName = nitfFile.getBand(self.bandDir, band)
-            
+
             if bandFileName:
                 
                 bandFiles.append(bandFileName)
@@ -700,11 +700,12 @@ class EvhrMosaicRetriever(GeoRetriever):
             try:
                 
                 dgFile = DgFile(inputNitf, self.logger)
+
                 bandFiles = self.extractBands(dgFile)
                 toaBands = []
-
+                
                 for bandFile in bandFiles:
-            
+                   
                     orthoBand = self.orthoOne(bandFile, dgFile)
             
                     toaBands.append(TOA.run(orthoBand, 

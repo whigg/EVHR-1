@@ -83,7 +83,7 @@ class TOA():
         calibrationCoeff = TOA.CALIBRATION_COEFF_DICT[key]
 
         sunAngle = 90.0 - dgFile.meanSunElevation
-        earthSunDistance = TOA.calcEarthSunDist(dgFile.firstLineTime)
+        earthSunDistance = TOA.calcEarthSunDist(dgFile.firstLineTime())
 
         toaRadianceCoeff = float(dgFile.abscalFactor(bandName)) \
                                     / float(dgFile.effectiveBandwidth(bandName))

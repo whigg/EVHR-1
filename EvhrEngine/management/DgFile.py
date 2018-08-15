@@ -98,7 +98,7 @@ class DgFile(GdalFile):
     def getBand(self, outputDir, bandName):
 
         gdalBandIndex = int(self.bandNameList.index(bandName)) + 1
-
+ 
         extension = os.path.splitext(self.fileName)[1]
         
         baseName = os.path.basename(self.fileName.replace(extension, \
@@ -120,7 +120,7 @@ class DgFile(GdalFile):
 
             if sCmd.returnCode:
                 tempBandFile = None
-                
+        
         return tempBandFile
 
     #---------------------------------------------------------------------------
@@ -128,14 +128,14 @@ class DgFile(GdalFile):
     #---------------------------------------------------------------------------
     def isMultispectral(self):
 
-        return self.specTypeCode == 'MS'
+        return self.specTypeCode() == 'MS'
 
     #---------------------------------------------------------------------------
     # isPanchromatic()
     #---------------------------------------------------------------------------
     def isPanchromatic(self):
 
-        return self.specTypeCode == 'PAN'
+        return self.specTypeCode() == 'PAN'
 
     #---------------------------------------------------------------------------
     # meanSunElevation()
