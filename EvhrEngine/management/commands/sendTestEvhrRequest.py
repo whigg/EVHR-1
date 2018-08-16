@@ -28,7 +28,8 @@ class Command(BaseCommand):
                        'epsg'     : '32612',
                        'outEpsg'  : '102039',
                        'startDate': datetime.date(2016, 8, 4),
-                       'endDate'  : datetime.date(2017, 1, 31)},
+                       'endDate'  : datetime.date(2017, 1, 31)
+        },
 
         'evhrFairbanksScenes' : {
             'epName'   : 'EVHR Mosaic',
@@ -41,7 +42,7 @@ class Command(BaseCommand):
             'scenes'   : [ "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf",
                            "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf",
                            "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205614_1020010001076500_08FEB28205614-P1BS-005733445010_03_P002.ntf"]
-            }
+        },
 
         'evhrFairbanks' : {
             'epName'   : 'EVHR Mosaic',
