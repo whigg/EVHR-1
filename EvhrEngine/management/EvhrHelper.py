@@ -58,9 +58,13 @@ class EvhrHelper(object):
               ' -spat_srs'                     + \
               ' "' + srs.ExportToProj4() + '"' + \
               ' --debug on'                    + \
-              ' ' + str(extraQueryParams)      + \
-              ' "' + tempClipFile + '"'        + \
-              ' "' + shpFile + '"'
+              ' ' + str(extraQueryParams)
+              
+        if hasattr(settings, 'MAXIMUM_SCENES'):
+            cmd += ' -limit ' + str(settings.MAXIMUM_SCENES)
+            
+        cmd += ' "' + tempClipFile + '"'        + \
+               ' "' + shpFile + '"'
 
         sCmd = SystemCommand(cmd, shpFile, self.logger, request, True)
 
@@ -166,9 +170,6 @@ class EvhrHelper(object):
         if pairsOnly:
             whereClause += ' AND pairname IS NOT NULL'
         
-        if hasattr(settings, 'MAXIMUM_SCENES'):
-            whereClause += ' AND ROWNUM <= ' + str(settings.MAXIMUM_SCENES)
-            
         whereClause += '"'
 
         features = self.clipShp(settings.FOOTPRINTS_FILE,
