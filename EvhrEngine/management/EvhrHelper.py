@@ -164,8 +164,11 @@ class EvhrHelper(object):
         whereClause += ')'
         
         if pairsOnly:
-            whereClause += 'AND pairname IS NOT NULL'
+            whereClause += ' AND pairname IS NOT NULL'
         
+        if hasattr(settings, 'MAXIMUM_SCENES'):
+            whereClause += ' AND ROWNUM <= ' + str(settings.MAXIMUM_SCENES)
+            
         whereClause += '"'
 
         features = self.clipShp(settings.FOOTPRINTS_FILE,
@@ -189,8 +192,8 @@ class EvhrHelper(object):
 
             nitfs.append(nitf)
 
-        if settings.is_defined('MAXIMUM_SCENES'):
-            return nitfs[:settings.MAXIMUM_SCENES]
+        # if settings.is_defined('MAXIMUM_SCENES'):
+        #     return nitfs[:settings.MAXIMUM_SCENES]
             
         return nitfs
 
