@@ -72,7 +72,7 @@ class EvhrDemRetriever(GeoRetriever):
         import pdb
         pdb.set_trace()
             
-        incompletePairKeys = [key in constituents.iterkeys() \
+        incompletePairKeys = [key for key in constituents.iterkeys() \
                                 if len(constituents[key]) < 2]
 
         for ipk in incompletePairKeys:
