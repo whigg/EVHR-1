@@ -1,4 +1,6 @@
 
+import os
+
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
@@ -28,6 +30,9 @@ class EvhrDemRetriever(GeoRetriever):
         #---
         if not self.retrievalSRS.IsSame(GeoRetriever.GEOG_4326):
             raise RuntimeError('Retrieval SRS must be geographic.')
+            
+        self.demDir = os.path.join(self.request.destination.name, 'dems')
+        
 
     #---------------------------------------------------------------------------
     # getEndPointSRSs
@@ -50,28 +55,36 @@ class EvhrDemRetriever(GeoRetriever):
                                            pairsOnly = True)
 
         # Matching catalog IDs indicate pairs.  Aggregate by catalog ID.
-        constituents = {}
+        catIdConstituents = {}
             
         for scene in scenes:
             
             dgFile = DgFile(scene)
             catId = dgFile.getCatalogId()
             
-            if not constituents.has_key(catId):
-                constituents[catId] = []
+            if not catIdConstituents.has_key(catId):
+                catIdConstituents[catId] = []
                 
-            constituents[catId].append(scene)
+            catIdConstituents[catId].append(scene)
 
         #---
         # Footprints queries can be limited to a certain number of records.
-        # This can cause a pair to be missing a mate.  Discard any constituents
+        # This can cause a pair to be missing a mate.  Discard any catIdConstituents
         # with only one file.
         #---
-        incompletePairKeys = [key for key in constituents.iterkeys() \
-                                if len(constituents[key]) < 2]
+        incompletePairKeys = [key for key in catIdConstituents.iterkeys() \
+                                if len(catIdConstituents[key]) < 2]
 
         for ipk in incompletePairKeys:
-            del constituents[ipk]
+            del catIdConstituents[ipk]
+
+        # Create the constituents.
+        constituents = {}
+        
+        for cic in catIdConstituents.iterkeys():
+            
+            consName = os.path.join(self.demDir, cic + '.tif')
+            constituents[consName] = catIdConstituents[cic]
             
         import pdb
         pdb.set_trace()
