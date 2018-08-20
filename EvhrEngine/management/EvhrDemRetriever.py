@@ -52,9 +52,6 @@ class EvhrDemRetriever(GeoRetriever):
 
         constituents = {}
             
-        import pdb
-        pdb.set_trace()
-        
         for scene in scenes:
             
             dgFile = DgFile(scene)
@@ -64,6 +61,9 @@ class EvhrDemRetriever(GeoRetriever):
                 constituents[catId] = []
                 
             constituents[catId].append(scene)
+            
+        import pdb
+        pdb.set_trace()
             
         return constituents
 
