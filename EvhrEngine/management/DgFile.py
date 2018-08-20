@@ -53,8 +53,11 @@ class DgFile(GdalFile):
 
         # firstLineTime
         t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
-        self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
-
+        self.firstLineTime = None
+        
+        if t:
+            self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
+        
         # meanSunElevation
         self.meanSunElevation = \
             float(self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION'))
