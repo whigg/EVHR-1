@@ -51,14 +51,19 @@ class EvhrDemRetriever(GeoRetriever):
 
         constituents = {}
             
-        for scene in scenes:
-            
-            import os
-            print os.path.basename(scene)
-            
         import pdb
         pdb.set_trace()
         
+        for scene in scenes:
+            
+            dgFile = DgFile(scene)
+            catId = dgFile.getCatalogId()
+            
+            if not constituents.has_key(catId):
+                constituents[catId] = []
+                
+            constituents[catId].append(scene)
+            
         return constituents
 
     #---------------------------------------------------------------------------
