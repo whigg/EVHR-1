@@ -1,4 +1,5 @@
 
+from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
