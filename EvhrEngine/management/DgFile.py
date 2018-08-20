@@ -52,9 +52,13 @@ class DgFile(GdalFile):
             [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
 
         # firstLineTime
-        t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
-        self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
-        
+        try:
+            t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
+            self.firstLineTime = datetime.strptime(t, "%Y%m%d%H%M%S")
+
+        except:
+            self.firstListTime = None
+            
         # meanSunElevation
         try:
             self.meanSunElevation = \
@@ -64,17 +68,33 @@ class DgFile(GdalFile):
             self.meanSunElevation = None
 
         # specType
-        self.specTypeCode = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
+        try:
+            self.specTypeCode = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
 
+        except:
+            self.specTypeCode = None
+            
         # sensor
-        self.sensor = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
+        try:
+            self.sensor = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
 
+        except:
+            self.sensor = None
+            
         # year
-        self.year = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
+        try:
+            self.year = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
 
+        except:
+            self.year = None
+            
         # numBands
-        self.numBands = self.dataset.RasterCount
+        try:
+            self.numBands = self.dataset.RasterCount
 
+        except:
+            self.numBands = None
+            
     #---------------------------------------------------------------------------
     # abscalFactor()
     #---------------------------------------------------------------------------
