@@ -50,12 +50,15 @@ class EvhrDemRetriever(GeoRetriever):
                                            pairsOnly)
 
         constituents = {}
-        
+            
         for scene in scenes:
             
-            import pdb
-            pdb.set_trace()
-
+            import os
+            print os.path.basename(scene)
+            
+        import pdb
+        pdb.set_trace()
+        
         return constituents
 
     #---------------------------------------------------------------------------
