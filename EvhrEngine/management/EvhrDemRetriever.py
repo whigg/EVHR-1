@@ -1,6 +1,8 @@
 
 import os
 
+from django.conf import settings
+
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
@@ -83,8 +85,11 @@ class EvhrDemRetriever(GeoRetriever):
         
         for cic in catIdConstituents.iterkeys():
             
-            consName = os.path.join(self.demDir, cic + '.tif')
-            constituents[consName] = catIdConstituents[cic]
+            oneMate = os.path.basename(catIdConstituents[cic][0])
+            pairName = ''.join(oneMat.split('_')[:4])
+            
+            consName = os.path.join(self.demDir, pairName + '.tif'
+            constituents[consName] = pairName
             
         import pdb
         pdb.set_trace()
@@ -95,5 +100,10 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
+        # cmd = settings.DEM_APPLICATION + \
+        #       ' ' +
+              
         pass
+        
+        
         
