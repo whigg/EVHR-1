@@ -40,6 +40,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
+        # Query Footprints seeking pairs.
         pairsOnly = True
         
         scenes = self.evhrHelper.getScenes(self.request,
@@ -50,6 +51,7 @@ class EvhrDemRetriever(GeoRetriever):
                                            self.retrievalSRS,
                                            pairsOnly)
 
+        # Matching catalog IDs indicate pairs.  Aggregate by catalog ID.
         constituents = {}
             
         for scene in scenes:
@@ -61,9 +63,19 @@ class EvhrDemRetriever(GeoRetriever):
                 constituents[catId] = []
                 
             constituents[catId].append(scene)
-            
+
+        #---
+        # Footprints queries can be limited to a certain number of records.
+        # This can cause a pair to be missing a mate.  Discard any constituents
+        # with only one file.
+        #---
         import pdb
         pdb.set_trace()
+            
+        incompletePairKeys = [key in iterkeys() if len(constituents[key]) < 2]
+
+        for ipk in incompletePairKeys:
+            del constituents[ipk]
             
         return constituents
 
