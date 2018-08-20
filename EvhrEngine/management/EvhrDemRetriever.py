@@ -88,7 +88,7 @@ class EvhrDemRetriever(GeoRetriever):
             oneMate = os.path.basename(catIdConstituents[cic][0])
             pairName = ''.join(oneMat.split('_')[:4])
             
-            consName = os.path.join(self.demDir, pairName + '.tif'
+            consName = os.path.join(self.demDir, pairName + '.tif')
             constituents[consName] = pairName
             
         import pdb
