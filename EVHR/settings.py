@@ -175,6 +175,7 @@ LOGGING = {
 
 # WranglerProcess Settings
 DEFAULT_SCALE_IN_METERS = 30
+DEM_APPLICATION = '/att/home/mwooten3/code/evhr/dg_stereo.sh'
 FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/08_01_2018/geodatabase/nga_inventory_canon.gdb'
 MAXIMUM_SCENES = 20
 MERRA_END_DATE = '2017-05-31'
