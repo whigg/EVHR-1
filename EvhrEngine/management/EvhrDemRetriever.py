@@ -92,8 +92,8 @@ class EvhrDemRetriever(GeoRetriever):
             mate1 = DgFile(pair[0])
             
             pairDate = str(mate1.firstLineTime.year)           + \
-                       str(mate2.firstLineTime.month).zfill(2) + \
-                       str(mate2.firstLineTime.day).zfill(2)
+                       str(mate1.firstLineTime.month).zfill(2) + \
+                       str(mate1.firstLineTime.day).zfill(2)
 
             # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
             pairName = mate1.sensor         + '_' + \
