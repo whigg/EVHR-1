@@ -47,7 +47,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        # Query Footprints seeking pairs.
+        # Query Footprints seeking pairs.  Scenes is a list of NITF files.
         scenes = self.evhrHelper.getScenes(self.request,
                                            self.retrievalUlx,
                                            self.retrievalUly,
@@ -85,11 +85,23 @@ class EvhrDemRetriever(GeoRetriever):
         
         for cic in catIdConstituents.iterkeys():
             
-            oneMate = os.path.basename(catIdConstituents[cic][0])
-            pairName = '_'.join(oneMate.split('_')[:4])
+            # oneMate = os.path.basename(catIdConstituents[cic][0])
+            # pairName = '_'.join(oneMate.split('_')[:4])
+
+            pair = catIdConstituents[cic]
+            mate1 = DgFile(pair[0])
+            mate2 = DgFile(pair[1])
+            
+            flTime = mate1.firstLineTime()
+
+            import pdb
+            pdb.set_trace()
+            # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
+            pairName = mate1.sensor + '_' + \
+                       mate1.firstLineTime()
             
             consName = os.path.join(self.demDir, pairName + '.tif')
-            constituents[consName] = pairName
+            constituents[consName] = catIdConstituents[cic]
             
         return constituents
 
