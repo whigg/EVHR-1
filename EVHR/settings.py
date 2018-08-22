@@ -26,7 +26,9 @@ SECRET_KEY = '9t8##+l+s9f*@9*+xaak5wdjm0xtd^t797lapu0y3-3wo4!k^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['evhr101', 'evhr102']
+ALLOWED_HOSTS = ['evhr101',
+                 'evhr101.atusrvm.adapt.nccs.nasa.gov',
+                 'evhr102']
 
 
 # Application definition
