@@ -36,6 +36,9 @@ class EvhrDemRetriever(GeoRetriever):
             
         self.demDir = os.path.join(self.request.destination.name, 'dems')
 
+        if not os.path.exists(self.demDir):
+            os.mkdir(self.demDir)
+
     #---------------------------------------------------------------------------
     # getEndPointSRSs
     #---------------------------------------------------------------------------
