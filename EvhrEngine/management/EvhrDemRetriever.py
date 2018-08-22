@@ -102,7 +102,7 @@ class EvhrDemRetriever(GeoRetriever):
                        DgFile(pair[1]).getCatalogId()
                        
             consName = os.path.join(self.demDir, pairName + '.tif')
-            constituents[consName] = catIdConstituents[cic]
+            constituents[consName] = [pairName]
             
         return constituents
 
@@ -123,7 +123,7 @@ class EvhrDemRetriever(GeoRetriever):
         COR_KNL_SIZE  = '21'
         
         cmd = settings.DEM_APPLICATION    + \
-              ' ' + fileList              + \
+              ' ' + fileList[0]           + \
               ' ' + TEST                  + \
               ' ' + ADAPT                 + \
               ' ' + MAP                   + \
