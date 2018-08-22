@@ -58,9 +58,13 @@ class EvhrHelper(object):
               ' -spat_srs'                     + \
               ' "' + srs.ExportToProj4() + '"' + \
               ' --debug on'                    + \
-              ' ' + str(extraQueryParams)      + \
-              ' "' + tempClipFile + '"'        + \
-              ' "' + shpFile + '"'
+              ' ' + str(extraQueryParams)
+              
+        if hasattr(settings, 'MAXIMUM_SCENES'):
+            cmd += ' -limit ' + str(settings.MAXIMUM_SCENES)
+            
+        cmd += ' "' + tempClipFile + '"'        + \
+               ' "' + shpFile + '"'
 
         sCmd = SystemCommand(cmd, shpFile, self.logger, request, True)
 
@@ -164,7 +168,7 @@ class EvhrHelper(object):
         whereClause += ')'
         
         if pairsOnly:
-            whereClause += 'AND pairname IS NOT NULL'
+            whereClause += ' AND pairname IS NOT NULL'
         
         whereClause += '"'
 
@@ -188,7 +192,7 @@ class EvhrHelper(object):
                        data)
 
             nitfs.append(nitf)
-
+            
         return nitfs
 
 

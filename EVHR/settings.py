@@ -26,7 +26,7 @@ SECRET_KEY = '9t8##+l+s9f*@9*+xaak5wdjm0xtd^t797lapu0y3-3wo4!k^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['evhr102']
+ALLOWED_HOSTS = ['evhr101', 'evhr102']
 
 
 # Application definition
@@ -176,6 +176,7 @@ LOGGING = {
 # WranglerProcess Settings
 DEFAULT_SCALE_IN_METERS = 30
 FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/08_01_2018/geodatabase/nga_inventory_canon.gdb'
+MAXIMUM_SCENES = 20
 MERRA_END_DATE = '2017-05-31'
 MERRA_START_DATE = '1980-01-01'
 WORK_DIRECTORY = OUTPUT_DIRECTORY

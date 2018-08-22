@@ -47,13 +47,20 @@ class DgFile(GdalFile):
             raise RuntimeError('Unable to locate the "IMD" tag in ' + \
                                self.xmlFileName)
     
-        # bandNameList #* added this for getBand --> [BAND_B, BAND_R, etc...]
-        self.bandNameList = \
-            [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
-
+        # bandNameList
+        try:
+            self.bandNameList = \
+                 [n.tag for n in self.imdTag if n.tag.startswith('BAND_')]
+        except:
+            self.bandNameList = None
+    
         # numBands
-        self.numBands = self.dataset.RasterCount
+        try:
+            self.numBands = self.dataset.RasterCount
 
+        except:
+            self.numBands = None
+            
     #---------------------------------------------------------------------------
     # abscalFactor()
     #---------------------------------------------------------------------------
@@ -85,12 +92,15 @@ class DgFile(GdalFile):
     #---------------------------------------------------------------------------
     def firstLineTime(self):
 
-        t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
-        if t is not None:
-            return datetime.strptime(t, "%Y%m%d%H%M%S")
-        else:    
-            t = self.imdTag.find('IMAGE').find('FIRSTLINETIME').text
-            return datetime.strptime(t, "%Y-%m-%dT%H:%M:%S.%fZ")
+        try:
+            t = self.dataset.GetMetadataItem('NITF_CSDIDA_TIME')
+            if t is not None:
+                return datetime.strptime(t, "%Y%m%d%H%M%S")
+            else:    
+                t = self.imdTag.find('IMAGE').find('FIRSTLINETIME').text
+                return datetime.strptime(t, "%Y-%m-%dT%H:%M:%S.%fZ")
+        except:
+            return None
 
     #---------------------------------------------------------------------------
     # getBand()
@@ -124,6 +134,13 @@ class DgFile(GdalFile):
         return tempBandFile
 
     #---------------------------------------------------------------------------
+    # getCatalogId
+    #---------------------------------------------------------------------------
+    def getCatalogId(self):
+        
+        return self.imdTag.findall('./IMAGE/CATID')[0].text
+            
+    #---------------------------------------------------------------------------
     # isMultispectral()
     #---------------------------------------------------------------------------
     def isMultispectral(self):
@@ -141,48 +158,64 @@ class DgFile(GdalFile):
     # meanSunElevation()
     #---------------------------------------------------------------------------
     def meanSunElevation(self):
-     
-        mse = self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION')
-        if mse is None:
-            mse = self.imdTag.find('IMAGE').find('MEANSUNEL').text
+    
+        try: 
+            mse = self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION')
+            if mse is None:
+                mse = self.imdTag.find('IMAGE').find('MEANSUNEL').text
 
-        return float(mse)
+            return float(mse)
 
+        except:
+            return None
+      
     #---------------------------------------------------------------------------
     # sensor()
     #---------------------------------------------------------------------------
     def sensor(self):
 
-        sens = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
-        if sens is None:
-            sens = self.imdTag.find('IMAGE').find('SATID').text
+        try:
+            sens = self.dataset.GetMetadataItem('NITF_PIAIMC_SENSNAME')
+            if sens is None:
+                sens = self.imdTag.find('IMAGE').find('SATID').text
 
-        return sens
+            return sens
+
+        except:
+	    return None
 
     #---------------------------------------------------------------------------
     # specTypeCode()
     #---------------------------------------------------------------------------
     def specTypeCode(self):
-
-        stc = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
-        if stc is None:
-            if self.imdTag.find('BANDID').text == 'P':
-                stc = 'PAN'
-            elif self.imdTag.find('BANDID').text == 'MS1' or \
+        
+        try:
+            stc = self.dataset.GetMetadataItem('NITF_CSEXRA_SENSOR')
+            if stc is None:
+                if self.imdTag.find('BANDID').text == 'P':
+                    stc = 'PAN'
+                elif self.imdTag.find('BANDID').text == 'MS1' or \
                                     self.imdTag.find('BANDID').text == 'Multi':
-                stc = 'MS'
+                    stc = 'MS'
             else:
                  raise RuntimeError('Could not retrieve spectral type code.') 
         
-        return stc          
+            return stc
+
+        except:
+            return None          
 
     #---------------------------------------------------------------------------
     # year()
     #---------------------------------------------------------------------------
     def year(self):
 
-        yr = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
-        if yr is None:
-            yr = self.firstLineTime().year
+        try:
+            yr = self.dataset.GetMetadataItem('NITF_CSDIDA_YEAR')
+            if yr is None:
+                yr = self.firstLineTime().year
 
-        return yr
+            return yr
+  
+        except:
+            return None

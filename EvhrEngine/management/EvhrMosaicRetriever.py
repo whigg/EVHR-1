@@ -4,9 +4,7 @@ import json
 import math
 import os
 import shutil
-# import tempfile
 import traceback
-# from xml.dom import minidom
 
 import numpy
 
@@ -23,7 +21,6 @@ from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
 from EvhrEngine.management.commands.TOA import TOA
 from EvhrEngine.models import EvhrError
-# from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
@@ -58,9 +55,6 @@ from EvhrEngine.models import EvhrError
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
-    # FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/10_05_2017/geodatabase/nga_inventory_10_05_2017.gdb'
-    # FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/05_09_2018/geodatabase/nga_inventory.gdb'
-
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
@@ -81,8 +75,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         #---
         if not self.retrievalSRS.IsSame(GeoRetriever.GEOG_4326):
             raise RuntimeError('Retrieval SRS must be geographic.')
-
-        # self.runSensors = ['WV01', 'WV02', 'WV03']
 
         # Ensure the ortho and toa directories exist.
         self.tileDir  = os.path.join(self.request.destination.name, '1-tiles')
@@ -243,46 +235,6 @@ class EvhrMosaicRetriever(GeoRetriever):
     def getEndPointSRSs(self, endPoint):
         return [GeoRetriever.GEOG_4326]
 
-    #---------------------------------------------------------------------------
-    # getUtmSrs
-    #
-    # This method finds the UTM zone covering the most of the request's AoI.
-    # It does this by finding the centroid of the AoI and choosing that zone.
-    #---------------------------------------------------------------------------
-    # def getUtmSrs(self, request):
-    #
-    #     # Centroid, called below, doesn't preserve the SRS.
-    #     srs = self.constructSrs(request.srs)
-    #
-    #     center = self.bBoxToPolygon(request.ulx,
-    #                                 request.uly,
-    #                                 request.lrx,
-    #                                 request.lry,
-    #                                 srs).Centroid()
-    #
-    #     # If request is already in WGS84 UTM...
-    #     if srs.IsProjected() and 'UTM' in srs.GetAttrValue('PROJCS'):
-    #         return request.srs
-    #
-    #     # If the center is not in geographic projection, convert it.
-    #     xValue = None
-    #
-    #     if not GeoRetriever.GEOG_4326.IsSame(srs):
-    #
-    #         xform = CoordinateTransformation(srs, GeoRetriever.GEOG_4326)
-    #         xPt = xform.TransformPoint(center.GetX(), center.GetY())
-    #         xValue = float(xPt.GetX())
-    #
-    #     else:
-    #         xValue = float(center.GetX())
-    #
-    #     # Initally, use the UTM zone of the upper-left corner of the AoI.
-    #     zone = (math.floor((xValue + 180.0) / 6) % 60) + 1
-    #     BASE_UTM_EPSG = '326'
-    #     epsg = int(BASE_UTM_EPSG + str(int(zone)))
-    #     srs = GeoRetriever.constructSrsFromIntCode(epsg)
-    #     return srs.ExportToWkt()
-                
     #---------------------------------------------------------------------------
     # listConstituents
     #---------------------------------------------------------------------------
