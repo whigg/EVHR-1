@@ -92,7 +92,7 @@ class EvhrDemRetriever(GeoRetriever):
             mate1 = DgFile(pair[0])
             mate2 = DgFile(pair[1])
             
-            flTime = mate1.firstLineTime()
+            flTime = mate1.firstLineTime
 
             import pdb
             pdb.set_trace()
