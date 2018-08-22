@@ -90,16 +90,17 @@ class EvhrDemRetriever(GeoRetriever):
 
             pair = catIdConstituents[cic]
             mate1 = DgFile(pair[0])
-            mate2 = DgFile(pair[1])
             
-            flTime = mate1.firstLineTime
+            pairDate = str(mate1.firstLineTime.year)           + \
+                       str(mate2.firstLineTime.month).zfill(2) + \
+                       str(mate2.firstLineTime.day).zfill(2)
 
-            import pdb
-            pdb.set_trace()
             # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
-            pairName = mate1.sensor + '_' + \
-                       mate1.firstLineTime()
-            
+            pairName = mate1.sensor         + '_' + \
+                       pairDate             + '_' + \
+                       mate1.getCatalogId() + '_' +\
+                       DgFile(pair[1]).getCatalogId()
+                       
             consName = os.path.join(self.demDir, pairName + '.tif')
             constituents[consName] = catIdConstituents[cic]
             
