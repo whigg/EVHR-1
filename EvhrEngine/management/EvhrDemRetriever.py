@@ -110,7 +110,7 @@ class EvhrDemRetriever(GeoRetriever):
         COR_KNL_SIZE  = '21'
         
         cmd = settings.DEM_APPLICATION    + \
-              ' ' + fileList[0]           + \
+              ' ' + fileList              + \
               ' ' + TEST                  + \
               ' ' + ADAPT                 + \
               ' ' + MAP                   + \
