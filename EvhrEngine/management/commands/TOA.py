@@ -79,10 +79,10 @@ class TOA():
     @staticmethod
     def calcToaReflectanceCoeff(dgFile, bandName):
 
-        key = '{}_{}'.format(dgFile.sensor, bandName)
+        key = '{}_{}'.format(dgFile.sensor(), bandName)
         calibrationCoeff = TOA.CALIBRATION_COEFF_DICT[key]
 
-        sunAngle = 90.0 - dgFile.meanSunElevation
+        sunAngle = 90.0 - dgFile.meanSunElevation()
         earthSunDistance = TOA.calcEarthSunDist(dgFile.firstLineTime())
 
         toaRadianceCoeff = float(dgFile.abscalFactor(bandName)) \

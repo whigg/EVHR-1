@@ -197,13 +197,11 @@ class DgFile(GdalFile):
                 elif self.imdTag.find('BANDID').text == 'MS1' or \
                                     self.imdTag.find('BANDID').text == 'Multi':
                     stc = 'MS'
-            else:
-                 raise RuntimeError('Could not retrieve spectral type code.') 
-        
+      
             return stc
 
         except:
-            return None          
+          return None          
 
     #---------------------------------------------------------------------------
     # year()
