@@ -120,7 +120,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -176,6 +176,7 @@ LOGGING = {
 }
 
 # WranglerProcess Settings
+DAYS_UNTIL_REQUEST_PURGE = 30
 DEFAULT_SCALE_IN_METERS = 30
 DEM_APPLICATION = '/att/nobackup/rlgill/DgStereo/evhr/dg_stereo.sh'
 FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/08_01_2018/geodatabase/nga_inventory_canon.gdb'
