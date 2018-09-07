@@ -122,17 +122,19 @@ class TOA():
                          settings.NO_DATA_VALUE, \
                          toaBandFile)
 
-            status = os.system(cmd)
-            
-            if status != 0 or not os.path.exists(toaBandFile):
-                
-                if logger:
-                    logger.info('Command: ' + str(cmd))
-                    
-                else:
-                    print 'Command: ' + str(cmd)
-                    
-                raise RuntimeError('ToA failed.')
+            # status = os.system(cmd)
+            #
+            # if status != 0 or not os.path.exists(toaBandFile):
+            #
+            #     if logger:
+            #         logger.info('Command: ' + str(cmd))
+            #
+            #     else:
+            #         print 'Command: ' + str(cmd)
+            #
+            #     raise RuntimeError('ToA failed.')
+
+            sCmd = SystemCommand(cmd, toaBandFile, logger, None, True)
 
         return toaBandFile
 
