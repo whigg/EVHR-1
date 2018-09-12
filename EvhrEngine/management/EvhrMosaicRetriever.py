@@ -136,7 +136,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                   str(lrx) + '-'                  + \
                   str(lry) + '-'                  + \
                   str(srs.GetAuthorityCode(None)) + \
-                  '.tif'
+                  '-adj.tif'
 
         demName = os.path.join(self.demDir, demName)
 
@@ -327,6 +327,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                        ' '.join(bandFiles))
 
         sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, True)
+        for bandFile in bandFiles: os.remove(bandFile) # remove individual toa bands
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -344,6 +345,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         if self.logger:
             self.logger.info('Creating DEM ' + str(outDemName))
+
+        outDemNameTemp = outDemName.replace('.tif', '-temp.tif')
 
         #---
         # SRTM was collected between -54 and 60 degrees of latitude.  Use
@@ -393,17 +396,30 @@ class EvhrMosaicRetriever(GeoRetriever):
             tiles.append(tileFile)
 
         # Mosaic the tiles.
-        cmd = 'gdal_merge.py'     + \
-              ' -o ' + outDemName + \
-              ' -ul_lr'           + \
-              ' ' + str(ulx)      + \
-              ' ' + str(uly)      + \
-              ' ' + str(lrx)      + \
-              ' ' + str(lry)      + \
+        cmd = 'gdal_merge.py'         + \
+              ' -o ' + outDemNameTemp + \
+              ' -ul_lr'               + \
+              ' ' + str(ulx)          + \
+              ' ' + str(uly)          + \
+              ' ' + str(lrx)          + \
+              ' ' + str(lry)          + \
               ' ' + ' '.join(tiles)
 
-        sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
+        sCmd = SystemCommand(cmd, outDemNameTemp, \
+                                                self.logger, self.request, True)
 
+        # Run mosaicked DEM through geoid correction
+        cmd = '/opt/StereoPipeline/bin/dem_geoid '  + \
+              outDemNameTemp + ' --geoid EGM96 -o ' + \
+              outDemName.strip('-adj.tif')          + \
+              ' --reverse-adjustment'
+
+        sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
+        
+        os.remove(outDemNameTemp)
+        for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
+                                 os.remove(log) # remove dem_geoid log file
+    
     #---------------------------------------------------------------------------
     # orthoOne
     #
@@ -505,7 +521,8 @@ class EvhrMosaicRetriever(GeoRetriever):
                                             self.toaDir, 
                                             inputNitf, 
                                             self.logger))
-            
+                    os.remove(orthoBand.replace('.tif', '.tif.aux.xml')) # delete orthoBand.aux.xml after running TOA           
+
                 self.mergeBands(toaBands, toaFinal)
 
             except:
