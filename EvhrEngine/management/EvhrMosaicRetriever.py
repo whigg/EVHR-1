@@ -24,7 +24,7 @@ from EvhrEngine.models import EvhrError
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
-#
+# maggie
 # SRSs
 # - requestSRS: as usual, whatever the user chooses
 # - outSRS: this must be UTM, regardless of what the user chooses
