@@ -24,6 +24,7 @@ from EvhrEngine.models import EvhrError
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
+# Roger
 #
 # SRSs
 # - requestSRS: as usual, whatever the user chooses
