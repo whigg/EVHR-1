@@ -122,15 +122,19 @@ class Command(BaseCommand):
         #---
         # Create features for each scene.
         #---
-        # sceneFile = os.path.join(request.destination.name, 'scenes.txt')
-        # with open(sceneFile) as f: sceneString = f.read()
-        # scenes = json.loads(sceneString)
-        # Command.filesToFeatures('scenes', scenes, srs, dataSource)
-        
         scenes = EvhrScene.objects.values_list('sceneFile', flat = True) \
                                   .filter(request = request.id)
 
         Command.filesToFeatures('scenes', scenes, srs, dataSource)
+
+        # Also, write the scene file names to a text file.
+        sceneFile = os.path.join(gridDir, 'scenes.txt')
+
+        with open(sceneFile, w) as f: 
+            for scene in scenes:
+                f.write(scene)
+                
+        f.close()
         
         #---
         # Create features for each tile.
