@@ -130,7 +130,7 @@ class Command(BaseCommand):
         # Also, write the scene file names to a text file.
         sceneFile = os.path.join(gridDir, 'scenes.txt')
 
-        with open(sceneFile, w) as f: 
+        with open(sceneFile, 'w') as f: 
             for scene in scenes:
                 f.write(scene)
                 
