@@ -132,7 +132,7 @@ class Command(BaseCommand):
 
         with open(sceneFile, 'w') as f: 
             for scene in scenes:
-                f.write(scene)
+                f.write(scene + '\n')
                 
         f.close()
         
