@@ -41,7 +41,7 @@ class EvhrHelper(object):
         # To filter scenes that only overlap the AoI slightly, decrease both
         # corners of the query AoI.
         #---
-        MIN_OVERLAP_IN_DEGREES = 0.2
+        MIN_OVERLAP_IN_DEGREES = 0.02
         ulx = float(ulx) + MIN_OVERLAP_IN_DEGREES
         uly = float(uly) - MIN_OVERLAP_IN_DEGREES
         lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
