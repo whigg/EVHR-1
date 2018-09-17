@@ -16,6 +16,7 @@ from ProcessingEngine.models import Request
 from ProcessingEngine.models import RequestProcess
 
 from JobDaemon import models
+from JobDaemon.management.commands import killZombieJobDaemons
 from JobDaemon.management.commands import purgeRequests
 from JobDaemon.management.commands import purgeRequestDirs
 from JobDaemon.management.commands import purgeZipFiles
@@ -183,4 +184,5 @@ class Command(BaseCommand):
         purgeZipFiles.purgeZipFiles()
         purgeRequests.purgeRequests()
         purgeRequestDirs.purgeRequestDirs()
+        killZombieJobDaemons.killZombieJobDaemons()
             
