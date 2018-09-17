@@ -26,7 +26,9 @@ SECRET_KEY = '9t8##+l+s9f*@9*+xaak5wdjm0xtd^t797lapu0y3-3wo4!k^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['evhr101', 'evhr102']
+ALLOWED_HOSTS = ['evhr101',
+                 'evhr101.atusrvm.adapt.nccs.nasa.gov',
+                 'evhr102']
 
 
 # Application definition
@@ -118,7 +120,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -174,7 +176,9 @@ LOGGING = {
 }
 
 # WranglerProcess Settings
+DAYS_UNTIL_REQUEST_PURGE = 30
 DEFAULT_SCALE_IN_METERS = 30
+DEM_APPLICATION = '/att/nobackup/rlgill/DgStereo/evhr/dg_stereo.sh'
 FOOTPRINTS_FILE = '/att/pubrepo/NGA/INDEX/Footprints/current/08_01_2018/geodatabase/nga_inventory_canon.gdb'
 MAXIMUM_SCENES = 20
 MERRA_END_DATE = '2017-05-31'

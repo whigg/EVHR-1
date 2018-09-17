@@ -240,13 +240,18 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
+        # Query for scenes.
         scenes = self.evhrHelper.getScenes(self.request,
                                            self.retrievalUlx,
                                            self.retrievalUly,
                                            self.retrievalLrx,
                                            self.retrievalLry,
                                            self.retrievalSRS)
-                                           
+            
+        #---
+        # Create a polygon for each scene.  They are used to test for
+        # intersection below.
+        #---
         sceneGeoms = {}
         
         for scene in scenes:

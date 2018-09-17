@@ -1,8 +1,11 @@
 
 import os
 
+from django.conf import settings
+
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
+from EvhrEngine.management.SystemCommand import SystemCommand
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
 #-------------------------------------------------------------------------------
@@ -32,7 +35,9 @@ class EvhrDemRetriever(GeoRetriever):
             raise RuntimeError('Retrieval SRS must be geographic.')
             
         self.demDir = os.path.join(self.request.destination.name, 'dems')
-        
+
+        if not os.path.exists(self.demDir):
+            os.mkdir(self.demDir)
 
     #---------------------------------------------------------------------------
     # getEndPointSRSs
@@ -45,7 +50,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
-        # Query Footprints seeking pairs.
+        # Query Footprints seeking pairs.  Scenes is a list of NITF files.
         scenes = self.evhrHelper.getScenes(self.request,
                                            self.retrievalUlx,
                                            self.retrievalUly,
@@ -83,11 +88,22 @@ class EvhrDemRetriever(GeoRetriever):
         
         for cic in catIdConstituents.iterkeys():
             
-            consName = os.path.join(self.demDir, cic + '.tif')
-            constituents[consName] = catIdConstituents[cic]
+            pair = catIdConstituents[cic]
+            mate1 = DgFile(pair[0])
             
-        import pdb
-        pdb.set_trace()
+            pairDate = str(mate1.firstLineTime.year)           + \
+                       str(mate1.firstLineTime.month).zfill(2) + \
+                       str(mate1.firstLineTime.day).zfill(2)
+
+            # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
+            pairName = mate1.sensor         + '_' + \
+                       pairDate             + '_' + \
+                       mate1.getCatalogId() + '_' +\
+                       DgFile(pair[1]).getCatalogId()
+                       
+            consName = os.path.join(self.demDir, pairName + '.tif')
+            constituents[consName] = [pairName]
+            
         return constituents
 
     #---------------------------------------------------------------------------
@@ -95,5 +111,36 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
-        pass
+        TEST          = 'true'
+        ADAPT         = 'true'
+        MAP           = 'false'
+        RUN_PSTEREO   = 'true' 
+        USE_NODE_LIST = 'false'
+        NODES         = ''
+        SGM           = 'false'
+        SUB_PIX_KNL   = '15'
+        ERODE_MAX     = '24'
+        COR_KNL_SIZE  = '21'
+        
+        cmd = settings.DEM_APPLICATION    + \
+              ' ' + fileList[0]           + \
+              ' ' + TEST                  + \
+              ' ' + ADAPT                 + \
+              ' ' + MAP                   + \
+              ' ' + RUN_PSTEREO           + \
+              ' ' + fileList[0]           + \
+              ' _placeholder_for_rpcdem_' + \
+              ' ' + USE_NODE_LIST         + \
+              ' ' + NODES                 + \
+              ' ' + SGM                   + \
+              ' ' + SUB_PIX_KNL           + \
+              ' ' + ERODE_MAX             + \
+              ' ' + COR_KNL_SIZE
+              
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+        
+              
+              
+              
+        
         
