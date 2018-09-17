@@ -88,9 +88,11 @@ class Command(BaseCommand):
         request.srs = \
             GeoRetriever.constructSrsFromIntCode(params['epsg']).ExportToWkt()
     
-        request.outSRS = \
-            GeoRetriever.constructSrsFromIntCode(params['outEpsg']). \
-            ExportToWkt()
+        if params.has_key('outEpsg'):
+
+            request.outSRS = \
+                GeoRetriever.constructSrsFromIntCode(params['outEpsg']). \
+                ExportToWkt()
     
         request.save()
 
