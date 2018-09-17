@@ -88,9 +88,6 @@ class EvhrDemRetriever(GeoRetriever):
         
         for cic in catIdConstituents.iterkeys():
             
-            # oneMate = os.path.basename(catIdConstituents[cic][0])
-            # pairName = '_'.join(oneMate.split('_')[:4])
-
             pair = catIdConstituents[cic]
             mate1 = DgFile(pair[0])
             
