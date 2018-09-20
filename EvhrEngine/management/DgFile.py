@@ -134,11 +134,28 @@ class DgFile(GdalFile):
         return tempBandFile
 
     #---------------------------------------------------------------------------
-    # getCatalogId
+    # getCatalogId()
     #---------------------------------------------------------------------------
     def getCatalogId(self):
         
         return self.imdTag.findall('./IMAGE/CATID')[0].text
+
+    #---------------------------------------------------------------------------
+    # getStripName()
+    #---------------------------------------------------------------------------
+    def getStripName(self):
+        
+        try:
+            if self.specTypeCode() == 'MS': prodCode = 'M1BS'
+            else: prodCode = 'P1BS'
+            dateStr = '{}{}{}'.format(self.year(), self.firstLineTime().month, \
+                                                      self.firstLineTime().day)
+
+            return '{}_{}_{}_{}'.format(self.sensor(), dateStr, prodCode, \
+                                                           self.getCatalogId())
+
+        except:
+            return None   
             
     #---------------------------------------------------------------------------
     # isMultispectral()
