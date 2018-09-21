@@ -123,6 +123,7 @@ class EvhrDemRetriever(GeoRetriever):
         ERODE_MAX     = '24'
         COR_KNL_SIZE  = '21'
         MYSTERY1      = '300'
+        OUT_DIR       = self.demDir
         
         cmd = settings.DEM_APPLICATION    + \
               ' ' + fileList[0]           + \
@@ -138,7 +139,8 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + SUB_PIX_KNL           + \
               ' ' + ERODE_MAX             + \
               ' ' + COR_KNL_SIZE          + \
-              ' ' + MYSTERY1
+              ' ' + MYSTERY1              + \
+              ' ' + OUT_DIR
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
