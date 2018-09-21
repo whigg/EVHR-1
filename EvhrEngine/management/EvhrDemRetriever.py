@@ -74,8 +74,8 @@ class EvhrDemRetriever(GeoRetriever):
 
         #---
         # Footprints queries can be limited to a certain number of records.
-        # This can cause a pair to be missing a mate.  Discard any catIdConstituents
-        # with only one file.
+        # This can cause a pair to be missing a mate.  Discard any
+        # catIdConstituents with only one file.
         #---
         incompletePairKeys = [key for key in catIdConstituents.iterkeys() \
                                 if len(catIdConstituents[key]) < 2]
@@ -115,12 +115,14 @@ class EvhrDemRetriever(GeoRetriever):
         ADAPT         = 'true'
         MAP           = 'false'
         RUN_PSTEREO   = 'true' 
-        USE_NODE_LIST = 'false'
-        NODES         = ''
+        BATCH_NAME    = self.request.name
+        USE_NODE_LIST = 'true'
+        NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
         SGM           = 'false'
         SUB_PIX_KNL   = '15'
         ERODE_MAX     = '24'
         COR_KNL_SIZE  = '21'
+        MYSTERY1      = '300'
         
         cmd = settings.DEM_APPLICATION    + \
               ' ' + fileList[0]           + \
@@ -128,14 +130,15 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + ADAPT                 + \
               ' ' + MAP                   + \
               ' ' + RUN_PSTEREO           + \
-              ' ' + fileList[0]           + \
+              ' ' + BATCH_NAME            + \
               ' _placeholder_for_rpcdem_' + \
               ' ' + USE_NODE_LIST         + \
               ' ' + NODES                 + \
               ' ' + SGM                   + \
               ' ' + SUB_PIX_KNL           + \
               ' ' + ERODE_MAX             + \
-              ' ' + COR_KNL_SIZE
+              ' ' + COR_KNL_SIZE          + \
+              ' ' + MYSTERY1
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
