@@ -96,7 +96,7 @@ class EvhrDemRetriever(GeoRetriever):
                        str(mate1.firstLineTime().day).zfill(2)
 
             # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
-            pairName = mate1.sensor         + '_' + \
+            pairName = mate1.sensor()       + '_' + \
                        pairDate             + '_' + \
                        mate1.getCatalogId() + '_' +\
                        DgFile(pair[1]).getCatalogId()
