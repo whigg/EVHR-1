@@ -9,7 +9,6 @@ from osgeo.osr import CoordinateTransformation
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.SystemCommand import SystemCommand
-from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrHelper
