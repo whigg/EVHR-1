@@ -1,5 +1,6 @@
 
 import os
+from sets import Set
 
 from django.conf import settings
 
@@ -58,7 +59,7 @@ class EvhrDemRetriever(GeoRetriever):
                                                  request,
                                                  True)
 
-        pairs = []
+        pairs = Set([])
 
         for fpRec in fpRecs:
 
@@ -67,7 +68,7 @@ class EvhrDemRetriever(GeoRetriever):
                        firstChild. \
                        data)
 
-            pairs.append(pair)
+            pairs.add(pair)
             
         import pdb
         pdb.set_trace()
