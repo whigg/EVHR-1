@@ -46,18 +46,46 @@ class EvhrDemRetriever(GeoRetriever):
         return [GeoRetriever.GEOG_4326]
 
     #---------------------------------------------------------------------------
+    # getPairs
+    #---------------------------------------------------------------------------
+    def getPairs(self, request, ulx, uly, lrx, lry, srs):
+
+        fpRecs = self.queryFootprints(ulx, 
+                                      uly, 
+                                      lrx, 
+                                      lry, 
+                                      srs, 
+                                      request,
+                                      true)
+
+        pairs = []
+
+        for fpRec in fpRecs:
+
+            pair = str(fpRec. \
+                       getElementsByTagName('ogr:S_FILEPATH')[0]. \
+                       firstChild. \
+                       data)
+
+            pairs.append(pair)
+            
+        return pairs
+
+    #---------------------------------------------------------------------------
     # listConstituents
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
         # Query Footprints seeking pairs.  Scenes is a list of NITF files.
-        scenes = self.evhrHelper.getScenes(self.request,
-                                           self.retrievalUlx,
-                                           self.retrievalUly,
-                                           self.retrievalLrx,
-                                           self.retrievalLry,
-                                           self.retrievalSRS,
-                                           pairsOnly = True)
+        import pdb
+        pdb.set_trace()
+        
+        pairs = self.getPairs(self.request,
+                              self.retrievalUlx,
+                              self.retrievalUly,
+                              self.retrievalLrx,
+                              self.retrievalLry,
+                              self.retrievalSRS)
 
         # Matching catalog IDs indicate pairs.  Aggregate by catalog ID.
         catIdConstituents = {}
@@ -101,7 +129,7 @@ class EvhrDemRetriever(GeoRetriever):
                        mate1.getCatalogId() + '_' +\
                        DgFile(pair[1]).getCatalogId()
                        
-            consName = os.path.join(self.demDir, pairName + '.tif')
+            consName = os.path.join(self.demDir, 'out-DEM_4m.tif')
             constituents[consName] = [pairName]
             
         return constituents
@@ -144,7 +172,7 @@ class EvhrDemRetriever(GeoRetriever):
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
-              
+        return constituentFileName    
               
               
         
