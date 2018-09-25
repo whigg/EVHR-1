@@ -70,9 +70,6 @@ class EvhrDemRetriever(GeoRetriever):
 
             pairs.add(pair)
             
-        import pdb
-        pdb.set_trace()
-        
         return pairs
 
     #---------------------------------------------------------------------------
