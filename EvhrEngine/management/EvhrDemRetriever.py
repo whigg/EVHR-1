@@ -58,6 +58,9 @@ class EvhrDemRetriever(GeoRetriever):
                                                  request,
                                                  True)
 
+        import pdb
+        pdb.set_trace()
+        
         pairs = []
 
         for fpRec in fpRecs:
@@ -77,9 +80,6 @@ class EvhrDemRetriever(GeoRetriever):
     def listConstituents(self):
 
         # Query Footprints seeking pairs.  Scenes is a list of NITF files.
-        import pdb
-        pdb.set_trace()
-        
         pairs = self.getPairs(self.request,
                               self.retrievalUlx,
                               self.retrievalUly,
