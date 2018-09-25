@@ -50,7 +50,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def getPairs(self, request, ulx, uly, lrx, lry, srs):
 
-        fpRecs = self.EvhrHelper.queryFootprints(ulx, 
+        fpRecs = self.evhrHelper.queryFootprints(ulx, 
                                                  uly, 
                                                  lrx, 
                                                  lry, 
