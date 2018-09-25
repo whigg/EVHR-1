@@ -58,20 +58,20 @@ class EvhrDemRetriever(GeoRetriever):
                                                  request,
                                                  True)
 
-        import pdb
-        pdb.set_trace()
-        
         pairs = []
 
         for fpRec in fpRecs:
 
             pair = str(fpRec. \
-                       getElementsByTagName('ogr:S_FILEPATH')[0]. \
+                       getElementsByTagName('ogr:stereopair')[0]. \
                        firstChild. \
                        data)
 
             pairs.append(pair)
             
+        import pdb
+        pdb.set_trace()
+        
         return pairs
 
     #---------------------------------------------------------------------------
