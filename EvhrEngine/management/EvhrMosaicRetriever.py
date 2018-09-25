@@ -21,6 +21,7 @@ from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
 from EvhrEngine.management.commands.TOA import TOA
 from EvhrEngine.models import EvhrError
+from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
