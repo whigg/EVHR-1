@@ -253,7 +253,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         else:
             
             # AoI + FOOTPRINTS = scenes
-            fpRecs = self.EvhrHelper.queryFootprints(ulx, 
+            fpRecs = self.evhrHelper.queryFootprints(ulx, 
                                                      uly, 
                                                      lrx, 
                                                      lry, 
