@@ -56,7 +56,7 @@ class EvhrDemRetriever(GeoRetriever):
                                                  lry, 
                                                  srs, 
                                                  request,
-                                                 true)
+                                                 True)
 
         pairs = []
 
