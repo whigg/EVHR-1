@@ -64,7 +64,7 @@ class EvhrDemRetriever(GeoRetriever):
         for fpRec in fpRecs:
 
             pair = str(fpRec. \
-                       getElementsByTagName('ogr:stereopair')[0]. \
+                       getElementsByTagName('ogr:pairname')[0]. \
                        firstChild. \
                        data)
 
@@ -77,7 +77,14 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
+        #---
         # Query Footprints seeking pairs.  Scenes is a list of NITF files.
+        #
+        # Set(['102001001268E300', '1020010015B3E800', '1020010012A0BE00', 
+        # '1020010013E74D00', '10200100152A5F00', '1020010011416200', 
+        # '1020010012026500', '1020010012BE9500', '1020010011756100', 
+        # '1020010011937800'])
+        #---
         pairs = self.getPairs(self.request,
                               self.retrievalUlx,
                               self.retrievalUly,
@@ -85,52 +92,52 @@ class EvhrDemRetriever(GeoRetriever):
                               self.retrievalLry,
                               self.retrievalSRS)
 
-        # Matching catalog IDs indicate pairs.  Aggregate by catalog ID.
-        catIdConstituents = {}
-            
-        for scene in scenes:
-            
-            dgFile = DgFile(scene)
-            catId = dgFile.getCatalogId()
-            
-            if not catIdConstituents.has_key(catId):
-                catIdConstituents[catId] = []
-                
-            catIdConstituents[catId].append(scene)
-
-        #---
-        # Footprints queries can be limited to a certain number of records.
-        # This can cause a pair to be missing a mate.  Discard any
-        # catIdConstituents with only one file.
-        #---
-        incompletePairKeys = [key for key in catIdConstituents.iterkeys() \
-                                if len(catIdConstituents[key]) < 2]
-
-        for ipk in incompletePairKeys:
-            del catIdConstituents[ipk]
-
-        # Create the constituents.
-        constituents = {}
-        
-        for cic in catIdConstituents.iterkeys():
-            
-            pair = catIdConstituents[cic]
-            mate1 = DgFile(pair[0])
-            
-            pairDate = str(mate1.firstLineTime().year)           + \
-                       str(mate1.firstLineTime().month).zfill(2) + \
-                       str(mate1.firstLineTime().day).zfill(2)
-
-            # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
-            pairName = mate1.sensor()       + '_' + \
-                       pairDate             + '_' + \
-                       mate1.getCatalogId() + '_' +\
-                       DgFile(pair[1]).getCatalogId()
-                       
-            consName = os.path.join(self.demDir, 'out-DEM_4m.tif')
-            constituents[consName] = [pairName]
-            
-        return constituents
+        # # Matching catalog IDs indicate pairs.  Aggregate by catalog ID.
+        # catIdConstituents = {}
+        #
+        # for pair in pairs:
+        #
+        #     dgFile = DgFile(p)
+        #     catId = dgFile.getCatalogId()
+        #
+        #     if not catIdConstituents.has_key(catId):
+        #         catIdConstituents[catId] = []
+        #
+        #     catIdConstituents[catId].append(scene)
+        #
+        # #---
+        # # Footprints queries can be limited to a certain number of records.
+        # # This can cause a pair to be missing a mate.  Discard any
+        # # catIdConstituents with only one file.
+        # #---
+        # incompletePairKeys = [key for key in catIdConstituents.iterkeys() \
+        #                         if len(catIdConstituents[key]) < 2]
+        #
+        # for ipk in incompletePairKeys:
+        #     del catIdConstituents[ipk]
+        #
+        # # Create the constituents.
+        # constituents = {}
+        #
+        # for cic in catIdConstituents.iterkeys():
+        #
+        #     pair = catIdConstituents[cic]
+        #     mate1 = DgFile(pair[0])
+        #
+        #     pairDate = str(mate1.firstLineTime().year)           + \
+        #                str(mate1.firstLineTime().month).zfill(2) + \
+        #                str(mate1.firstLineTime().day).zfill(2)
+        #
+        #     # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
+        #     pairName = mate1.sensor()       + '_' + \
+        #                pairDate             + '_' + \
+        #                mate1.getCatalogId() + '_' +\
+        #                DgFile(pair[1]).getCatalogId()
+        #
+        #     consName = os.path.join(self.demDir, 'out-DEM_4m.tif')
+        #     constituents[consName] = [pairName]
+        #
+        # return constituents
 
     #---------------------------------------------------------------------------
     # retrieveOne
