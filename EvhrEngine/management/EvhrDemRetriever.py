@@ -113,6 +113,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
+        PAIR_NAME     = fileList[0]
         TEST          = 'true'
         ADAPT         = 'true'
         MAP           = 'false'
@@ -128,7 +129,7 @@ class EvhrDemRetriever(GeoRetriever):
         OUT_DIR       = self.demDir
         
         cmd = settings.DEM_APPLICATION    + \
-              ' ' + fileList[0]           + \
+              ' ' + PAIR_NAME             + \
               ' ' + TEST                  + \
               ' ' + ADAPT                 + \
               ' ' + MAP                   + \
@@ -147,9 +148,11 @@ class EvhrDemRetriever(GeoRetriever):
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
         # Move the primary output file to the constituent name.
-        # out
-        # cmd = 'mv '
-        # sCmd = SystemCommand'out-DEM_4m.tif'
+        pairDir = os.path.join(self.demDir, PAIR_NAME)
+        outDemName = os.path.join(pairDir, 'out-DEM_4m.tif')
+        cmd = 'mv ' + outDemName + ' ' + constituentFileName
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+        
         return constituentFileName    
               
               
