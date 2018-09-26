@@ -8,6 +8,13 @@ from EvhrEngine.models import EvhrError
 #-------------------------------------------------------------------------------
 class SystemCommand(object):
 
+    ERROR_STRINGS_TO_TEST = [ \
+        'traceback',
+        'error',
+        'command not found',
+        'stale file handle',
+        'failed to access']
+        
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
@@ -33,10 +40,21 @@ class SystemCommand(object):
             
         #---
         # There are cases where the shell command fails and still returns a 0,
-        # causing returnCode to be None.  To detect this, check if msg starts
-        # with "Traceback".
+        # causing returnCode to be None.  To detect this, check if msg contains
+        # and error text.
         #---
-        if self.returnCode or self.msg.startswith('Traceback'):
+        lcMsg = self.msg.lower()
+        hasErrorString = False
+        
+        for eMsg in SystemCommand.ERROR_STRING_TO_TEST:
+            
+            if lcMsg.find(eMsg) != -1:
+
+                hasErrorString = True
+                break
+        
+        # if self.returnCode or self.msg.startswith('Traceback'):
+        if self.returnCode or hasErrorString:
             
             err             = EvhrError()
             err.request     = request
