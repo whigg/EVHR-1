@@ -46,7 +46,7 @@ class SystemCommand(object):
         lcMsg = self.msg.lower()
         hasErrorString = False
         
-        for eMsg in SystemCommand.ERROR_STRING_TO_TEST:
+        for eMsg in SystemCommand.ERROR_STRINGS_TO_TEST:
             
             if lcMsg.find(eMsg) != -1:
 
