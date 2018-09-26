@@ -80,10 +80,16 @@ class EvhrDemRetriever(GeoRetriever):
         #---
         # Query Footprints seeking pairs.  Scenes is a list of NITF files.
         #
-        # Set(['102001001268E300', '1020010015B3E800', '1020010012A0BE00', 
-        # '1020010013E74D00', '10200100152A5F00', '1020010011416200', 
-        # '1020010012026500', '1020010012BE9500', '1020010011756100', 
-        # '1020010011937800'])
+        # Set(['WV01_20110226_10200100123C2600_1020010011416200', 
+        # 'WV01_20110709_10200100140E8300_1020010012026500', 
+        # 'WV01_20110227_1020010011055300_1020010012A0BE00', 
+        # 'WV01_20110303_102001001157E300_1020010012BE9500', 
+        # 'WV01_20110618_10200100149D3C00_1020010015B3E800', 
+        # 'WV01_20110708_10200100144BD800_1020010013E74D00', 
+        # 'WV01_20110804_1020010015973400_10200100152A5F00', 
+        # 'WV01_20110402_102001001163AB00_102001001268E300', 
+        # 'WV01_20110303_1020010011628B00_1020010011756100', 
+        # 'WV01_20110401_10200100113F5C00_1020010011937800'])
         #---
         pairs = self.getPairs(self.request,
                               self.retrievalUlx,
@@ -92,52 +98,15 @@ class EvhrDemRetriever(GeoRetriever):
                               self.retrievalLry,
                               self.retrievalSRS)
 
-        # # Matching catalog IDs indicate pairs.  Aggregate by catalog ID.
-        # catIdConstituents = {}
-        #
-        # for pair in pairs:
-        #
-        #     dgFile = DgFile(p)
-        #     catId = dgFile.getCatalogId()
-        #
-        #     if not catIdConstituents.has_key(catId):
-        #         catIdConstituents[catId] = []
-        #
-        #     catIdConstituents[catId].append(scene)
-        #
-        # #---
-        # # Footprints queries can be limited to a certain number of records.
-        # # This can cause a pair to be missing a mate.  Discard any
-        # # catIdConstituents with only one file.
-        # #---
-        # incompletePairKeys = [key for key in catIdConstituents.iterkeys() \
-        #                         if len(catIdConstituents[key]) < 2]
-        #
-        # for ipk in incompletePairKeys:
-        #     del catIdConstituents[ipk]
-        #
-        # # Create the constituents.
-        # constituents = {}
-        #
-        # for cic in catIdConstituents.iterkeys():
-        #
-        #     pair = catIdConstituents[cic]
-        #     mate1 = DgFile(pair[0])
-        #
-        #     pairDate = str(mate1.firstLineTime().year)           + \
-        #                str(mate1.firstLineTime().month).zfill(2) + \
-        #                str(mate1.firstLineTime().day).zfill(2)
-        #
-        #     # Pair name is <sensor>_<yyyymmdd>_<catID1>_<catID2>.
-        #     pairName = mate1.sensor()       + '_' + \
-        #                pairDate             + '_' + \
-        #                mate1.getCatalogId() + '_' +\
-        #                DgFile(pair[1]).getCatalogId()
-        #
-        #     consName = os.path.join(self.demDir, 'out-DEM_4m.tif')
-        #     constituents[consName] = [pairName]
-        #
-        # return constituents
+        # Create the constituents.
+        constituents = {}
+
+        for pair in pairs:
+
+            consName = os.path.join(self.demDir, pair + '.tif')
+            constituents[consName] = [pair]
+
+        return constituents
 
     #---------------------------------------------------------------------------
     # retrieveOne
@@ -177,6 +146,10 @@ class EvhrDemRetriever(GeoRetriever):
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
+        # Move the primary output file to the constituent name.
+        # out
+        # cmd = 'mv '
+        # sCmd = SystemCommand'out-DEM_4m.tif'
         return constituentFileName    
               
               
