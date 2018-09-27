@@ -8,12 +8,15 @@ from EvhrEngine.models import EvhrError
 #-------------------------------------------------------------------------------
 class SystemCommand(object):
 
+    # These must be in lower case.
     ERROR_STRINGS_TO_TEST = [ \
         'traceback',
         'error',
         'command not found',
         'stale file handle',
-        'failed to access']
+        'failed to access',
+        'stereogrammetry unsuccessful',
+        'exiting']
         
     #---------------------------------------------------------------------------
     # __init__
