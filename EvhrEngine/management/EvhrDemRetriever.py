@@ -151,7 +151,7 @@ class EvhrDemRetriever(GeoRetriever):
         try:
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
-        except RuntimeException:
+        except RuntimeError:
 
             return None
             
