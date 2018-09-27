@@ -119,14 +119,17 @@ class EvhrDemRetriever(GeoRetriever):
         MAP           = 'false'
         RUN_PSTEREO   = 'true' 
         BATCH_NAME    = self.request.name
-        USE_NODE_LIST = 'true'
-        NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
         SGM           = 'false'
         SUB_PIX_KNL   = '15'
         ERODE_MAX     = '24'
         COR_KNL_SIZE  = '21'
         MYSTERY1      = '300'
         OUT_DIR       = self.demDir
+
+        # USE_NODE_LIST = 'true'
+        # NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
+        USE_NODE_LIST = 'false'
+        NODES         = ''
         
         cmd = settings.DEM_APPLICATION    + \
               ' ' + PAIR_NAME             + \
