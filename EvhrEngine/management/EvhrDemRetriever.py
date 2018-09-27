@@ -148,13 +148,13 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + MYSTERY1              + \
               ' ' + OUT_DIR
               
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+        sCmd = SystemCommand(cmd, None, self.logger, self.request)
             
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
         outDemName = os.path.join(pairDir, 'out-DEM_4m.tif')
         cmd = 'mv ' + outDemName + ' ' + constituentFileName
-        sCmd = SystemCommand(cmd, None, self.logger, self.request)
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
         return constituentFileName    
               
