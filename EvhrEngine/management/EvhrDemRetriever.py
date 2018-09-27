@@ -148,12 +148,7 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + MYSTERY1              + \
               ' ' + OUT_DIR
               
-        try:
-            sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
-        
-        except RuntimeError:
-
-            return None
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
             
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
