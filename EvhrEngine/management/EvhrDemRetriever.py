@@ -99,7 +99,7 @@ class EvhrDemRetriever(GeoRetriever):
                               self.retrievalSRS)
                               
         # ONLY RUN ONE SCENE FOR TESTING
-        pairs = pairs[:1]
+        pairs = list(pairs[:1])
         print '*** ONLY RUNNING SCENE ' + str(pairs[0])
 
         # Create the constituents.
