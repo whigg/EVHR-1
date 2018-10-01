@@ -134,7 +134,7 @@ class EvhrDemRetriever(GeoRetriever):
         # USE_NODE_LIST = 'true'
         # NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
         USE_NODE_LIST = 'false'
-        NODES         = ' '
+        NODES         = '""'
         
         cmd = settings.DEM_APPLICATION    + \
               ' ' + PAIR_NAME             + \
