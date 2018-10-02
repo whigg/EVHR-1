@@ -79,24 +79,15 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Ensure the ortho and toa directories exist.
         self.tileDir  = os.path.join(self.request.destination.name, '1-tiles')
         self.bandDir  = os.path.join(self.request.destination.name, '2-bands')
-        self.demDir   = os.path.join(self.request.destination.name, '3-dems')
-        self.orthoDir = os.path.join(self.request.destination.name, '4-orthos')
-        self.toaDir   = os.path.join(self.request.destination.name, '5-toas')
+        self.stripDir = os.path.join(self.request.destination.name, '3-strips')
+        self.demDir   = os.path.join(self.request.destination.name, '4-dems')
+        self.orthoDir = os.path.join(self.request.destination.name, '5-orthos')
+        self.toaDir   = os.path.join(self.request.destination.name, '6-toas')
 
-        if not os.path.exists(self.tileDir):
-            os.mkdir(self.tileDir)
+        for d in [self.tileDir, self.bandDir, self.stripDir, self.demDir, \
+                                                   self.orthoDir, self.toaDir]:
 
-        if not os.path.exists(self.bandDir):
-            os.mkdir(self.bandDir)
-
-        if not os.path.exists(self.demDir):
-            os.mkdir(self.demDir)
-
-        if not os.path.exists(self.orthoDir):
-            os.mkdir(self.orthoDir)
-
-        if not os.path.exists(self.toaDir):
-            os.mkdir(self.toaDir)
+            if not os.path.exists(d): os.mkdir(d)
             
     #---------------------------------------------------------------------------
     # compress
@@ -190,8 +181,10 @@ class EvhrMosaicRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def deleteFiles(self, deleteDir):
         
+        # Remove *.tif and their .xmls
         files = glob.glob(os.path.join(deleteDir, '*.tif'))
-        
+        files.extend(glob.glob(os.path.join(deleteDir, '*.xml')))
+
         for f in files:
             os.remove(f)
             
@@ -332,7 +325,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                        ' '.join(bandFiles))
 
         sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, True)
-        for bandFile in bandFiles: os.remove(bandFile) # remove individual toa bands
+        for bandFile in bandFiles: os.remove(bandFile)
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -421,7 +414,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
         
-        os.remove(outDemNameTemp)
+        #os.remove(outDemNameTemp)
         for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
                                  os.remove(log) # remove dem_geoid log file
     
@@ -456,11 +449,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             # Orthorectify.
             orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
-
-            # get band name from bandFile
-            ds = gdal.Open(bandFile, gdal.GA_ReadOnly)
-            bandName =  ds.GetMetadataItem('bandName')
-            ds = None
+            bandName = DgFile(bandFile).getBandName()
 
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
@@ -482,29 +471,29 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,True)
 
-            os.remove(orthoFileTemp)
+            # Copy xml to accompany ortho file (needed for TOA)
+            shutil.copy(origDgFile.xmlFileName, \
+                                              orthoFile.replace('.tif', '.xml'))
 
-            # Add bandName metadata tag back
-            ds = gdal.Open(orthoFile, gdal.GA_ReadOnly)
-            ds.SetMetadataItem("bandName", bandName)
-            ds = None
+            DgFile(orthoFile).setBandName(bandName)
 
         return orthoFile
 
     #---------------------------------------------------------------------------
-    # processScene
+    # processStrip()
     #
-    # The original NITF, extracted bands and orthorectified scenes remain
+    # Takes a strip and a list of band mosaics (from dg_mosaic) and processes
+    # The original NITF, extracted band strips and orthorectified strips remain
     # unclipped.  Only the final orthorectified image is clipped in mergeBands
-    # or compress.
+    # or compress. 
     #---------------------------------------------------------------------------
-    def processScene(self, inputNitf):
+    def processStrip(self, stripName, stripBands):
 
         if self.logger:
-            self.logger.info('Processing scene ' + str(inputNitf))
+            self.logger.info('Processing strip {}'.format(stripName))
 
         # Get the output name to see if it exists.
-        bname = os.path.basename(inputNitf).replace('.ntf', '-ortho.tif')
+        bname = '{}-ortho.tif'.format(stripName)
         toaFinal = os.path.join(self.toaDir, bname.replace('.tif', '-toa.tif'))
 
         # If the output file exists, don't bother running it again.
@@ -512,28 +501,70 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             # Catch errors, so the constituent continues despite errors.
             try:
-                
-                dgFile = DgFile(inputNitf, self.logger)
 
-                bandFiles = self.extractBands(dgFile)
                 toaBands = []
-                
-                for bandFile in bandFiles:
-                   
-                    orthoBand = self.orthoOne(bandFile, dgFile)
-            
-                    toaBands.append(TOA.run(orthoBand, 
-                                            self.toaDir, 
-                                            inputNitf, 
+
+                for stripBand in stripBands:
+                    dgStrip = DgFile(stripBand)
+                    orthoBand = self.orthoOne(stripBand, dgStrip)
+    
+                    toaBands.append(TOA.run(orthoBand,
+                                            self.toaDir,
+                                            stripBand, # instead of inputNitf
                                             self.logger))
-                    os.remove(orthoBand.replace('.tif', '.tif.aux.xml')) # delete orthoBand.aux.xml after running TOA           
 
                 self.mergeBands(toaBands, toaFinal)
+                shutil.copy(DgFile(orthoBand).xmlFileName, \
+                                              toaFinal.replace('.tif', '.xml'))    
+
 
             except:
                 pass
-                
+
         return toaFinal
+
+
+    #---------------------------------------------------------------------------
+    # scenesToStrips()
+
+    # Takes a list of scenes belonging to a strip and mosaics the scenes
+    # together with dg_mosaic
+    #---------------------------------------------------------------------------
+    def scenesToStrip(self, stripName, stripScenes):
+
+        if self.logger:
+            self.logger.info('Extracting bands and mosaicking to strips for' + \
+                    ' {} ({} input scenes)'.format(stripName, len(stripScenes)))
+
+        stripBandList = [] # Length of list = number of bands
+            
+        bands = ['BAND_P'] if 'P1BS' in stripName else \
+                                        ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
+ 
+        for bandName in bands:
+           
+            bandScenes = [DgFile(scene).getBand(self.bandDir, bandName) \
+                                                       for scene in stripScenes]
+ 
+            bandScenesStr = ' '.join(bandScenes)
+
+            stripBandFile = os.path.join(self.stripDir, '{}_{}.r100.tif'\
+                                                  .format(stripName, bandName))
+
+            cmd = '/opt/StereoPipeline/bin/dg_mosaic --output-nodata-value 0' +\
+                             ' --ignore-inconsistencies --output-prefix {} {}' \
+                               .format(stripBandFile.replace('.r100.tif', ''), \
+                                                                  bandScenesStr)
+
+            sCmd = SystemCommand(cmd, stripBandFile, self.logger,              \
+                                                             self.request, True)
+                
+            DgFile(stripBandFile).setBandName(bandName)
+                          
+            stripBandList.append(stripBandFile) 
+
+	# Return the list of band strips
+        return stripBandList
 
     #---------------------------------------------------------------------------
     # retrieveOne
@@ -544,18 +575,33 @@ class EvhrMosaicRetriever(GeoRetriever):
     def retrieveOne(self, constituentFileName, fileList):
 
         #---
-        # Orthorectify the full scene, clip to the half-degree-square tile,
-        # and covert to Geotiff.
+        # Mosaic scenes into strips, orthorectify the full strip, clip to the 
+        # half-degree-square tile, and covert to Geotiff.
         #---
-        completedScenes = [self.processScene(nitf) for nitf in fileList]
+
+        completedStrips = []
+        
+        # Get list of unique strip names for scenes in AOI
+        stripNameList = list(set([DgFile(scene).getStripName() \
+                                                        for scene in fileList]))
+
+        # For each strip, extract bands --> mosaic, ortho, toa each band
+        for stripName in stripNameList:
+
+            stripScenes = [scene for scene in fileList if \
+                                   DgFile(scene).getStripName() == stripName]
+
+            stripBandList = self.scenesToStrip(stripName, stripScenes)
+            completedStrips.append(self.processStrip(stripName, stripBandList))
         
         self.deleteFiles(self.bandDir)
+        self.deleteFiles(self.stripDir)
         self.deleteFiles(self.demDir)
         self.deleteFiles(self.orthoDir)
-
+ 
         # Mosaic the scenes into a single file.
         
         # Transform the mosaic into the output SRS.
         
-        return completedScenes[0]
+        return completedStrips[0]
 

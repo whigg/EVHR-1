@@ -2,7 +2,10 @@
 from datetime import datetime
 import os
 import subprocess
+import shutil
 import xml.etree.ElementTree as ET
+
+from osgeo.osr import SpatialReference
 
 from EvhrEngine.management.GdalFile import GdalFile
 from EvhrEngine.management.SystemCommand import SystemCommand
@@ -41,12 +44,35 @@ class DgFile(GdalFile):
         # These data member require the XML file counterpart to the TIF.
         tree = ET.parse(self.xmlFileName)
         self.imdTag = tree.getroot().find('IMD')
-        
+
         if self.imdTag is None:
-            
+
             raise RuntimeError('Unable to locate the "IMD" tag in ' + \
                                self.xmlFileName)
-    
+
+        # If srs from GdalFile is empty, set srs, and get coords from the .xml
+        if not self.srs:
+
+            self.srs = SpatialReference()
+            self.srs.ImportFromEPSG(4326)
+              
+            bandTag = [n for n in self.imdTag.getchildren() if \
+                n.tag.startswith('BAND_')][0] # all bands will have same extent
+
+            self.ulx = min(float(bandTag.find('LLLON').text), \
+                                          float(bandTag.find('ULLON').text))
+
+            self.uly = max(float(bandTag.find('ULLAT').text), \
+                                          float(bandTag.find('URLAT').text))
+
+            self.lrx = max(float(bandTag.find('LRLON').text), \
+                                          float(bandTag.find('URLON').text))
+
+            self.lry = min(float(bandTag.find('LRLAT').text), \
+                                          float(bandTag.find('LLLAT').text))
+
+            GdalFile.validateCoordinates(self) # Lastly, validate coordinates
+
         # bandNameList
         try:
             self.bandNameList = \
@@ -131,7 +157,20 @@ class DgFile(GdalFile):
             if sCmd.returnCode:
                 tempBandFile = None
         
+        # Copy scene .xml to accompany the extracted .tif (needed for dg_mosaic) 
+        shutil.copy(self.xmlFileName, tempBandFile.replace('.tif', '.xml'))        
+
         return tempBandFile
+
+    #---------------------------------------------------------------------------
+    # getBandName()
+    #---------------------------------------------------------------------------
+    def getBandName(self):
+        
+        try:
+            return self.dataset.GetMetadataItem('bandName')
+        except:
+            return None
 
     #---------------------------------------------------------------------------
     # getCatalogId()
@@ -148,11 +187,12 @@ class DgFile(GdalFile):
         try:
             if self.specTypeCode() == 'MS': prodCode = 'M1BS'
             else: prodCode = 'P1BS'
-            dateStr = '{}{}{}'.format(self.year(), self.firstLineTime().month, \
-                                                      self.firstLineTime().day)
+            dateStr = '{}{}{}'.format(self.year(),                             \
+                                     str(self.firstLineTime().month).zfill(2), \
+                                         str(self.firstLineTime().day).zfill(2))
 
-            return '{}_{}_{}_{}'.format(self.sensor(), dateStr, prodCode, \
-                                                           self.getCatalogId())
+            return '{}_{}_{}_{}'.format(self.sensor(), dateStr, prodCode,      \
+                                                            self.getCatalogId())
 
         except:
             return None   
@@ -200,6 +240,13 @@ class DgFile(GdalFile):
 
         except:
 	    return None
+
+    #---------------------------------------------------------------------------
+    # setBandName()
+    #---------------------------------------------------------------------------
+    def setBandName(self, bandName):
+        
+        self.dataset.SetMetadataItem("bandName", bandName)
 
     #---------------------------------------------------------------------------
     # specTypeCode()

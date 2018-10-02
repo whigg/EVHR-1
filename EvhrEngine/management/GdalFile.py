@@ -32,23 +32,13 @@ class GdalFile(object):
         self.srs = None
         
         if self.dataset.GetGCPCount():
-            
+
             self.ulx = self.dataset.GetGCPs()[0].GCPX
             self.uly = self.dataset.GetGCPs()[0].GCPY
             self.lrx = self.dataset.GetGCPs()[2].GCPX
             self.lry = self.dataset.GetGCPs()[2].GCPY
             self.srs = SpatialReference(self.dataset.GetGCPProjection())
-            
-            #---
-            # Sometimes the input file will have ulx and lrx swapped.  Detect
-            # and fix this.
-            #---
-            if self.ulx > self.lrx:
-                
-                temp = self.ulx
-                self.ulx = self.lrx
-                self.lrx = temp
-
+                        
         else:
 
             geoTransform = self.dataset.GetGeoTransform()
@@ -58,8 +48,39 @@ class GdalFile(object):
             self.lry = self.uly + geoTransform[5] * self.dataset.RasterYSize
             self.srs = SpatialReference(self.dataset.GetProjection())
 
-        if not self.srs:
-            raise RuntimeError("Could not get projection or corner coordinates")
+        # Validate the SRS, set values to None if it fails
+        if self.srs.Validate() != 0:
+            
+            if self.logger: #? is this correct or no, might end up printing with a large space?
+                self.logger.warning('Could not get valid SRS or coordinates' + \
+                                     ' from {}'.format(self.fileName))
 
-        
-    
+            self.srs = None
+            self.ulx = None
+            self.uly = None
+            self.lrx = None
+            self.lry = None
+
+        else: # If it passes, validate the corner coordinates as well
+            self.validateCoordinates()
+      
+    #---------------------------------------------------------------------------
+    # validateCoordinates()
+    #
+    # Sometimes the input file will have ulx and lrx and/or uly and lry swapped.
+    # Detect and fix this.
+    #---------------------------------------------------------------------------  
+    def validateCoordinates(self):
+
+        if self.ulx > self.lrx:
+
+            temp = self.ulx
+            self.ulx = self.lrx
+            self.lrx = temp
+         
+        if self.lry > self.uly:
+
+            temp = self.lry
+            self.lry = self.uly
+            self.uly = temp
+

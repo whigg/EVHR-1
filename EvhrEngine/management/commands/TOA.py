@@ -4,6 +4,7 @@ from datetime import datetime
 from osgeo import gdal
 from EvhrEngine.management.DgFile import DgFile
 
+from EvhrEngine.management.SystemCommand import SystemCommand
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
