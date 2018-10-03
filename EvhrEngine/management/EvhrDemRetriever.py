@@ -131,10 +131,10 @@ class EvhrDemRetriever(GeoRetriever):
         MYSTERY1      = '300'
         OUT_DIR       = self.demDir
 
-        # USE_NODE_LIST = 'true'
-        # NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
-        USE_NODE_LIST = 'false'
-        NODES         = '""'
+        USE_NODE_LIST = 'true'
+        NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
+        # USE_NODE_LIST = 'false'
+        # NODES         = '""'
         
         cmd = settings.DEM_APPLICATION    + \
               ' ' + PAIR_NAME             + \
