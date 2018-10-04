@@ -13,42 +13,60 @@ from django.conf import settings
 #-------------------------------------------------------------------------------
 class TOA():
 
+    """ New TOA calculation is a bit different from the old. Using gains and
+    offsets in addition to solar exoatmospheric irradiance (calibration coeff)
+
+    L = gain * orthoDN * (abscalFactor/bandwidth) + offset --> image
+    Reflectance = (L * earthSunDist^2 * pi)/ (calCoeff * cos(sunAngle)) -->image
+    Then scale by 10000
+
+    So to obtain Reflectance image in one step:
+
+    Refl = 10000*
+    [(((gain * orthoDN * (abscalFactor/bandwidth) + offset) * earthSunDist^2 * pi))/ (calCoeff * cos(sunAngle))]
+
+    """
+
+    # Coefficient values are list of: Calibration coeff, gain, and offset
+    # Using Thuillier 2003 cal vals
+
     CALIBRATION_COEFF_DICT = {
-    'QB02_BAND_P':1381.79,
-    'QB02_BAND_B':1924.59,
-    'QB02_BAND_G':1843.08,
-    'QB02_BAND_R':1574.77,
-    'QB02_BAND_N':1113.71,
-    'WV01_BAND_P':1487.54715,
-    'WV02_BAND_P':1580.8140,
-    'WV02_BAND_C':1758.2229,
-    'WV02_BAND_B':1974.2416,
-    'WV02_BAND_G':1856.4104,
-    'WV02_BAND_Y':1738.4791,
-    'WV02_BAND_R':1559.4555,
-    'WV02_BAND_RE':1342.0695,
-    'WV02_BAND_N':1069.7302,
-    'WV02_BAND_N2':861.2866,
-    'WV03_BAND_P':1616.4508,
-    'WV03_BAND_C':1544.5748,
-    'WV03_BAND_B':1971.4957,
-    'WV03_BAND_G':1821.7494,
-    'WV03_BAND_Y':1779.2849,
-    'WV03_BAND_R':1586.8104,
-    'WV03_BAND_RE':1320.2137,
-    'WV03_BAND_N':1088.7935,
-    'WV03_BAND_N2':777.5231,
-    'GE01_BAND_P':1617,
-    'GE01_BAND_B':1960,
-    'GE01_BAND_G':1853,
-    'GE01_BAND_R':1505,
-    'GE01_BAND_N':1039,
-    'IK01_BAND_P':1375.8,
-    'IK01_BAND_B':1930.9,
-    'IK01_BAND_G':1854.8,
-    'IK01_BAND_R':1556.5,
-    'IK01_BAND_N':1156.9
+    'QB02_BAND_P':[1370.92,0.870,-1.491],
+    'QB02_BAND_B':[1949.59,1.105,-2.820],
+    'QB02_BAND_G':[1823.64,1.071,-3.338],
+    'QB02_BAND_R':[1553.78,1.060,-2.954],
+    'QB02_BAND_N':[1102.85,1.020,-4.722],
+    'WV01_BAND_P':[1478.62,1.016,-1.824],
+    'WV02_BAND_P':[1571.36,0.942,-2.704],
+    'WV02_BAND_C':[1773.81,1.151,-7.478],
+    'WV02_BAND_B':[2007.27,0.988,-5.736],
+    'WV02_BAND_G':[1829.62,0.936,-3.546],
+    'WV02_BAND_Y':[1701.85,0.949,-3.564],
+    'WV02_BAND_R':[1538.85,0.952,-2.512],
+    'WV02_BAND_RE':[1346.09,0.974,-4.120],
+    'WV02_BAND_N':[1053.21,0.961,-3.300],
+    'WV02_BAND_N2':[856.599,1.002,-2.891],
+    'WV03_BAND_P':[1574.41,0.950,-3.629],
+    'WV03_BAND_C':[1757.89,0.905,-8.604],
+    'WV03_BAND_B':[2004.61,0.940,-5.809],
+    'WV03_BAND_G':[1830.18,0.938,-4.996],
+    'WV03_BAND_Y':[1712.07,0.962,-3.649],
+    'WV03_BAND_R':[1535.33,0.964,-3.021],
+    'WV03_BAND_RE':[1348.08,1.000,-4.521],
+    'WV03_BAND_N':[1055.94,0.961,-5.522],
+    'WV03_BAND_N2':[858.77,0.978,-2.992],
+    'GE01_BAND_P':[1610.73,0.970,-1.926],
+    'GE01_BAND_B':[1993.18,1.053,-4.537],
+    'GE01_BAND_G':[1828.83,0.994,-4.175],
+    'GE01_BAND_R':[1491.49,0.998,-3.754],
+    'GE01_BAND_N':[1022.58,0.994,-3.870],
+    'IK01_BAND_P':[1353.25,0.907,-4.461],
+    'IK01_BAND_B':[1921.26,1.073,-9.699],
+    'IK01_BAND_G':[1803.28,0.990,-7.937],
+    'IK01_BAND_R':[1517.76,0.940,-4.767],
+    'IK01_BAND_N':[1145.8,1.043,-8.869]
     }
+
 
     #---------------------------------------------------------------------------
     # calcEarthSunDist()
@@ -75,24 +93,45 @@ class TOA():
         return earthSunDistance
 
     #---------------------------------------------------------------------------
-    # calcToaReflectanceCoeff()
+    # calcToaReflectance()
     #---------------------------------------------------------------------------
     @staticmethod
-    def calcToaReflectanceCoeff(dgFile, bandName):
+    def calcToaReflectance(orthoBandFile, toaBandFile, logger = None):
 
-        key = '{}_{}'.format(dgFile.sensor(), bandName)
-        calibrationCoeff = TOA.CALIBRATION_COEFF_DICT[key]
+        dgOrthoFile = DgFile(orthoBandFile)
 
-        sunAngle = 90.0 - dgFile.meanSunElevation()
-        earthSunDistance = TOA.calcEarthSunDist(dgFile.firstLineTime())
+        bandName = dgOrthoFile.getBandName()
+        key = '{}_{}'.format(dgOrthoFile.sensor(), bandName)
+        calCoeff, gain, offset = TOA.CALIBRATION_COEFF_DICT[key]
 
-        toaRadianceCoeff = float(dgFile.abscalFactor(bandName)) \
-                                    / float(dgFile.effectiveBandwidth(bandName))
+        sunAngle = 90.0 - dgOrthoFile.meanSunElevation()
+        earthSunDist = TOA.calcEarthSunDist(dgOrthoFile.firstLineTime())
 
-        toaReflectanceCoeff = (toaRadianceCoeff * (earthSunDistance**2 * np.pi)\
-                    / (calibrationCoeff * np.cos(np.radians(sunAngle)))) * 10000
+        print calCoeff, gain, offset
+        print dgOrthoFile.abscalFactor(bandName)
+        print dgOrthoFile.effectiveBandwidth(bandName)
+        print earthSunDist
+        print sunAngle        
 
-        return toaReflectanceCoeff
+        import pdb; pdb.set_trace()
+
+        calc = "10000 * [((({}*var_0*({}/{})+{})*{}*{})) / ({}*{})]" \
+                .format(gain, dgOrthoFile.abscalFactor(bandName), \
+                 dgOrthoFile.effectiveBandwidth(bandName), offset, \
+                 earthSunDist**2, np.pi, calCoeff, np.cos(np.radians(sunAngle)))                   
+        
+        print calc
+        # APPLY TO IMAGE_CALC HERE
+        cmd = '/opt/StereoPipeline/bin/image_calc -c "{}" {} -d int16 \
+              --output-nodata-value {} -o {}'.format(calc, orthoBandFile, \
+                                       settings.NO_DATA_VALUE, toaBandFile)
+        
+        print cmd
+        #toaRadianceCoeff = float(dgFile.abscalFactor(bandName)) \
+        #                            / float(dgFile.effectiveBandwidth(bandName))
+
+        #toaReflectanceCoeff = (toaRadianceCoeff * (earthSunDistance**2 * np.pi)\
+        #            / (calibrationCoeff * np.cos(np.radians(sunAngle)))) * 10000
 
 
     #---------------------------------------------------------------------------
@@ -100,28 +139,30 @@ class TOA():
     #---------------------------------------------------------------------------
     @staticmethod
     def run(orthoBandFile, outputDir, dgFileName, logger = None):
+#        import pdb; pdb.set_trace()
+        #dgFile = DgFile(dgFileName)
 
-        dgFile = DgFile(dgFileName)
+        #dataset = gdal.Open(orthoBandFile, gdal.GA_ReadOnly)
+        #if not dataset:
+        #    raise RuntimeError("Could not open {}".format(orthoBandFile))
+        #bandName = dataset.GetMetadataItem('bandName')
+        #dataset = None
 
-        dataset = gdal.Open(orthoBandFile, gdal.GA_ReadOnly)
-        if not dataset:
-            raise RuntimeError("Could not open {}".format(orthoBandFile))
-        bandName = dataset.GetMetadataItem('bandName')
-        dataset = None
-
-        toaReflectanceCoeff = TOA.calcToaReflectanceCoeff(dgFile, bandName)
+        #toaReflectanceCoeff = TOA.calcToaReflectanceCoeff(dgFile, bandName)
 
         baseName = os.path.basename(orthoBandFile).replace('.tif', '-toa.tif')
         toaBandFile = os.path.join(outputDir, baseName)
 
         if not os.path.isfile(toaBandFile):
 
-            cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0 * {}" {} \
-                  -d int16 --output-nodata-value {} -o {}'.\
-                  format(toaReflectanceCoeff, \
-                         orthoBandFile, \
-                         settings.NO_DATA_VALUE, \
-                         toaBandFile)
+            try: # new function calcToaReflectance creates toaBandFile
+                TOA.calcToaReflectance(orthoBandFile, toaBandFile, logger)
+ 
+            except:
+                if logger:
+                    logger.error('TOA failed for {}'.format(orthoBandFile))
+            
+                return None  
 
             # status = os.system(cmd)
             #
@@ -135,8 +176,7 @@ class TOA():
             #
             #     raise RuntimeError('ToA failed.')
 
-            sCmd = SystemCommand(cmd, toaBandFile, logger, None, True)
-
+           
         return toaBandFile
 
 #-------------------------------------------------------------------------------
