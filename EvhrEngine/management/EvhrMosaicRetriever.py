@@ -414,7 +414,6 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
         
-        #os.remove(outDemNameTemp)
         for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
                                  os.remove(log) # remove dem_geoid log file
     
@@ -451,6 +450,8 @@ class EvhrMosaicRetriever(GeoRetriever):
             orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
             bandName = DgFile(bandFile).getBandName()
 
+
+            # to project, add: --t_srs "+proj=utm +zone=? +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
                   ' ' + clippedDEM                                      + \
@@ -494,7 +495,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Get the output name to see if it exists.
         bname = '{}-ortho.tif'.format(stripName)
-        toaFinal = os.path.join(self.toaDir, bname.replace('.tif', '-toa.tif'))
+        toaFinal = os.path.join(self.toaDir, 'EVHR_{}'.format(bname.replace\
+                                                    ('-ortho.tif', '-TOA.tif')))
 
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
@@ -503,19 +505,21 @@ class EvhrMosaicRetriever(GeoRetriever):
             try:
 
                 toaBands = []
-
+                #orthoBands = [] # temp-yujie
                 for stripBand in stripBands:
                     dgStrip = DgFile(stripBand)
                     orthoBand = self.orthoOne(stripBand, dgStrip)
-    
+                    #orthoBands.append(orthoBand) # yujie
                     toaBands.append(TOA.run(orthoBand,
                                             self.toaDir,
                                             stripBand, # instead of inputNitf
                                             self.logger))
 
                 self.mergeBands(toaBands, toaFinal)
+      
                 shutil.copy(DgFile(orthoBand).xmlFileName, \
                                               toaFinal.replace('.tif', '.xml'))    
+                #self.mergeBands(orthoBands, os.path.join(self.toaDir, bname)) # yujie
 
 
             except:
@@ -540,7 +544,9 @@ class EvhrMosaicRetriever(GeoRetriever):
             
         bands = ['BAND_P'] if 'P1BS' in stripName else \
                                         ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
- 
+	
+        bands =	DgFile(stripScenes[0]).bandNameList # yujie. might use later
+
         for bandName in bands:
            
             bandScenes = [DgFile(scene).getBand(self.bandDir, bandName) \
