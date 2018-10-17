@@ -17,13 +17,14 @@ class TOA():
     offsets in addition to solar exoatmospheric irradiance (calibration coeff)
 
     L = gain * orthoDN * (abscalFactor/bandwidth) + offset --> image
-    Reflectance = (L * earthSunDist^2 * pi)/ (calCoeff * cos(sunAngle)) -->image
-    Then scale by 10000
+    Reflectance = (L * earthSunDist^2 * pi)/ (calCoeff * cos(sunAngle))--> image
+    And scale by 10000
 
     So to obtain Reflectance image in one step:
 
     Refl = 10000*
-    [(((gain * orthoDN * (abscalFactor/bandwidth) + offset) * earthSunDist^2 * pi))/ (calCoeff * cos(sunAngle))]
+    [(((gain * orthoDN * (abscalFactor/bandwidth) + offset) * earthSunDist^2 * 
+    pi))/ (calCoeff * cos(sunAngle))]
 
     """
 
@@ -86,6 +87,7 @@ class TOA():
         b = 2 - a + int(a/4.)
         jd = int(365.25*(year+4716)) + int(30.6001*(month+1)) + day + (ut/24) \
                                                                     + b - 1524.5
+        
         g = 357.529 + 0.98560028 * (jd-2451545.0)
         earthSunDistance = 1.00014 - 0.01671 * np.cos(np.radians(g)) - 0.00014 \
                                                     * np.cos(np.radians(2*g))
@@ -107,48 +109,27 @@ class TOA():
         sunAngle = 90.0 - dgOrthoFile.meanSunElevation()
         earthSunDist = TOA.calcEarthSunDist(dgOrthoFile.firstLineTime())
 
-        print calCoeff, gain, offset
-        print dgOrthoFile.abscalFactor(bandName)
-        print dgOrthoFile.effectiveBandwidth(bandName)
-        print earthSunDist
-        print sunAngle        
-
-        import pdb; pdb.set_trace()
-
-        calc = "10000 * [((({}*var_0*({}/{})+{})*{}*{})) / ({}*{})]" \
-                .format(gain, dgOrthoFile.abscalFactor(bandName), \
-                 dgOrthoFile.effectiveBandwidth(bandName), offset, \
+        calc = "10000 * (((({}*var_0*({}/{})+{})*{}*{})) / ({}*{}))"\
+                .format(gain, dgOrthoFile.abscalFactor(bandName),   \
+                 dgOrthoFile.effectiveBandwidth(bandName), offset,  \
                  earthSunDist**2, np.pi, calCoeff, np.cos(np.radians(sunAngle)))                   
-        
-        print calc
-        # APPLY TO IMAGE_CALC HERE
+                
         cmd = '/opt/StereoPipeline/bin/image_calc -c "{}" {} -d int16 \
               --output-nodata-value {} -o {}'.format(calc, orthoBandFile, \
                                        settings.NO_DATA_VALUE, toaBandFile)
-        
-        print cmd
-        #toaRadianceCoeff = float(dgFile.abscalFactor(bandName)) \
-        #                            / float(dgFile.effectiveBandwidth(bandName))
-
-        #toaReflectanceCoeff = (toaRadianceCoeff * (earthSunDistance**2 * np.pi)\
-        #            / (calibrationCoeff * np.cos(np.radians(sunAngle)))) * 10000
-
-
+ 
+        sCmd = SystemCommand(cmd, toaBandFile, logger, None, True)
+       
     #---------------------------------------------------------------------------
     # run()
     #---------------------------------------------------------------------------
     @staticmethod
     def run(orthoBandFile, outputDir, dgFileName, logger = None):
-#        import pdb; pdb.set_trace()
-        #dgFile = DgFile(dgFileName)
 
-        #dataset = gdal.Open(orthoBandFile, gdal.GA_ReadOnly)
-        #if not dataset:
-        #    raise RuntimeError("Could not open {}".format(orthoBandFile))
-        #bandName = dataset.GetMetadataItem('bandName')
-        #dataset = None
-
-        #toaReflectanceCoeff = TOA.calcToaReflectanceCoeff(dgFile, bandName)
+        dataset = gdal.Open(orthoBandFile, gdal.GA_ReadOnly)
+        if not dataset:
+            raise RuntimeError("Could not open {}".format(orthoBandFile))
+        dataset = None
 
         baseName = os.path.basename(orthoBandFile).replace('.tif', '-toa.tif')
         toaBandFile = os.path.join(outputDir, baseName)
