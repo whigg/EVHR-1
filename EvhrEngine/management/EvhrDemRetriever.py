@@ -152,7 +152,8 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + ERODE_MAX             + \
               ' ' + COR_KNL_SIZE          + \
               ' ' + MYSTERY1              + \
-              ' ' + OUT_DIR
+              ' ' + OUT_DIR               + \
+              ' ' + CROP_WINDOW
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request)
             
