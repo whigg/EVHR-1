@@ -130,6 +130,7 @@ class EvhrDemRetriever(GeoRetriever):
         COR_KNL_SIZE  = '21'
         MYSTERY1      = '300'
         OUT_DIR       = self.demDir
+        CROP_WINDOW   = '"0 15000 5000 5000"'
 
         USE_NODE_LIST = 'true'
         NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
