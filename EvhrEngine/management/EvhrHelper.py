@@ -118,6 +118,13 @@ class EvhrHelper(object):
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
                         pairsOnly = False):
 
+        # First, verify the existence of Footprints.  You never know.
+        if not os.path.exists(settings.FOOTPRINTS_FILE):
+            
+            raise RuntimeError('Footprints file, '      + \
+                               settings.FOOTPRINTS_FILE + \
+                               ' does not exist.')
+        
         whereClause = '-where "('
         first = True
 
@@ -145,20 +152,6 @@ class EvhrHelper(object):
                                 srs,
                                 request,
                                 whereClause)
-
-        # # Put them into a list of (row, path) tuples.
-        # nitfs = []
-        #
-        # for feature in features:
-        #
-        #     nitf = str(feature. \
-        #                getElementsByTagName('ogr:S_FILEPATH')[0]. \
-        #                firstChild. \
-        #                data)
-        #
-        #     nitfs.append(nitf)
-        #
-        # return nitfs
 
         return features
 
