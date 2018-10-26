@@ -19,18 +19,20 @@ from EvhrEngine.models import EvhrScene
 class Command(BaseCommand):
     
     REQUESTS = {
-        
-        'evhrGSENM' : {'epName'   : 'EVHR Mosaic',
-                       'ulx'      : '36719',
-                       'uly'      : '4209000',
-                       'lrx'      : '510000',
-                       'lry'      : '4094000',
-                       'epsg'     : '32612',
-                       'outEpsg'  : '102039',
-                       'startDate': datetime.date(2016, 8, 4),
-                       'endDate'  : datetime.date(2017, 1, 31)
-        },
 
+        'evhrDemScenes' : {
+            
+            'epName'   : 'EVHR Mosaic',
+            'ulx'      : '-148',
+            'uly'      : '65',
+            'lrx'      : '-147.5',
+            'lry'      : '64.5',
+            'epsg'     : '4326',
+            'scenes'   : ["/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-005733445010_03_P001.ntf",
+                          "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_052804587010_01/WV01_20080228205612_1020010001076500_08FEB28205612-P1BS-052804587010_01_P001.ntf",
+                          "/att/pubrepo/NGA/WV01/1B/2008/059/WV01_1020010001076500_X1BS_005733445010_03/WV01_20080228205614_1020010001076500_08FEB28205614-P1BS-005733445010_03_P002.ntf"]
+        },
+        
         'evhrFairbanksScenes' : {
             'epName'   : 'EVHR Mosaic',
             'ulx'      : '-148',
@@ -40,7 +42,7 @@ class Command(BaseCommand):
             'epsg'     : '4326',
             'scenes'   : [ "/att/pubrepo/NGA/WV02/1B/2010/245/WV02_1030010007C2B700_X1BS_052807128030_01/WV02_20100902221603_1030010007C2B700_10SEP02221603-M1BS-052807128030_01_P002.ntf",
                            "/att/pubrepo/NGA/WV02/1B/2010/254/WV02_1030010006788900_X1BS_052807059010_01/WV02_20100911214820_1030010006788900_10SEP11214820-M1BS-052807059010_01_P001.ntf",
-                           "/att/pubrepo/NGA/WV02/1B/2010/254/WV02_1030010006788900_X1BS_052807059010_01/WV02_20100911214821_1030010006788900_10SEP11214821-M1BS-052807059010_01_P002.ntf"
+                           "/att/pubrepo/NGA/WV02/1B/2010/254/WV02_1030010006788900_X1BS_052807059010_01/WV02_20100911214821_1030010006788900_10SEP11214821-M1BS-052807059010_01_P002.ntf"]
         },
 
         'evhrFairbanks' : {
@@ -51,6 +53,17 @@ class Command(BaseCommand):
             'lry'      : '64.5',
             'epsg'     : '4326',
         }
+
+        'evhrGSENM' : {'epName'   : 'EVHR Mosaic',
+                       'ulx'      : '36719',
+                       'uly'      : '4209000',
+                       'lrx'      : '510000',
+                       'lry'      : '4094000',
+                       'epsg'     : '32612',
+                       'outEpsg'  : '102039',
+                       'startDate': datetime.date(2016, 8, 4),
+                       'endDate'  : datetime.date(2017, 1, 31)
+        },
     }
 
     #---------------------------------------------------------------------------
