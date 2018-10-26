@@ -21,6 +21,7 @@ from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
 from EvhrEngine.management.commands.TOA import TOA
 from EvhrEngine.models import EvhrError
+from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
@@ -229,17 +230,63 @@ class EvhrMosaicRetriever(GeoRetriever):
         return [GeoRetriever.GEOG_4326]
 
     #---------------------------------------------------------------------------
+    # getScenes
+    #---------------------------------------------------------------------------
+    def getScenes(self, request, ulx, uly, lrx, lry, srs):
+
+        # Check if there are already scenes associated with this request.
+        evhrScenes = EvhrScene.objects.filter(request = request)
+        scenes = []
+
+        if evhrScenes:
+            
+            for es in evhrScenes:
+                scenes.append(es.sceneFile.name)
+
+        else:
+            
+            # AoI + FOOTPRINTS = scenes
+            fpRecs = self.evhrHelper.queryFootprints(ulx, 
+                                                     uly, 
+                                                     lrx, 
+                                                     lry, 
+                                                     srs, 
+                                                     request)
+                                          
+            # Extract the scene names from the Footprints records.
+            scenes = []
+
+            for fpRec in fpRecs:
+
+                scene = str(fpRec. \
+                            getElementsByTagName('ogr:S_FILEPATH')[0]. \
+                            firstChild. \
+                            data)
+
+                scenes.append(scene)
+
+            # Create EvhrScenes from them.
+            for scene in scenes:
+                
+                evhrScene = EvhrScene()
+                evhrScene.request = request
+                evhrScene.sceneFile = scene
+                evhrScene.save()
+                
+        return scenes
+
+    #---------------------------------------------------------------------------
     # listConstituents
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
         # Query for scenes.
-        scenes = self.evhrHelper.getScenes(self.request,
-                                           self.retrievalUlx,
-                                           self.retrievalUly,
-                                           self.retrievalLrx,
-                                           self.retrievalLry,
-                                           self.retrievalSRS)
+        scenes = self.getScenes(self.request,
+                                self.retrievalUlx,
+                                self.retrievalUly,
+                                self.retrievalLrx,
+                                self.retrievalLry,
+                                self.retrievalSRS)
             
         #---
         # Create a polygon for each scene.  They are used to test for

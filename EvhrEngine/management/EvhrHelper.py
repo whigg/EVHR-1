@@ -1,5 +1,6 @@
 
 import math
+import os
 import tempfile
 from xml.dom import minidom
 
@@ -9,7 +10,6 @@ from osgeo.osr import CoordinateTransformation
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.SystemCommand import SystemCommand
-from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrHelper
@@ -74,40 +74,6 @@ class EvhrHelper(object):
         return features
 
     #---------------------------------------------------------------------------
-    # getScenes
-    #---------------------------------------------------------------------------
-    def getScenes(self, request, ulx, uly, lrx, lry, srs, pairsOnly = False):
-
-        # Check if there are already scenes associated with this request.
-        evhrScenes = EvhrScene.objects.filter(request = request)
-        scenes = []
-
-        if evhrScenes:
-            
-            for es in evhrScenes:
-                scenes.append(es.sceneFile.name)
-
-        else:
-            
-            # AoI + FOOTPRINTS = scenes
-            scenes = self.queryFootprints(ulx, 
-                                          uly, 
-                                          lrx, 
-                                          lry, 
-                                          srs, 
-                                          request, 
-                                          pairsOnly)
-                                          
-            for scene in scenes:
-                
-                evhrScene = EvhrScene()
-                evhrScene.request = request
-                evhrScene.sceneFile = scene
-                evhrScene.save()
-                
-        return scenes
-
-    #---------------------------------------------------------------------------
     # getUtmSrs
     #
     # This method finds the UTM zone covering the most of the request's AoI.
@@ -153,6 +119,13 @@ class EvhrHelper(object):
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
                         pairsOnly = False):
 
+        # First, verify the existence of Footprints.  You never know.
+        if not os.path.exists(settings.FOOTPRINTS_FILE):
+            
+            raise RuntimeError('Footprints file, '      + \
+                               settings.FOOTPRINTS_FILE + \
+                               ' does not exist.')
+        
         whereClause = '-where "('
         first = True
 
@@ -181,18 +154,5 @@ class EvhrHelper(object):
                                 request,
                                 whereClause)
 
-        # Put them into a list of (row, path) tuples.
-        nitfs = []
-
-        for feature in features:
-
-            nitf = str(feature. \
-                       getElementsByTagName('ogr:S_FILEPATH')[0]. \
-                       firstChild. \
-                       data)
-
-            nitfs.append(nitf)
-            
-        return nitfs
-
+        return features
 
