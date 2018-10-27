@@ -57,7 +57,7 @@ class SystemCommand(object):
                 break
         
         # if self.returnCode or self.msg.startswith('Traceback'):
-        if self.returnCode or hasErrorString:
+        if (self.returnCode or hasErrorString) and request != None:
             
             err             = EvhrError()
             err.request     = request
