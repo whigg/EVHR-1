@@ -52,7 +52,7 @@ class Command(BaseCommand):
             'lrx'      : '-147.5',
             'lry'      : '64.5',
             'epsg'     : '4326',
-        }
+        },
 
         'evhrGSENM' : {'epName'   : 'EVHR Mosaic',
                        'ulx'      : '36719',
