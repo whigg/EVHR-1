@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^download/$',           api.views.download),
     url(r'^getErrors/$',          api.views.getErrors),
     url(r'^getToaPath/$',         api.views.getToaPath),
+    url(r'^orderDEM/$',           api.views.orderDEM),
     url(r'^orderComposite/$',     api.views.orderMosaic),
     url(r'^percentageComplete/$', api.views.percentageComplete),
     url(r'^ready/$',              api.views.ready),
