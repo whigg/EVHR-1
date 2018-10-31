@@ -142,6 +142,51 @@ def isDaemonRunning():
     return False
     
 #-------------------------------------------------------------------------------
+# orderDEM
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def orderDEM(request):
+
+    if request.method != 'POST':
+
+        return JsonResponse({'success': False,
+                             'msg': 'Please use a "POST" request.'})
+
+    geoRequest             = GeoRequest()
+    geoRequest.name        = 'API_' + str(uuid.uuid4())
+    geoRequest.destination = None   # settings.OUTPUT_DIRECTORY
+    geoRequest.startDate   = None   # N/A
+    geoRequest.endDate     = None   # N/A
+    geoRequest.started     = False
+    geoRequest.ulx         = request.POST['ulx']
+    geoRequest.uly         = request.POST['uly']
+    geoRequest.lrx         = request.POST['lrx']
+    geoRequest.lry         = request.POST['lry']
+    
+    ep = EndPoint.objects.filter(name = 'EVHR DEM')[0]
+    geoRequest.endPoint = ep
+    
+    geoRequest.srs = GeoRetriever. \
+                     constructSrsFromIntCode(request.POST['epsg']). \
+                     ExportToWkt()
+    
+    geoRequest.save()
+    
+    if request.POST.has_key('scenes'):
+        
+        sceneStr = request.POST['scenes']
+        sceneList = sceneStr.split(',')
+        
+        for scene in sceneList:
+            
+            evhrScene = EvhrScene()
+            evhrScene.request = geoRequest
+            evhrScene.sceneFile = scene
+            evhrScene.save()
+        
+    return JsonResponse({'id': geoRequest.id})
+    
+#-------------------------------------------------------------------------------
 # orderMosaic
 #
 # http://localhost:8000/api/orderMosaic?ulx=-113.39250146&uly=43.35041085&lrx=-112.80953835&lry=42.93059617&epsg=4326&outEpsg=102039
