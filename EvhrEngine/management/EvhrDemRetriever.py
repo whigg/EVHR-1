@@ -72,14 +72,14 @@ class EvhrDemRetriever(GeoRetriever):
 
             whereClause += ')'
 
-            features = self.clipShp(settings.FOOTPRINTS_FILE,
-                                    ulx, 
-                                    uly, 
-                                    lrx, 
-                                    lry, 
-                                    srs,
-                                    request,
-                                    whereClause)
+            features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
+                                               ulx, 
+                                               uly, 
+                                               lrx, 
+                                               lry, 
+                                               srs,
+                                               request,
+                                               whereClause)
         else:
             
             fpRecs = self.evhrHelper.queryFootprints(ulx, 
