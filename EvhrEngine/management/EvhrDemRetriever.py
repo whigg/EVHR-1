@@ -51,19 +51,30 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def getPairs(self, request, ulx, uly, lrx, lry, srs):
 
-        fpRecs = self.evhrHelper.queryFootprints(ulx, 
-                                                 uly, 
-                                                 lrx, 
-                                                 lry, 
-                                                 srs, 
-                                                 request,
-                                                 True)
+        # Check if there are already scenes associated with this request.
+        evhrScenes = EvhrScene.objects.filter(request = request)
+        scenes = []
+
+        if evhrScenes:
+            
+            for es in evhrScenes:
+                scenes.append(es.sceneFile.name)
+
+        else:
+            
+            scenes = self.evhrHelper.queryFootprints(ulx, 
+                                                     uly, 
+                                                     lrx, 
+                                                     lry, 
+                                                     srs, 
+                                                     request,
+                                                     True)
 
         pairs = Set([])
 
-        for fpRec in fpRecs:
+        for scene in scenes:
 
-            pair = str(fpRec. \
+            pair = str(scene. \
                        getElementsByTagName('ogr:pairname')[0]. \
                        firstChild. \
                        data)
