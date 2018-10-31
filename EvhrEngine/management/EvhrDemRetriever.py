@@ -7,6 +7,7 @@ from django.conf import settings
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
 from EvhrEngine.management.SystemCommand import SystemCommand
+from EvhrEngine.models import EvhrScene
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
 #-------------------------------------------------------------------------------
