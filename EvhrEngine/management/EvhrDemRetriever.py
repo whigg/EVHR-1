@@ -70,7 +70,7 @@ class EvhrDemRetriever(GeoRetriever):
 
                 whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
 
-            whereClause += ')'
+            whereClause += ')"'
 
             features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
                                                ulx, 
