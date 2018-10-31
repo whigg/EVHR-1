@@ -58,28 +58,8 @@ class EvhrDemRetriever(GeoRetriever):
         
         if evhrScenes:
             
-            whereClause = '-where "('
-            first = True
-            
-            for es in evhrScenes:
-            
-                if first:
-                    first = False
-                else:
-                    whereClause += ' OR '
+            self.pairsFromScenes(request, ulx, uly, lrx, lry, srs, evhrScenes)
 
-                whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
-
-            whereClause += ')"'
-
-            features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
-                                               ulx, 
-                                               uly, 
-                                               lrx, 
-                                               lry, 
-                                               srs,
-                                               request,
-                                               whereClause)
         else:
             
             fpRecs = self.evhrHelper.queryFootprints(ulx, 
@@ -143,6 +123,38 @@ class EvhrDemRetriever(GeoRetriever):
             constituents[consName] = [pair]
 
         return constituents
+
+    #---------------------------------------------------------------------------
+    # pairsFromScenes
+    #---------------------------------------------------------------------------
+    def pairsFromScenes(self, request, ulx, uly, lrx, lry, srs, evhrScenes):
+        
+        # Get the Footprints records for the user's scenes.
+        whereClause = '-where "('
+        first = True
+        
+        for es in evhrScenes:
+        
+            if first:
+                first = False
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
+
+        whereClause += ')"'
+
+        features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
+                                           ulx, 
+                                           uly, 
+                                           lrx, 
+                                           lry, 
+                                           srs,
+                                           request,
+                                           whereClause)
+                                           
+        import pdb
+        pdb.set_trace()
 
     #---------------------------------------------------------------------------
     # retrieveOne
