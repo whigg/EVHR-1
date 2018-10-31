@@ -54,16 +54,35 @@ class EvhrDemRetriever(GeoRetriever):
 
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
-        scenes = []
-
+        fpRecs = None
+        
         if evhrScenes:
             
+            whereClause = '-where "('
+            first = True
+            
             for es in evhrScenes:
-                scenes.append(es.sceneFile.name)
+            
+                if first:
+                    first = False
+                else:
+                    whereClause += ' OR '
 
+                whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
+
+            whereClause += ')'
+
+            features = self.clipShp(settings.FOOTPRINTS_FILE,
+                                    ulx, 
+                                    uly, 
+                                    lrx, 
+                                    lry, 
+                                    srs,
+                                    request,
+                                    whereClause)
         else:
             
-            scenes = self.evhrHelper.queryFootprints(ulx, 
+            fpRecs = self.evhrHelper.queryFootprints(ulx, 
                                                      uly, 
                                                      lrx, 
                                                      lry, 
@@ -73,9 +92,9 @@ class EvhrDemRetriever(GeoRetriever):
 
         pairs = Set([])
 
-        for scene in scenes:
+        for fpRec in fpRecs:
 
-            pair = str(scene. \
+            pair = str(fpRec. \
                        getElementsByTagName('ogr:pairname')[0]. \
                        firstChild. \
                        data)
