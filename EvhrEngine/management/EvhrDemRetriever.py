@@ -86,6 +86,9 @@ class EvhrDemRetriever(GeoRetriever):
                                   data)
                 
                 featureFiles.append(featureFile)
+            
+            import pdb
+            pdb.set_trace()
                 
             missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
             
