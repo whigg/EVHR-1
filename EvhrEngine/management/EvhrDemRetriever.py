@@ -80,7 +80,7 @@ class EvhrDemRetriever(GeoRetriever):
 
             for feature in features:
                 
-                featureFile = str(fpRec. \
+                featureFile = str(feature. \
                                   getElementsByTagName('ogr:S_FILEPATH')[0]. \
                                   firstChild. \
                                   data)
