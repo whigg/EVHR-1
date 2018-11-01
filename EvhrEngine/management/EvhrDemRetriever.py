@@ -71,11 +71,13 @@ class EvhrDemRetriever(GeoRetriever):
                                            request,
                                            whereClause)
                                            
-        if len(features) != len(evhrScenes):
+        if len(evhrScenes) != len(features):
             
             raise RuntimeError('Unable to find at least one user-specified ' + \
                                'scene in Footprints.  Verify that the AoI ' + \
-                               'includes all the user-specified scenes.')
+                               'includes all the user-specified scenes.  ' + \
+                               'User scenes:  ' + str(evhrScenes) + ' ' + \
+                               'Features:  ' + str(features))
             
         return features
             
