@@ -74,7 +74,7 @@ class EvhrDemRetriever(GeoRetriever):
         # Missing features?                            
         if len(evhrScenes) != len(features):
             
-            sceneFiles = [es.sceneFile.destination for es in evhrScenes]
+            sceneFiles = [es.sceneFile.filename for es in evhrScenes]
 
             featureFiles = []
 
