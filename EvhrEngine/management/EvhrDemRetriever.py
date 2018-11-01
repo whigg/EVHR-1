@@ -70,15 +70,28 @@ class EvhrDemRetriever(GeoRetriever):
                                            srs,
                                            request,
                                            whereClause)
-                                           
+               
+        # Missing features?                            
         if len(evhrScenes) != len(features):
             
-            raise RuntimeError('Unable to find at least one user-specified ' + \
-                               'scene in Footprints.  Verify that the AoI ' + \
-                               'includes all the user-specified scenes.  ' + \
-                               'User scenes:  ' + str(evhrScenes) + ' ' + \
-                               'Features:  ' + str(features))
+            sceneFiles = [es.sceneFile.destination for es in evhrScenes]
+
+            featureFiles = []
+
+            for feature in features:
+                
+                featureFile = str(fpRec. \
+                                  getElementsByTagName('ogr:S_FILEPATH')[0]. \
+                                  firstChild. \
+                                  data)
+                
+                featureFiles.append(featureFile)
+                
+            missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
             
+            msg = 'Unable to find Footprints records for ' + str(missingFiles)
+            raise RuntimeError(msg)
+                
         return features
             
     #---------------------------------------------------------------------------
