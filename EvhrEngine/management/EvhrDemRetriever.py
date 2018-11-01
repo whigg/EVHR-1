@@ -42,62 +42,6 @@ class EvhrDemRetriever(GeoRetriever):
             os.mkdir(self.demDir)
 
     #---------------------------------------------------------------------------
-    # footprintsFromScenes
-    #---------------------------------------------------------------------------
-    def footprintsFromScenes(self, request, ulx, uly, lrx, lry, srs, 
-                             evhrScenes):
-        
-        # Get the Footprints records for the user's scenes.
-        whereClause = '-where "('
-        first = True
-        
-        for es in evhrScenes:
-        
-            if first:
-                first = False
-            else:
-                whereClause += ' OR '
-
-            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
-
-        whereClause += ')"'
-
-        features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
-                                           ulx, 
-                                           uly, 
-                                           lrx, 
-                                           lry, 
-                                           srs,
-                                           request,
-                                           whereClause)
-               
-        # Missing features?                            
-        if len(evhrScenes) != len(features):
-            
-            sceneFiles = [es.sceneFile.name for es in evhrScenes]
-
-            featureFiles = []
-
-            for feature in features:
-                
-                featureFile = str(feature. \
-                                  getElementsByTagName('ogr:S_FILEPATH')[0]. \
-                                  firstChild. \
-                                  data)
-                
-                featureFiles.append(featureFile)
-            
-            import pdb
-            pdb.set_trace()
-                
-            missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
-            
-            msg = 'Unable to find Footprints records for ' + str(missingFiles)
-            raise RuntimeError(msg)
-                
-        return features
-            
-    #---------------------------------------------------------------------------
     # getEndPointSRSs
     #---------------------------------------------------------------------------
     def getEndPointSRSs(self, endPoint):
@@ -106,32 +50,29 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # getPairs
     #---------------------------------------------------------------------------
-    def getPairs(self, request, ulx, uly, lrx, lry, srs):
+    def getPairs(self, ulx, uly, lrx, lry, srs, request):
 
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
-        fpRecs = None
+        features = None
         
         if evhrScenes:
             
-            fpRecs = self.footprintsFromScenes(request, 
-                                               ulx, 
-                                               uly,
-                                               lrx, 
-                                               lry, 
-                                               srs, 
-                                               evhrScenes)
+            features = self.queryWithScenes(ulx, 
+                                            uly, 
+                                            lrx, 
+                                            lry, 
+                                            srs, 
+                                            request, 
+                                            evhrScenes)
 
+            self.evhrHelper.checkForMissingScenes(features, scenes)
+        
         else:
             
-            fpRecs = self.evhrHelper.queryFootprints(ulx, 
-                                                     uly, 
-                                                     lrx, 
-                                                     lry, 
-                                                     srs, 
-                                                     request,
-                                                     True)
-
+            features = self.queryWithoutScenes(ulx, uly, lrx, lry, srs, request)
+            
+        # Extract the pair names from the Footprints features.
         pairs = Set([])
 
         for fpRec in fpRecs:
@@ -164,12 +105,12 @@ class EvhrDemRetriever(GeoRetriever):
         # 'WV01_20110303_1020010011628B00_1020010011756100', 
         # 'WV01_20110401_10200100113F5C00_1020010011937800'])
         #---
-        pairs = self.getPairs(self.request,
-                              self.retrievalUlx,
+        pairs = self.getPairs(self.retrievalUlx,
                               self.retrievalUly,
                               self.retrievalLrx,
                               self.retrievalLry,
-                              self.retrievalSRS)
+                              self.retrievalSRS,
+                              self.request)
                               
         # ONLY RUN ONE SCENE FOR TESTING
         # pairs = list(pairs)[:1]
@@ -185,6 +126,54 @@ class EvhrDemRetriever(GeoRetriever):
             constituents[consName] = [pair]
 
         return constituents
+
+    #---------------------------------------------------------------------------
+    # queryWithScenes
+    #---------------------------------------------------------------------------
+    def queryWithScenes(self, ulx, uly, lrx, lry, srs, request):
+
+        whereClause = '"('
+        first = True
+    
+        for es in evhrScenes:
+    
+            if first:
+                first = False
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
+
+        whereClause += ')"'
+
+        # Query Footprints.
+        fpRecs = self.evhrHelper.queryFootprints(ulx, 
+                                                 uly, 
+                                                 lrx, 
+                                                 lry, 
+                                                 srs, 
+                                                 request,
+                                                 whereClause)
+                                                 
+        return fpRecs
+
+    #---------------------------------------------------------------------------
+    # queryWithoutScenes
+    #---------------------------------------------------------------------------
+    def queryWithoutScenes(self, ulx, uly, lrx, lry, srs, request):
+
+        whereClause = 'AND pairname IS NOT NULL'
+
+        # Query Footprints.
+        fpRecs = self.evhrHelper.queryFootprints(ulx, 
+                                                 uly, 
+                                                 lrx, 
+                                                 lry, 
+                                                 srs, 
+                                                 request,
+                                                 whereClause)
+                                                 
+        return fpRecs
 
     #---------------------------------------------------------------------------
     # retrieveOne
