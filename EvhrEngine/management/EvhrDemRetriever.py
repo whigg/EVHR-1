@@ -132,7 +132,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def queryWithScenes(self, ulx, uly, lrx, lry, srs, request, evhrScenes):
 
-        whereClause = '"('
+        whereClause = ' AND ('
         first = True
     
         for es in evhrScenes:
@@ -144,7 +144,7 @@ class EvhrDemRetriever(GeoRetriever):
 
             whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
 
-        whereClause += ')"'
+        whereClause += ')'
 
         # Query Footprints.
         fpRecs = self.evhrHelper.queryFootprints(ulx, 
