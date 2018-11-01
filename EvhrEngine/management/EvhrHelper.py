@@ -26,6 +26,31 @@ class EvhrHelper(object):
         self.logger = logger
 
     #---------------------------------------------------------------------------
+    # checkForMissingScenes
+    #---------------------------------------------------------------------------
+    def checkForMissingScenes(self, features, evhrScenes):
+        
+        if len(evhrScenes) != len(features):
+
+            sceneFiles = [es.sceneFile.name for es in evhrScenes]
+
+            featureFiles = []
+
+            for feature in features:
+
+                featureFile = str(feature. \
+                                  getElementsByTagName('ogr:S_FILEPATH')[0]. \
+                                  firstChild. \
+                                  data)
+
+                featureFiles.append(featureFile)
+
+            missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
+
+            msg = 'Unable to find Footprints records for ' + str(missingFiles)
+            raise RuntimeError(msg)
+        
+    #---------------------------------------------------------------------------
     # clipShp
     #---------------------------------------------------------------------------
     def clipShp(self, shpFile, ulx, uly, lrx, lry, srs, request, \
@@ -116,8 +141,51 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # queryFootprints
     #---------------------------------------------------------------------------
+    # def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
+    #                     pairsOnly = False):
+    #
+    #     # First, verify the existence of Footprints.  You never know.
+    #     if not os.path.exists(settings.FOOTPRINTS_FILE):
+    #
+    #         raise RuntimeError('Footprints file, '      + \
+    #                            settings.FOOTPRINTS_FILE + \
+    #                            ' does not exist.')
+    #
+    #     whereClause = '-where "('
+    #     first = True
+    #
+    #     for sensor in EvhrHelper.RUN_SENSORS:
+    #
+    #         if first:
+    #             first = False
+    #         else:
+    #             whereClause += ' OR '
+    #
+    #         whereClause += 'SENSOR=' + "'" + sensor + "'"
+    #
+    #     whereClause += ')'
+    #
+    #     if pairsOnly:
+    #         whereClause += ' AND pairname IS NOT NULL'
+    #
+    #     whereClause += '"'
+    #
+    #     features = self.clipShp(settings.FOOTPRINTS_FILE,
+    #                             ulx,
+    #                             uly,
+    #                             lrx,
+    #                             lry,
+    #                             srs,
+    #                             request,
+    #                             whereClause)
+    #
+    #     return features
+
+    #---------------------------------------------------------------------------
+    # queryFootprints
+    #---------------------------------------------------------------------------
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
-                        pairsOnly = False):
+                        whereClause = None):
 
         # First, verify the existence of Footprints.  You never know.
         if not os.path.exists(settings.FOOTPRINTS_FILE):
@@ -126,7 +194,7 @@ class EvhrHelper(object):
                                settings.FOOTPRINTS_FILE + \
                                ' does not exist.')
         
-        whereClause = '-where "('
+        myWhereClause = '-where "('
         first = True
 
         for sensor in EvhrHelper.RUN_SENSORS:
@@ -134,16 +202,16 @@ class EvhrHelper(object):
             if first:
                 first = False
             else:
-                whereClause += ' OR '
+                myWhereClause += ' OR '
 
-            whereClause += 'SENSOR=' + "'" + sensor + "'"
+            myWhereClause += 'SENSOR=' + "'" + sensor + "'"
 
-        whereClause += ')'
+        myWhereClause += ')'
         
-        if pairsOnly:
-            whereClause += ' AND pairname IS NOT NULL'
-        
-        whereClause += '"'
+        if whereClause:
+            myWhereClause += ' ' + whereClause
+            
+        myWhereClause += '"'
 
         features = self.clipShp(settings.FOOTPRINTS_FILE,
                                 ulx, 
@@ -152,7 +220,7 @@ class EvhrHelper(object):
                                 lry, 
                                 srs,
                                 request,
-                                whereClause)
+                                myWhereClause)
 
         return features
 
