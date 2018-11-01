@@ -240,8 +240,18 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         if evhrScenes:
             
-            for es in evhrScenes:
-                scenes.append(es.sceneFile.name)
+            # for es in evhrScenes:
+            #     scenes.append(es.sceneFile.name)
+
+            features = self.evhrHelper.queryFootprints(ulx, 
+                                                       uly, 
+                                                       lrx, 
+                                                       lry, 
+                                                       srs, 
+                                                       request,
+                                                       evhrScenes)
+
+            self.evhrHelper.checkForMissingScenes(features, evhrScenes)
 
         else:
             
