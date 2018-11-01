@@ -130,7 +130,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # queryWithScenes
     #---------------------------------------------------------------------------
-    def queryWithScenes(self, ulx, uly, lrx, lry, srs, request):
+    def queryWithScenes(self, ulx, uly, lrx, lry, srs, request, evhrScenes):
 
         whereClause = '"('
         first = True
