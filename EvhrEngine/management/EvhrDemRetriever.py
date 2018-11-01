@@ -66,7 +66,7 @@ class EvhrDemRetriever(GeoRetriever):
                                             request, 
                                             evhrScenes)
 
-            self.evhrHelper.checkForMissingScenes(features, scenes)
+            self.evhrHelper.checkForMissingScenes(features, evhrScenes)
         
         else:
             
@@ -132,7 +132,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def queryWithScenes(self, ulx, uly, lrx, lry, srs, request, evhrScenes):
 
-        whereClause = ' AND ('
+        whereClause = 'AND ('
         first = True
     
         for es in evhrScenes:
