@@ -185,7 +185,7 @@ class EvhrHelper(object):
     # queryFootprints
     #---------------------------------------------------------------------------
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
-                        whereClause = None):
+                        evhrScenes = None, pairsOnly = False):
 
         # First, verify the existence of Footprints.  You never know.
         if not os.path.exists(settings.FOOTPRINTS_FILE):
@@ -194,7 +194,8 @@ class EvhrHelper(object):
                                settings.FOOTPRINTS_FILE + \
                                ' does not exist.')
         
-        myWhereClause = '-where "('
+        # Build the basic "where" clause that always filters for sensors.
+        whereClause = '-where "('
         first = True
 
         for sensor in EvhrHelper.RUN_SENSORS:
@@ -202,16 +203,37 @@ class EvhrHelper(object):
             if first:
                 first = False
             else:
-                myWhereClause += ' OR '
+                whereClause += ' OR '
 
-            myWhereClause += 'SENSOR=' + "'" + sensor + "'"
+            whereClause += 'SENSOR=' + "'" + sensor + "'"
 
-        myWhereClause += ')'
-        
-        if whereClause:
-            myWhereClause += ' ' + whereClause
+        whereClause += ')'
+
+        # Search for specific scenes?
+        if evhrScenes:
             
-        myWhereClause += '"'
+            first = True
+    
+            for es in evhrScenes:
+    
+                if first:
+                    
+                    first = False
+                    whereClause += ' AND ('
+
+                else:
+
+                    whereClause += ' OR '
+
+                whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
+
+            whereClause += ')'
+        
+        # Search for only pairs?
+        if pairsOnly:
+            whereClause += ' AND pairname IS NOT NULL'
+
+        whereClause += '"'
 
         features = self.clipShp(settings.FOOTPRINTS_FILE,
                                 ulx, 
@@ -220,7 +242,7 @@ class EvhrHelper(object):
                                 lry, 
                                 srs,
                                 request,
-                                myWhereClause)
+                                whereClause)
 
         return features
 
