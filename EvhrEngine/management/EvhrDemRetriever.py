@@ -42,6 +42,44 @@ class EvhrDemRetriever(GeoRetriever):
             os.mkdir(self.demDir)
 
     #---------------------------------------------------------------------------
+    # footprintsFromScenes
+    #---------------------------------------------------------------------------
+    def footprintsFromScenes(self, request, ulx, uly, lrx, lry, srs, 
+                             evhrScenes):
+        
+        # Get the Footprints records for the user's scenes.
+        whereClause = '-where "('
+        first = True
+        
+        for es in evhrScenes:
+        
+            if first:
+                first = False
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
+
+        whereClause += ')"'
+
+        features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
+                                           ulx, 
+                                           uly, 
+                                           lrx, 
+                                           lry, 
+                                           srs,
+                                           request,
+                                           whereClause)
+                                           
+        if len(features) != len(evhrScenes):
+            
+            raise RuntimeError('Unable to find at least one user-specified ' + \
+                               'scene in Footprints.  Verify that the AoI ' + \
+                               'includes all the user-specified scenes.')
+            
+        return features
+            
+    #---------------------------------------------------------------------------
     # getEndPointSRSs
     #---------------------------------------------------------------------------
     def getEndPointSRSs(self, endPoint):
@@ -58,7 +96,13 @@ class EvhrDemRetriever(GeoRetriever):
         
         if evhrScenes:
             
-            self.pairsFromScenes(request, ulx, uly, lrx, lry, srs, evhrScenes)
+            fpRecs = self.footprintsFromScenes(request, 
+                                               ulx, 
+                                               uly,
+                                               lrx, 
+                                               lry, 
+                                               srs, 
+                                               evhrScenes)
 
         else:
             
@@ -123,38 +167,6 @@ class EvhrDemRetriever(GeoRetriever):
             constituents[consName] = [pair]
 
         return constituents
-
-    #---------------------------------------------------------------------------
-    # pairsFromScenes
-    #---------------------------------------------------------------------------
-    def pairsFromScenes(self, request, ulx, uly, lrx, lry, srs, evhrScenes):
-        
-        # Get the Footprints records for the user's scenes.
-        whereClause = '-where "('
-        first = True
-        
-        for es in evhrScenes:
-        
-            if first:
-                first = False
-            else:
-                whereClause += ' OR '
-
-            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
-
-        whereClause += ')"'
-
-        features = self.evhrHelper.clipShp(settings.FOOTPRINTS_FILE,
-                                           ulx, 
-                                           uly, 
-                                           lrx, 
-                                           lry, 
-                                           srs,
-                                           request,
-                                           whereClause)
-                                           
-        import pdb
-        pdb.set_trace()
 
     #---------------------------------------------------------------------------
     # retrieveOne
