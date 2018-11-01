@@ -58,19 +58,26 @@ class EvhrDemRetriever(GeoRetriever):
         
         if evhrScenes:
             
-            features = self.queryWithScenes(ulx, 
-                                            uly, 
-                                            lrx, 
-                                            lry, 
-                                            srs, 
-                                            request, 
-                                            evhrScenes)
+            features = self.evhrHelper.queryFootprints(ulx, 
+                                                       uly, 
+                                                       lrx, 
+                                                       lry, 
+                                                       srs, 
+                                                       request,
+                                                       evhrScenes)
 
             self.evhrHelper.checkForMissingScenes(features, evhrScenes)
         
         else:
             
-            features = self.queryWithoutScenes(ulx, uly, lrx, lry, srs, request)
+            fpRecs = self.evhrHelper.queryFootprints(ulx, 
+                                                     uly, 
+                                                     lrx, 
+                                                     lry, 
+                                                     srs, 
+                                                     request,
+                                                     None,
+                                                     True)
             
         # Extract the pair names from the Footprints features.
         pairs = Set([])
@@ -126,54 +133,6 @@ class EvhrDemRetriever(GeoRetriever):
             constituents[consName] = [pair]
 
         return constituents
-
-    #---------------------------------------------------------------------------
-    # queryWithScenes
-    #---------------------------------------------------------------------------
-    def queryWithScenes(self, ulx, uly, lrx, lry, srs, request, evhrScenes):
-
-        whereClause = 'AND ('
-        first = True
-    
-        for es in evhrScenes:
-    
-            if first:
-                first = False
-            else:
-                whereClause += ' OR '
-
-            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
-
-        whereClause += ')'
-
-        # Query Footprints.
-        fpRecs = self.evhrHelper.queryFootprints(ulx, 
-                                                 uly, 
-                                                 lrx, 
-                                                 lry, 
-                                                 srs, 
-                                                 request,
-                                                 whereClause)
-                                                 
-        return fpRecs
-
-    #---------------------------------------------------------------------------
-    # queryWithoutScenes
-    #---------------------------------------------------------------------------
-    def queryWithoutScenes(self, ulx, uly, lrx, lry, srs, request):
-
-        whereClause = 'AND pairname IS NOT NULL'
-
-        # Query Footprints.
-        fpRecs = self.evhrHelper.queryFootprints(ulx, 
-                                                 uly, 
-                                                 lrx, 
-                                                 lry, 
-                                                 srs, 
-                                                 request,
-                                                 whereClause)
-                                                 
-        return fpRecs
 
     #---------------------------------------------------------------------------
     # retrieveOne
