@@ -100,6 +100,12 @@ class EvhrDemRetriever(GeoRetriever):
                 
             pairs.add(pair.data)
             
+            print 'feature: ' + str(feature.getElementsByTagName('ogr:O_FILENAME')[0].
+                                  firstChild.
+                                  data
+                                  
+            print 'pair: ' + pair.data
+            
         return pairs
 
     #---------------------------------------------------------------------------
