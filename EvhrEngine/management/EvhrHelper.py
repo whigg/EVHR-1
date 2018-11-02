@@ -141,49 +141,6 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # queryFootprints
     #---------------------------------------------------------------------------
-    # def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
-    #                     pairsOnly = False):
-    #
-    #     # First, verify the existence of Footprints.  You never know.
-    #     if not os.path.exists(settings.FOOTPRINTS_FILE):
-    #
-    #         raise RuntimeError('Footprints file, '      + \
-    #                            settings.FOOTPRINTS_FILE + \
-    #                            ' does not exist.')
-    #
-    #     whereClause = '-where "('
-    #     first = True
-    #
-    #     for sensor in EvhrHelper.RUN_SENSORS:
-    #
-    #         if first:
-    #             first = False
-    #         else:
-    #             whereClause += ' OR '
-    #
-    #         whereClause += 'SENSOR=' + "'" + sensor + "'"
-    #
-    #     whereClause += ')'
-    #
-    #     if pairsOnly:
-    #         whereClause += ' AND pairname IS NOT NULL'
-    #
-    #     whereClause += '"'
-    #
-    #     features = self.clipShp(settings.FOOTPRINTS_FILE,
-    #                             ulx,
-    #                             uly,
-    #                             lrx,
-    #                             lry,
-    #                             srs,
-    #                             request,
-    #                             whereClause)
-    #
-    #     return features
-
-    #---------------------------------------------------------------------------
-    # queryFootprints
-    #---------------------------------------------------------------------------
     def queryFootprints(self, ulx, uly, lrx, lry, srs, request, \
                         evhrScenes = None, pairsOnly = False):
 
