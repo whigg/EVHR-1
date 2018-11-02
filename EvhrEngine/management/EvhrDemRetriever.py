@@ -100,12 +100,6 @@ class EvhrDemRetriever(GeoRetriever):
                 
             pairs.add(pair.data)
             
-            print 'feature: ' + str(feature.getElementsByTagName('ogr:S_FILEPATH')[0].
-                                  firstChild.
-                                  data)
-                                  
-            print 'pair: ' + pair.data
-            
         return pairs
 
     #---------------------------------------------------------------------------
