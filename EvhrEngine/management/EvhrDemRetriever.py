@@ -84,12 +84,26 @@ class EvhrDemRetriever(GeoRetriever):
 
         for feature in features:
 
-            pair = str(feature. \
-                       getElementsByTagName('ogr:pairname')[0]. \
-                       firstChild. \
-                       data)
+            # pair = str(feature. \
+            #            getElementsByTagName('ogr:pairname')[0]. \
+            #            firstChild. \
+            #            data)
 
-            pairs.add(pair)
+            pair = feature. \
+                   getElementsByTagName('ogr:pairname')[0]. \
+                   firstChild
+                      
+            if not pair:
+                
+                msg = 'Scene ' + \
+                      str(feature.getElementsByTagName('ogr:O_FILENAME')[0].
+                                  firstChild.
+                                  data) + \
+                      ' is not part of a pair.'
+
+                raise RuntimeError(msg)
+                
+            pairs.add(pair.data)
             
         return pairs
 
