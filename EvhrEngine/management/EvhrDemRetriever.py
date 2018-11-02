@@ -87,7 +87,7 @@ class EvhrDemRetriever(GeoRetriever):
 
             pair = feature. \
                    getElementsByTagName('ogr:pairname')[0]. \
-                   firstChild.
+                   firstChild. \
                    data
                 
             pairs.add(pair)
