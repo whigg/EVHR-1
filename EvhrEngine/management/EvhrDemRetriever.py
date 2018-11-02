@@ -84,11 +84,6 @@ class EvhrDemRetriever(GeoRetriever):
 
         for feature in features:
 
-            # pair = str(feature. \
-            #            getElementsByTagName('ogr:pairname')[0]. \
-            #            firstChild. \
-            #            data)
-
             pair = feature. \
                    getElementsByTagName('ogr:pairname')[0]. \
                    firstChild
