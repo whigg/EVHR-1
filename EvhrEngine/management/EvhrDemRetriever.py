@@ -64,8 +64,9 @@ class EvhrDemRetriever(GeoRetriever):
                                                        lry, 
                                                        srs, 
                                                        request,
-                                                       evhrScenes)
-
+                                                       evhrScenes,
+                                                       True)
+                        
             self.evhrHelper.checkForMissingScenes(features, evhrScenes)
         
         else:
@@ -86,19 +87,10 @@ class EvhrDemRetriever(GeoRetriever):
 
             pair = feature. \
                    getElementsByTagName('ogr:pairname')[0]. \
-                   firstChild
-                      
-            if not pair:
+                   firstChild.
+                   data
                 
-                msg = 'Scene ' + \
-                      str(feature.getElementsByTagName('ogr:O_FILENAME')[0].
-                                  firstChild.
-                                  data) + \
-                      ' is not part of a pair.'
-
-                raise RuntimeError(msg)
-                
-            pairs.add(pair.data)
+            pairs.add(pair)
             
         return pairs
 
