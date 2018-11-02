@@ -64,7 +64,8 @@ class EvhrDemRetriever(GeoRetriever):
                                                        lry, 
                                                        srs, 
                                                        request,
-                                                       evhrScenes)
+                                                       evhrScenes,
+                                                       True)
 
             self.evhrHelper.checkForMissingScenes(features, evhrScenes)
         
