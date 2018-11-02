@@ -70,21 +70,21 @@ class EvhrDemRetriever(GeoRetriever):
         
         else:
             
-            fpRecs = self.evhrHelper.queryFootprints(ulx, 
-                                                     uly, 
-                                                     lrx, 
-                                                     lry, 
-                                                     srs, 
-                                                     request,
-                                                     None,
-                                                     True)
+            features = self.evhrHelper.queryFootprints(ulx, 
+                                                       uly, 
+                                                       lrx, 
+                                                       lry, 
+                                                       srs, 
+                                                       request,
+                                                       None,
+                                                       True)
             
         # Extract the pair names from the Footprints features.
         pairs = Set([])
 
-        for fpRec in fpRecs:
+        for feature in features:
 
-            pair = str(fpRec. \
+            pair = str(feature. \
                        getElementsByTagName('ogr:pairname')[0]. \
                        firstChild. \
                        data)
