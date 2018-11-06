@@ -4,7 +4,7 @@ import os
 from django.core.management.base import BaseCommand
 
 from ProcessingEngine.models import ConstituentProcess
-from ProcessingEngine.models import PredictorProcess
+from ProcessingEngine.models import RequestProcess
 from JobDaemon.models import JobDaemonProcess
 
 #------------------------------------------------------------------------
@@ -45,7 +45,7 @@ def killZombieJobDaemons():
                 if JobDaemonProcess.objects.filter(pid = pid).exists():
                     continue
                 
-                if PredictorProcess.objects.filter(pid = pid).exists():
+                if RequestProcess.objects.filter(pid = pid).exists():
                     continue
                 
                 if ConstituentProcess.objects.filter(pid = pid).exists():
