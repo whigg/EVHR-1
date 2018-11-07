@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
         'evhrDemScenes' : {
             
-            'epName'   : 'EVHR Mosaic',
+            'epName'   : 'EVHR DEM',
             'ulx'      : '-148',
             'uly'      : '65',
             'lrx'      : '-147.5',
