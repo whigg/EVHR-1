@@ -139,6 +139,12 @@ class EvhrDemRetriever(GeoRetriever):
 
             consName = os.path.join(self.demDir, pair + '.tif')
             constituents[consName] = [pair]
+            
+        if self.logger:
+            
+            self.logger.info('There are ' + \
+                             str(len(pairs)) + \
+                             ' pairs amongst the input scenes.')
 
         return constituents
 
