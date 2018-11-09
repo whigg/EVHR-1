@@ -42,11 +42,12 @@ class EvhrDemRetriever(GeoRetriever):
             os.mkdir(self.demDir)
             
         #---
-        # Print the versions of the certain dependencies.  This can be a helpful
-        # reference when there are system errors.
+        # Print system information.  This can be a helpful reference when there
+        # are system errors.
         #---
         scmd = SystemCommand('parallel_stereo -v', None, self.logger)
         self.logger.info('Using ' + str(scmd.stdOut))
+        self.logger.info('PYTHONPATH = ' + os.environ['PYTHONPATH'])
 
     #---------------------------------------------------------------------------
     # getEndPointSRSs
