@@ -40,6 +40,13 @@ class EvhrDemRetriever(GeoRetriever):
 
         if not os.path.exists(self.demDir):
             os.mkdir(self.demDir)
+            
+        #---
+        # Print the versions of the certain dependencies.  This can be a helpful
+        # reference when there are system errors.
+        #---
+        SystemCommand('parallel_stereo -v', None, self.logger)
+        SystemCommand('stereo_parse -v', None, self.logger)
 
     #---------------------------------------------------------------------------
     # getEndPointSRSs
