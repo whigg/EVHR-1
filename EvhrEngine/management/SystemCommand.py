@@ -34,7 +34,10 @@ class SystemCommand(object):
                                    close_fds = True)
 
         self.returnCode = process.returncode
-        self.msg = process.communicate()[1]
+        # self.msg = process.communicate()[1]
+        stdOutStdErr = process.communicate()
+        self.stdOut = stdOutStdErr[0]
+        self.msg = stdOutStdErr[1]
         
         if logger:
 
