@@ -46,6 +46,7 @@ class EvhrDemRetriever(GeoRetriever):
         # reference when there are system errors.
         #---
         scmd = SystemCommand('parallel_stereo -v', None, self.logger)
+        self.logger.info('Using ' + str(scmd.stdOut))
 
     #---------------------------------------------------------------------------
     # getEndPointSRSs
