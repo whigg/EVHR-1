@@ -159,7 +159,7 @@ class EvhrDemRetriever(GeoRetriever):
         ADAPT         = 'true'
         MAP           = 'false'
         RUN_PSTEREO   = 'true' 
-        BATCH_NAME    = self.request.name
+        BATCH_NAME    = '"' + self.request.name + '"'
         SGM           = 'false'
         SUB_PIX_KNL   = '15'
         ERODE_MAX     = '24'
