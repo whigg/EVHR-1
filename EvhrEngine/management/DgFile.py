@@ -4,6 +4,7 @@ import os
 import subprocess
 import shutil
 import tempfile
+from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 from osgeo.osr import SpatialReference
