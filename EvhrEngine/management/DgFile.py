@@ -3,9 +3,12 @@ from datetime import datetime
 import os
 import subprocess
 import shutil
+import tempfile
 import xml.etree.ElementTree as ET
 
 from osgeo.osr import SpatialReference
+
+from django.conf import settings
 
 from EvhrEngine.management.GdalFile import GdalFile
 from EvhrEngine.management.SystemCommand import SystemCommand
@@ -179,6 +182,27 @@ class DgFile(GdalFile):
         
         return self.imdTag.findall('./IMAGE/CATID')[0].text
 
+    #---------------------------------------------------------------------------
+    # getPairName
+    #---------------------------------------------------------------------------
+    def getPairName(self):
+        
+        tempClipFile = tempfile.mkstemp()[1]
+        
+        cmd = 'ogr2ogr '                                         + \
+              '-f "GML" '                                        + \
+              '--debug on '                                      + \
+              '-where "S_FILEPATH=' + '"' + self.fileName + '" ' + \
+              ' "' + tempClipFile + '" '                         + \
+              ' "' + settings.FOOTPRINTS_FILE + '" '
+
+        sCmd = SystemCommand(cmd, None, self.logger)
+
+        import pdb
+        pdb.set_trace()
+        xml      = minidom.parse(tempClipFile)
+        features = xml.getElementsByTagName('gml:pairname')
+        
     #---------------------------------------------------------------------------
     # getStripName()
     #---------------------------------------------------------------------------
