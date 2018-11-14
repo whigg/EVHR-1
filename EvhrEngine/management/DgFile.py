@@ -193,9 +193,11 @@ class DgFile(GdalFile):
         cmd = 'ogr2ogr '                                          + \
               '-f "GML" '                                         + \
               '--debug on '                                       + \
-              '-where "(S_FILEPATH=' + '"' + self.fileName + '")" ' + \
+              '-where "S_FILEPATH=' + "'" + self.fileName + "'\""  + \
               ' "' + tempClipFile + '" '                          + \
               ' "' + settings.FOOTPRINTS_FILE + '" '
+
+
 
         import pdb
         pdb.set_trace()
