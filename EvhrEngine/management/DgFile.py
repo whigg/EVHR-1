@@ -190,17 +190,17 @@ class DgFile(GdalFile):
         
         tempClipFile = tempfile.mkstemp()[1]
         
-        cmd = 'ogr2ogr '                                         + \
-              '-f "GML" '                                        + \
-              '--debug on '                                      + \
-              '-where S_FILEPATH=' + '"' + self.fileName + '" ' + \
-              ' "' + tempClipFile + '" '                         + \
+        cmd = 'ogr2ogr '                                          + \
+              '-f "GML" '                                         + \
+              '--debug on '                                       + \
+              '-where "S_FILEPATH=' + '"' + self.fileName + '"" ' + \
+              ' "' + tempClipFile + '" '                          + \
               ' "' + settings.FOOTPRINTS_FILE + '" '
 
         import pdb
         pdb.set_trace()
 
-        sCmd = SystemCommand(cmd, None, self.logger)
+        SystemCommand(cmd, None, self.logger, None, True)
         xml = minidom.parse(tempClipFile)
         features = xml.getElementsByTagName('gml:pairname')
         
