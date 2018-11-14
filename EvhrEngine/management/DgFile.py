@@ -197,14 +197,14 @@ class DgFile(GdalFile):
               ' "' + tempClipFile + '" '                          + \
               ' "' + settings.FOOTPRINTS_FILE + '" '
 
-
-
-        import pdb
-        pdb.set_trace()
-
         SystemCommand(cmd, None, self.logger, None, True)
         xml = minidom.parse(tempClipFile)
-        features = xml.getElementsByTagName('ogr:pairname')
+
+        features = xml.getElementsByTagName('ogr:pairname')[0].
+                       childNodes[0].
+                       nodeValue
+
+        return features
         
     #---------------------------------------------------------------------------
     # getStripName()
