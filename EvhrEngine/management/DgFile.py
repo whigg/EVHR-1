@@ -204,7 +204,7 @@ class DgFile(GdalFile):
 
         SystemCommand(cmd, None, self.logger, None, True)
         xml = minidom.parse(tempClipFile)
-        features = xml.getElementsByTagName('gml:pairname')
+        features = xml.getElementsByTagName('ogr:pairname')
         
     #---------------------------------------------------------------------------
     # getStripName()
