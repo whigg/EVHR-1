@@ -200,8 +200,8 @@ class DgFile(GdalFile):
         SystemCommand(cmd, None, self.logger, None, True)
         xml = minidom.parse(tempClipFile)
 
-        features = xml.getElementsByTagName('ogr:pairname')[0].
-                       childNodes[0].
+        features = xml.getElementsByTagName('ogr:pairname')[0]. \
+                       childNodes[0]. \
                        nodeValue
 
         return features
