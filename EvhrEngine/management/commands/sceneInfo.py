@@ -18,6 +18,6 @@ class Command(BaseCommand):
 
         dgFile = DgFile(options['n'])
 
-        dgFile.getPairName()
+        print 'Pair name:  ' + str(dgFile.getPairName())
 
 
