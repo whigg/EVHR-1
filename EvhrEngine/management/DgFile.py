@@ -197,11 +197,11 @@ class DgFile(GdalFile):
               ' "' + tempClipFile + '" '                         + \
               ' "' + settings.FOOTPRINTS_FILE + '" '
 
-        sCmd = SystemCommand(cmd, None, self.logger)
-
         import pdb
         pdb.set_trace()
-        xml      = minidom.parse(tempClipFile)
+
+        sCmd = SystemCommand(cmd, None, self.logger)
+        xml = minidom.parse(tempClipFile)
         features = xml.getElementsByTagName('gml:pairname')
         
     #---------------------------------------------------------------------------
