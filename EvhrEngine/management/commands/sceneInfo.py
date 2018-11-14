@@ -9,7 +9,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('-n', help = 'Full path to NITF file')
+        parser.add_argument('-n', help='Full path to NITF file', required=True)
 
     #---------------------------------------------------------------------------
     # handle
