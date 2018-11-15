@@ -8,7 +8,7 @@ from django.conf import settings
 from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
 
-#-------------------------------------------------------------------------------
+#----------------------- --------------------------------------------------------
 # class Footprints
 #-------------------------------------------------------------------------------
 class Footprints(object):
