@@ -38,7 +38,7 @@ class Footprints(object):
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
         SystemCommand(cmd, None, self.logger, None, True)
-        return minidom.parse(tempClipFile)
+        return minidom.parse(queryResult)
         
     #---------------------------------------------------------------------------
     # sceneFromNtf
