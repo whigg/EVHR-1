@@ -9,7 +9,7 @@ class FootprintsScene(object):
     #---------------------------------------------------------------------------
     def __init__(self, sceneGML, logger = None):
         
-        self.gml = sceneGml
+        self.gml = sceneGML
         self.logger = logger
 
     #---------------------------------------------------------------------------
