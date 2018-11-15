@@ -47,10 +47,11 @@ class Footprints(object):
     
         if not ntfPath:
             raise RuntimeError('An NITF file must be specified.')
-            
-        if not os.path.exists(ntfPath):
-            raise RuntimeError('NITF file, ' + str(ntfPath) +' does not exist.')
 
+        #---
+        # It is acceptable to pass an NITF file that does not exist.  It could
+        # have been erroneously deleted from the file system.
+        #---
         cmd = Footprints.BASEQUERY + '-where "S_FILEPATH=' + "'" + ntfPath+"'\""
         gml = self._query(cmd)
         scene = FootprintsScene(gml)
