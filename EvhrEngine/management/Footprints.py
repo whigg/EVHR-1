@@ -13,8 +13,8 @@ from EvhrEngine.management.SystemCommand import SystemCommand
 #-------------------------------------------------------------------------------
 class Footprints(object):
 
-    BASE_QUERY = 'ogr2ogr -f "GML" --debug on '                                       + \
-    
+    BASE_QUERY = 'ogr2ogr -f "GML" --debug on '
+
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
