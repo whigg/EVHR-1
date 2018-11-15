@@ -1,4 +1,4 @@
-from EvhrEngine.management.DgFile import DgFile
+from EvhrEngine.management.Footprints import Footprints
 
 from django.core.management.base import BaseCommand
 
@@ -16,8 +16,8 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
 
-        dgFile = DgFile(options['n'])
-
-        print 'Pair name:  ' + str(dgFile.getPairName())
+        footprints = Footprints()
+        scene = footprints.sceneFromNtf(options['n'])
+        print 'Pair name:  ' + str(scene.pairName())
 
 
