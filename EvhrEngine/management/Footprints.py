@@ -52,7 +52,7 @@ class Footprints(object):
         # It is acceptable to pass an NITF file that does not exist.  It could
         # have been erroneously deleted from the file system.
         #---
-        cmd = Footprints.BASEQUERY + '-where "S_FILEPATH=' + "'" + ntfPath+"'\""
+        cmd = Footprints.BASE_QUERY + '-where "S_FILEPATH=' + "'" +ntfPath+"'\""
         gml = self._query(cmd)
         scene = FootprintsScene(gml)
         
