@@ -91,7 +91,7 @@ class DgFile(GdalFile):
         except:
             self.numBands = None
             
-        self.footprintsGmlFile = None
+        self.footprintsGml = None
             
     #---------------------------------------------------------------------------
     # abscalFactor()
@@ -190,22 +190,23 @@ class DgFile(GdalFile):
     #---------------------------------------------------------------------------
     def getPairName(self):
         
-        self.footprintsGmlFile = tempfile.mkstemp()[1]
-        if this file exists, don't query'
+        if not self.footprintsGml:
+            
+            tempClipFile = tempfile.mkstemp()[1]
 
-        cmd = 'ogr2ogr '                                          + \
-              '-f "GML" '                                         + \
-              '--debug on '                                       + \
-              '-where "S_FILEPATH=' + "'" + self.fileName + "'\""  + \
-              ' "' + tempClipFile + '" '                          + \
-              ' "' + settings.FOOTPRINTS_FILE + '" '
+            cmd = 'ogr2ogr '                                          + \
+                  '-f "GML" '                                         + \
+                  '--debug on '                                       + \
+                  '-where "S_FILEPATH=' + "'" + self.fileName + "'\""  + \
+                  ' "' + tempClipFile + '" '                          + \
+                  ' "' + settings.FOOTPRINTS_FILE + '" '
 
-        SystemCommand(cmd, None, self.logger, None, True)
-        xml = minidom.parse(tempClipFile)
+            SystemCommand(cmd, None, self.logger, None, True)
+            self.footprintsGml = minidom.parse(tempClipFile)
 
-        pairName = xml.getElementsByTagName('ogr:pairname')[0]. \
-                       childNodes[0]. \
-                       nodeValue
+        pairName = self.footprintsGml.getElementsByTagName('ogr:pairname')[0]. \
+                                      childNodes[0]. \
+                                      nodeValue
 
         return pairName
         
