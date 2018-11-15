@@ -3,8 +3,6 @@ from datetime import datetime
 import os
 import subprocess
 import shutil
-import tempfile
-from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 from osgeo.osr import SpatialReference
@@ -185,31 +183,6 @@ class DgFile(GdalFile):
         
         return self.imdTag.findall('./IMAGE/CATID')[0].text
 
-    #---------------------------------------------------------------------------
-    # getPairName
-    #---------------------------------------------------------------------------
-    def getPairName(self):
-        
-        if not self.footprintsGml:
-            
-            tempClipFile = tempfile.mkstemp()[1]
-
-            cmd = 'ogr2ogr '                                          + \
-                  '-f "GML" '                                         + \
-                  '--debug on '                                       + \
-                  '-where "S_FILEPATH=' + "'" + self.fileName + "'\""  + \
-                  ' "' + tempClipFile + '" '                          + \
-                  ' "' + settings.FOOTPRINTS_FILE + '" '
-
-            SystemCommand(cmd, None, self.logger, None, True)
-            self.footprintsGml = minidom.parse(tempClipFile)
-
-        pairName = self.footprintsGml.getElementsByTagName('ogr:pairname')[0]. \
-                                      childNodes[0]. \
-                                      nodeValue
-
-        return pairName
-        
     #---------------------------------------------------------------------------
     # getStripName()
     #---------------------------------------------------------------------------
