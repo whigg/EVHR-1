@@ -91,6 +91,8 @@ class DgFile(GdalFile):
         except:
             self.numBands = None
             
+        self.footprintsGmlFile = None
+            
     #---------------------------------------------------------------------------
     # abscalFactor()
     #---------------------------------------------------------------------------
@@ -188,8 +190,9 @@ class DgFile(GdalFile):
     #---------------------------------------------------------------------------
     def getPairName(self):
         
-        tempClipFile = tempfile.mkstemp()[1]
-        
+        self.footprintsGmlFile = tempfile.mkstemp()[1]
+        if this file exists, don't query'
+
         cmd = 'ogr2ogr '                                          + \
               '-f "GML" '                                         + \
               '--debug on '                                       + \
@@ -200,11 +203,11 @@ class DgFile(GdalFile):
         SystemCommand(cmd, None, self.logger, None, True)
         xml = minidom.parse(tempClipFile)
 
-        features = xml.getElementsByTagName('ogr:pairname')[0]. \
+        pairName = xml.getElementsByTagName('ogr:pairname')[0]. \
                        childNodes[0]. \
                        nodeValue
 
-        return features
+        return pairName
         
     #---------------------------------------------------------------------------
     # getStripName()
