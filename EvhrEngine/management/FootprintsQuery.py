@@ -147,7 +147,7 @@ class FootprintsQuery(object):
                    ' ' + str(lrx)                   + \
                    ' ' + str(uly)                   + \
                    ' -spat_srs'                     + \
-                   ' "' + srs.ExportToProj4() + '"' + \
+                   ' "' + srs.ExportToProj4() + '"'
 
         whereClause = self._buildWhereClause()
         
