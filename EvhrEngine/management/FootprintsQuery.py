@@ -80,7 +80,7 @@ class FootprintsQuery(object):
         
         if self.pairsOnly:
             
-            whereClause += ' AND pairname IS NOT NULL'
+            whereClause += ' pairname IS NOT NULL'
 
         # Add scene list.
         first = True
@@ -90,7 +90,11 @@ class FootprintsQuery(object):
             if first:
                 
                 first = False
-                whereClause += ' AND ('
+
+                if whereClause != '':
+                    whereClause += ' AND'
+                    
+                whereClause += ' ('
 
             else:
 
@@ -107,7 +111,12 @@ class FootprintsQuery(object):
         for sensor in FootprintsQuery.RUN_SENSORS:
 
             if first:
+
                 first = False
+
+                if whereClause != '':
+                    whereClause += ' AND'
+                    
             else:
                 whereClause += ' OR '
 
