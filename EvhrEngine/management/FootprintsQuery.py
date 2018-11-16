@@ -117,6 +117,8 @@ class FootprintsQuery(object):
                 if whereClause != '':
                     whereClause += ' AND'
                     
+                whereClause += ' ('
+
             else:
                 whereClause += ' OR'
 
