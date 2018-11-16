@@ -164,7 +164,7 @@ class FootprintsQuery(object):
         whereClause = self._buildWhereClause()
         
         if whereClause:
-            cmd += ' -where ' + whereClause
+            cmd += ' -where "' + whereClause + '"'
 
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
