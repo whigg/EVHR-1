@@ -14,6 +14,7 @@ from EvhrEngine.management.SystemCommand import SystemCommand
 class FootprintsQuery(object):
 
     BASE_QUERY = 'ogr2ogr -f "GML" --debug on'
+    RUN_SENSORS = ['WV01', 'WV02', 'WV03']
     
     #---------------------------------------------------------------------------
     # __init__
@@ -103,7 +104,7 @@ class FootprintsQuery(object):
         # Add sensor list.
         first = True
 
-        for sensor in EvhrHelper.RUN_SENSORS:
+        for sensor in FootprintsQuery.RUN_SENSORS:
 
             if first:
                 first = False
