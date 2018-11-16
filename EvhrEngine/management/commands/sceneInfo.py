@@ -1,4 +1,5 @@
-from EvhrEngine.management.Footprints import Footprints
+
+from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 
 from django.core.management.base import BaseCommand
 
@@ -16,8 +17,8 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
 
-        footprints = Footprints()
-        scene = footprints.sceneFromNtf(options['n'])
+        query = FootprintsQuery()
+        scene = query.addScenesFromNtf([options['n']])
         print 'Pair name:  ' + str(scene.pairName())
 
 
