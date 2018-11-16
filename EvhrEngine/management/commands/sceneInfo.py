@@ -18,7 +18,8 @@ class Command(BaseCommand):
     def handle(*args, **options):
 
         query = FootprintsQuery()
-        scene = query.addScenesFromNtf([options['n']])
+        query.addScenesFromNtf([options['n']])
+        scene = query.getScenes()
         print 'Pair name:  ' + str(scene.pairName())
 
 
