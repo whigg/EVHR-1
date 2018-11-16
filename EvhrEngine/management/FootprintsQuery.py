@@ -168,11 +168,11 @@ class FootprintsQuery(object):
 
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
-        SystemCommand(cmd, None, self.logger, None, True)
 
         import pdb
         pdb.set_trace()
 
+        SystemCommand(cmd, None, self.logger, None, True)
         resultGML = minidom.parse(queryResult)
         
         # scene = FootprintsScene(gml)
