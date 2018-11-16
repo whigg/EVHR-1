@@ -123,7 +123,7 @@ class FootprintsQuery(object):
     def getScenes(self):
         
         # Compose query.
-        cmd = Footprints.BASE_QUERY
+        cmd = FootprintsQuery.BASE_QUERY
         
         if self.maxScenes:
             cmd += ' -limit ' + str(self.maxScenes)
