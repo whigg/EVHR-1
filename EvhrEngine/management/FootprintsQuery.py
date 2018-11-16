@@ -98,9 +98,9 @@ class FootprintsQuery(object):
 
             else:
 
-                whereClause += ' OR '
+                whereClause += ' OR'
 
-            whereClause += 'S_FILEPATH=' + "'" + scene + "'"
+            whereClause += ' S_FILEPATH=' + "'" + scene + "'"
 
         if not first:
             whereClause += ')'
@@ -118,9 +118,9 @@ class FootprintsQuery(object):
                     whereClause += ' AND'
                     
             else:
-                whereClause += ' OR '
+                whereClause += ' OR'
 
-            whereClause += 'SENSOR=' + "'" + sensor + "'"
+            whereClause += ' SENSOR=' + "'" + sensor + "'"
 
         if not first:
             whereClause += ')'
