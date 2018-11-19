@@ -83,27 +83,27 @@ class FootprintsQuery(object):
             whereClause += ' pairname IS NOT NULL'
 
         # Add scene list.
-        first = True
-        
-        for scene in self.scenes:
-        
-            if first:
-                
-                first = False
-
-                if whereClause != '':
-                    whereClause += ' AND '
-                    
-                whereClause += ' ('
-
-            else:
-
-                whereClause += ' OR '
-
-            whereClause += 'S_FILEPATH=' + "'" + str(scene) + "'"
-
-        if not first:
-            whereClause += ')'
+        # first = True
+        #
+        # for scene in self.scenes:
+        #
+        #     if first:
+        #
+        #         first = False
+        #
+        #         if whereClause != '':
+        #             whereClause += ' AND '
+        #
+        #         whereClause += ' ('
+        #
+        #     else:
+        #
+        #         whereClause += ' OR '
+        #
+        #     whereClause += 'S_FILEPATH=' + "'" + scene + "'"
+        #
+        # if not first:
+        #     whereClause += ')'
 
         # Add sensor list.
         first = True
