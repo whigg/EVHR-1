@@ -100,7 +100,7 @@ class FootprintsQuery(object):
 
                 whereClause += ' OR '
 
-            whereClause += 'S_FILEPATH=' + "\'" + scene + "\'"
+            whereClause += 'S_FILEPATH=' + "'" + scene + "'"
 
         if not first:
             whereClause += ')'
@@ -161,6 +161,9 @@ class FootprintsQuery(object):
                    ' -spat_srs'                     + \
                    ' "' + srs.ExportToProj4() + '"'
 
+        import pdb
+        pdb.set_trace()
+
         whereClause = self._buildWhereClause()
         
         if whereClause:
@@ -168,9 +171,6 @@ class FootprintsQuery(object):
 
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
-
-        import pdb
-        pdb.set_trace()
 
         SystemCommand(cmd, None, self.logger, None, True)
         resultGML = minidom.parse(queryResult)
