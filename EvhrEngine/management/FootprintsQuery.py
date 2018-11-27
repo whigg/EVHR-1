@@ -94,7 +94,7 @@ class FootprintsQuery(object):
                 if whereClause != '':
                     whereClause += ' AND '
                     
-                whereClause += ' ('
+                whereClause += '('
 
             else:
 
@@ -117,7 +117,7 @@ class FootprintsQuery(object):
                 if whereClause != '':
                     whereClause += ' AND '
                     
-                whereClause += ' ('
+                whereClause += '('
 
             else:
                 whereClause += ' OR '
@@ -161,12 +161,15 @@ class FootprintsQuery(object):
                    ' -spat_srs'                     + \
                    ' "' + srs.ExportToProj4() + '"'
 
+        whereClause = self._buildWhereClause()
+        
         import pdb
         pdb.set_trace()
 
-        whereClause = self._buildWhereClause()
-        
         if whereClause:
+            
+            # This adds escape characters.  Specifically it's the double quote.
+            #  WHY?!
             cmd += ' -where "' + whereClause + '"'
 
         queryResult = tempfile.mkstemp()[1]
