@@ -127,6 +127,9 @@ class FootprintsQuery(object):
         if not first:
             whereClause += ')'
 
+        import pdb
+        pdb.set_trace()
+
         if whereClause != '':
             whereClause = ' -where "' + whereClause + '"'
             
@@ -162,9 +165,6 @@ class FootprintsQuery(object):
                    ' ' + str(uly)                   + \
                    ' -spat_srs'                     + \
                    ' "' + srs.ExportToProj4() + '"'
-
-        import pdb
-        pdb.set_trace()
 
         cmd += self._buildWhereClause()
         queryResult = tempfile.mkstemp()[1]
