@@ -127,6 +127,9 @@ class FootprintsQuery(object):
         if not first:
             whereClause += ')'
 
+        if whereClause != '':
+            whereClause = ' -where "' + whereClause + '"'
+            
         return whereClause
         
     #---------------------------------------------------------------------------
@@ -152,7 +155,6 @@ class FootprintsQuery(object):
             lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
             lry = float(lry) + MIN_OVERLAP_IN_DEGREES
         
-        
             cmd += ' -spat'                         + \
                    ' ' + str(ulx)                   + \
                    ' ' + str(lry)                   + \
@@ -161,17 +163,11 @@ class FootprintsQuery(object):
                    ' -spat_srs'                     + \
                    ' "' + srs.ExportToProj4() + '"'
 
-        whereClause = self._buildWhereClause()
-        
         import pdb
         pdb.set_trace()
 
-        if whereClause:
-            
-            # This adds escape characters.  Specifically it's the double quote.
-            #  WHY?!
-            cmd += ' -where \"' + whereClause + '\"'
-
+        whereClause = self._buildWhereClause()
+        
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
 
