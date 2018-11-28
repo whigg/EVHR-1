@@ -9,6 +9,7 @@ from django.conf import settings
 from osgeo.osr import CoordinateTransformation
 
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
+from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
 
 #-------------------------------------------------------------------------------
@@ -28,24 +29,42 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # checkForMissingScenes
     #---------------------------------------------------------------------------
-    def checkForMissingScenes(self, features, evhrScenes):
+    # def checkForMissingScenes(self, features, evhrScenes):
+    #
+    #     if len(evhrScenes) != len(features):
+    #
+    #         sceneFiles = [es.sceneFile.name for es in evhrScenes]
+    #
+    #         featureFiles = []
+    #
+    #         for feature in features:
+    #
+    #             featureFile = str(feature. \
+    #                               getElementsByTagName('ogr:S_FILEPATH')[0]. \
+    #                               firstChild. \
+    #                               data)
+    #
+    #             featureFiles.append(featureFile)
+    #
+    #         missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
+    #
+    #         msg = 'Unable to find Footprints records for ' + str(missingFiles)
+    #         raise RuntimeError(msg)
         
-        if len(evhrScenes) != len(features):
+    #---------------------------------------------------------------------------
+    # checkForMissingScenes
+    #---------------------------------------------------------------------------
+    def checkForMissingScenes(self, footprintsScenes, evhrScenes):
+        
+        if len(footprintsScenes) != len(evhrScenes):
 
             sceneFiles = [es.sceneFile.name for es in evhrScenes]
+            fpFiles = []
 
-            featureFiles = []
+            for fpScene in footprintsScenes:
+                fpFiles.append(fpScene.fileName())
 
-            for feature in features:
-
-                featureFile = str(feature. \
-                                  getElementsByTagName('ogr:S_FILEPATH')[0]. \
-                                  firstChild. \
-                                  data)
-
-                featureFiles.append(featureFile)
-
-            missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
+            missingFiles = [sf for sf in sceneFiles if sf not in fpFiles]
 
             msg = 'Unable to find Footprints records for ' + str(missingFiles)
             raise RuntimeError(msg)

@@ -53,6 +53,14 @@ class FootprintsQuery(object):
         self.srs = srs
         
     #---------------------------------------------------------------------------
+    # addEvhrScenes
+    #---------------------------------------------------------------------------
+    def addEvhrScenes(self, evhrScenes = []):
+
+        for scene in evhrScenes:
+            self.scenes.extend(scene.sceneFile.filename)
+        
+    #---------------------------------------------------------------------------
     # addScenesFromNtf
     #---------------------------------------------------------------------------
     def addScenesFromNtf(self, ntfPaths = []):

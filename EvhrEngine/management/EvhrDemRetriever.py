@@ -6,6 +6,8 @@ from django.conf import settings
 
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
+from EvhrEngine.management.FootprintsQuery import FootprintsQuery
+from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.models import EvhrScene
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
@@ -66,16 +68,20 @@ class EvhrDemRetriever(GeoRetriever):
         
         if evhrScenes:
             
-            features = self.evhrHelper.queryFootprints(ulx, 
-                                                       uly, 
-                                                       lrx, 
-                                                       lry, 
-                                                       srs, 
-                                                       request,
-                                                       evhrScenes,
-                                                       True)
-                        
-            self.evhrHelper.checkForMissingScenes(features, evhrScenes)
+            # features = self.evhrHelper.queryFootprints(ulx,
+            #                                            uly,
+            #                                            lrx,
+            #                                            lry,
+            #                                            srs,
+            #                                            request,
+            #                                            evhrScenes,
+            #                                            True)
+
+            fpq = FootprintsQuery(logger=self.logger)
+            fpq.addAoI(ulx, uly, lrx, lry, srs)
+            fpq.addEvhrScenes(evhrScenes)
+            fpScenes = fpq.getScenes()
+            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
         
         else:
             

@@ -13,16 +13,20 @@ class FootprintsScene(object):
         self.logger = logger
 
     #---------------------------------------------------------------------------
+    # fileName
+    #---------------------------------------------------------------------------
+    def fileName(self):
+        return self._getValue('ogr:S_FILEPATH')
+        
+    #---------------------------------------------------------------------------
     # pairName
     #---------------------------------------------------------------------------
     def pairName(self):
-        
         return self._getValue('ogr:pairname')
         
     #---------------------------------------------------------------------------
     # getValue
     #---------------------------------------------------------------------------
     def _getValue(self, tagName):
-        
         return self.gml.getElementsByTagName(tagName)[0].childNodes[0].nodeValue
         
