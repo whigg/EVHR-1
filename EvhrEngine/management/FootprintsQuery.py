@@ -111,7 +111,7 @@ class FootprintsQuery(object):
 
                 whereClause += ' OR '
 
-            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
+            whereClause += 'S_FILEPATH=' + "'" + "'"
 
         if not first:
             whereClause += ')'
