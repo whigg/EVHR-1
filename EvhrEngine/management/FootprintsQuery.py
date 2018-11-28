@@ -79,12 +79,12 @@ class FootprintsQuery(object):
         import pdb
         pdb.set_trace()
 
-        whereClause = ' -where "'
+        whereClause = " -where \""
         emptyLen = len(whereClause)
         
         if self.pairsOnly:
             
-            whereClause += ' pairname IS NOT NULL'
+            whereClause += " pairname IS NOT NULL"
 
         # Add scene list.
         first = True
@@ -96,18 +96,18 @@ class FootprintsQuery(object):
                 first = False
 
                 if len(whereClause) != emptyLen:
-                    whereClause += ' AND'
+                    whereClause += " AND"
                     
-                whereClause += ' ('
+                whereClause += " ("
 
             else:
 
-                whereClause += ' OR'
+                whereClause += " OR"
 
-            whereClause += " S_FILEPATH='" + scene + "'"
+            whereClause += " S_FILEPATH='" + scene + "\'"
 
         if not first:
-            whereClause += ')'
+            whereClause += ")"
 
         # Add sensor list.
         first = True
