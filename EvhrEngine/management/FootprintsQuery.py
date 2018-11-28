@@ -93,7 +93,10 @@ class FootprintsQuery(object):
         for sensor in FootprintsQuery.RUN_SENSORS:
 
             if first:
+
                 first = False
+                whereClause += '('
+
             else:
                 whereClause += ' OR '
 
