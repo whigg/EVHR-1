@@ -148,6 +148,8 @@ class FootprintsQuery(object):
                    ' -spat_srs'                     + \
                    ' "' + srs.ExportToProj4() + '"'
 
+        import pdb
+        pdb.set_trace()
         cmd += self._buildWhereClause()
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
