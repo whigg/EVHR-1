@@ -79,57 +79,46 @@ class FootprintsQuery(object):
         import pdb
         pdb.set_trace()
 
-        whereClause = " -where \""
+        whereClause = '-where "('
         emptyLen = len(whereClause)
         
-        if self.pairsOnly:
-            
-            whereClause += " pairname IS NOT NULL"
+        # Add sensor list.
+        # first = True
+        #
+        # for sensor in FootprintsQuery.RUN_SENSORS:
+        #
+        #     if first:
+        #         first = False
+        #     else:
+        #         whereClause += ' OR '
+        #
+        #     whereClause += 'SENSOR=' + "'" + sensor + "'"
+        #
+        # if not first:
+        #     whereClause += ')'
 
         # Add scene list.
         first = True
         
         for scene in self.scenes:
-        
+    
             if first:
                 
                 first = False
-
-                if len(whereClause) != emptyLen:
-                    whereClause += " AND"
-                    
-                whereClause += " ("
+                whereClause += ' AND ('
 
             else:
 
-                whereClause += " OR"
+                whereClause += ' OR '
 
-            whereClause += " S_FILEPATH='" + scene + "\'"
-
-        if not first:
-            whereClause += ")"
-
-        # Add sensor list.
-        first = True
-
-        for sensor in FootprintsQuery.RUN_SENSORS:
-
-            if first:
-
-                first = False
-
-                if len(whereClause) != emptyLen:
-                    whereClause += ' AND'
-                    
-                whereClause += ' ('
-
-            else:
-                whereClause += ' OR'
-
-            whereClause += ' SENSOR=' + "'" + sensor + "'"
+            whereClause += 'S_FILEPATH=' + "'" + es.sceneFile.name + "'"
 
         if not first:
             whereClause += ')'
+
+        # Add pairs only clause.
+        # if self.pairsOnly:
+        #     whereClause += 'pairname IS NOT NULL)'
 
         if len(whereClause) == emptyLen:
             whereClause = None
