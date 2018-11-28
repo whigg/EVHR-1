@@ -170,7 +170,7 @@ class FootprintsQuery(object):
             
             # This adds escape characters.  Specifically it's the double quote.
             #  WHY?!
-            cmd += ' -where "' + whereClause + '"'
+            cmd += ' -where \"' + whereClause + '\"'
 
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
