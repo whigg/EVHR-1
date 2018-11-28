@@ -97,7 +97,7 @@ class FootprintsQuery(object):
         # Add scene list.
         for scene in self.scenes:
     
-            if len(whereClause) == emptyLen:
+            if len(whereClause) != emptyLen:
                 whereClause += ' AND ('
 
             else:
