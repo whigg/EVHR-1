@@ -157,7 +157,7 @@ class FootprintsQuery(object):
                    ' ' + str(lrx)                   + \
                    ' ' + str(uly)                   + \
                    ' -spat_srs'                     + \
-                   ' "' + srs.ExportToProj4() + '"'
+                   ' "' + self.srs.ExportToProj4() + '"'
 
         cmd += self._buildWhereClause()
         queryResult = tempfile.mkstemp()[1]
