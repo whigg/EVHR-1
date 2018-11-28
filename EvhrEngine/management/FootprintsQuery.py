@@ -110,11 +110,13 @@ class FootprintsQuery(object):
         
         for scene in self.scenes:
     
-            if len(whereClause) != emptyLen:
-                whereClause += ' AND ('
-                
             if first:
+
                 first = False
+
+                if len(whereClause) != emptyLen:
+                    whereClause += ' AND ('
+                
             else:
                 whereClause += ' OR '
 
