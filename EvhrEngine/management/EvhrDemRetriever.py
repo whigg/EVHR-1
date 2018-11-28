@@ -65,8 +65,16 @@ class EvhrDemRetriever(GeoRetriever):
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
         features = None
+        fpq = FootprintsQuery(logger=self.logger)
+        fpq.addAoI(ulx, uly, lrx, lry, srs)
         
         if evhrScenes:
+            
+            fpq.addEvhrScenes(evhrScenes)
+            fpScenes = fpq.getScenes()
+            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
+        
+        else:
             
             # features = self.evhrHelper.queryFootprints(ulx,
             #                                            uly,
@@ -74,25 +82,9 @@ class EvhrDemRetriever(GeoRetriever):
             #                                            lry,
             #                                            srs,
             #                                            request,
-            #                                            evhrScenes,
+            #                                            None,
             #                                            True)
-
-            fpq = FootprintsQuery(logger=self.logger)
-            fpq.addAoI(ulx, uly, lrx, lry, srs)
-            fpq.addEvhrScenes(evhrScenes)
             fpScenes = fpq.getScenes()
-            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
-        
-        else:
-            
-            features = self.evhrHelper.queryFootprints(ulx, 
-                                                       uly, 
-                                                       lrx, 
-                                                       lry, 
-                                                       srs, 
-                                                       request,
-                                                       None,
-                                                       True)
             
         # Extract the pair names from the Footprints features.
         pairs = Set([])
