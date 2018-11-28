@@ -166,8 +166,7 @@ class FootprintsQuery(object):
         import pdb
         pdb.set_trace()
 
-        whereClause = self._buildWhereClause()
-        
+        cmd += self._buildWhereClause()
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
 
