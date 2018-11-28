@@ -95,7 +95,7 @@ class FootprintsQuery(object):
                 
                 first = False
 
-                if whereClause != '':
+                if len(whereClause) != emptyLen:
                     whereClause += ' AND '
                     
                 whereClause += '('
@@ -118,7 +118,7 @@ class FootprintsQuery(object):
 
                 first = False
 
-                if whereClause != '':
+                if len(whereClause) != emptyLen:
                     whereClause += ' AND '
                     
                 whereClause += '('
@@ -131,6 +131,9 @@ class FootprintsQuery(object):
         if not first:
             whereClause += ')'
 
+        if len(whereClause) == emptyLen:
+            whereClause = None
+            
         return whereClause
         
     #---------------------------------------------------------------------------
