@@ -20,6 +20,6 @@ class Command(BaseCommand):
         query = FootprintsQuery()
         query.addScenesFromNtf([options['n']])
         scene = query.getScenes()
-        print 'Pair name:  ' + str(scene.pairName())
+        print 'Pair name:  ' + str(scene[0].pairName())
 
 
