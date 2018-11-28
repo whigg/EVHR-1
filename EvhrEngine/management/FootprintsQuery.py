@@ -151,17 +151,22 @@ class FootprintsQuery(object):
                    ' -spat_srs'                     + \
                    ' "' + srs.ExportToProj4() + '"'
 
-        import pdb
-        pdb.set_trace()
         cmd += self._buildWhereClause()
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
 
         SystemCommand(cmd, None, self.logger, None, True)
         resultGML = minidom.parse(queryResult)
+        import pdb
+        pdb.set_trace()
+        features = resultGML.getElementsByTagName('gml:featureMember')
+        scenes = []
         
-        # scene = FootprintsScene(gml)
+        for feature in features:
+            scenes.append(FootprintsScene(gml))
 
+        return scenes
+        
     #---------------------------------------------------------------------------
     # setMaximumScenes
     #---------------------------------------------------------------------------
