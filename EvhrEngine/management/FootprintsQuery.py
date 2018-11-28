@@ -157,8 +157,6 @@ class FootprintsQuery(object):
 
         SystemCommand(cmd, None, self.logger, None, True)
         resultGML = minidom.parse(queryResult)
-        import pdb
-        pdb.set_trace()
         features = resultGML.getElementsByTagName('gml:featureMember')
         scenes = []
         
