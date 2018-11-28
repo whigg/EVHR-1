@@ -76,7 +76,7 @@ class FootprintsQuery(object):
     def _buildWhereClause(self):
         
         # Add pairs only, the start of a where clause.    
-        whereClause = '-where "('
+        whereClause = ' -where "('
         emptyLen = len(whereClause)
         
         # Add sensor list.
