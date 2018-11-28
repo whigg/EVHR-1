@@ -76,7 +76,11 @@ class FootprintsQuery(object):
     def _buildWhereClause(self):
         
         # Add pairs only, the start of a where clause.    
-        whereClause = ''
+        import pdb
+        pdb.set_trace()
+
+        whereClause = ' -where"'
+        emptyLen = len(whereClause)
         
         if self.pairsOnly:
             
@@ -127,12 +131,6 @@ class FootprintsQuery(object):
         if not first:
             whereClause += ')'
 
-        import pdb
-        pdb.set_trace()
-
-        if whereClause != '':
-            whereClause = ' -where "' + whereClause + '"'
-            
         return whereClause
         
     #---------------------------------------------------------------------------
