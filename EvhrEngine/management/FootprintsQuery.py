@@ -163,7 +163,7 @@ class FootprintsQuery(object):
         scenes = []
         
         for feature in features:
-            scenes.append(FootprintsScene(gml))
+            scenes.append(FootprintsScene(feature))
 
         return scenes
         
