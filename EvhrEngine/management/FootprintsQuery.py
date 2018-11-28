@@ -98,13 +98,13 @@ class FootprintsQuery(object):
                 if len(whereClause) != emptyLen:
                     whereClause += ' AND'
                     
-                whereClause += " ("
+                whereClause += ' ('
 
             else:
 
                 whereClause += ' OR'
 
-            whereClause += " S_FILEPATH=" + "'" + scene + "'"
+            whereClause += ' S_FILEPATH=\'' scene + '\''
 
         if not first:
             whereClause += ')'
