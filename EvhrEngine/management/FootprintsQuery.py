@@ -146,10 +146,10 @@ class FootprintsQuery(object):
             # corners of the query AoI.
             #---
             MIN_OVERLAP_IN_DEGREES = 0.02
-            ulx = float(ulx) + MIN_OVERLAP_IN_DEGREES
-            uly = float(uly) - MIN_OVERLAP_IN_DEGREES
-            lrx = float(lrx) - MIN_OVERLAP_IN_DEGREES
-            lry = float(lry) + MIN_OVERLAP_IN_DEGREES
+            ulx = float(self.ulx) + MIN_OVERLAP_IN_DEGREES
+            uly = float(self.uly) - MIN_OVERLAP_IN_DEGREES
+            lrx = float(self.lrx) - MIN_OVERLAP_IN_DEGREES
+            lry = float(self.lry) + MIN_OVERLAP_IN_DEGREES
         
             cmd += ' -spat'                         + \
                    ' ' + str(ulx)                   + \
