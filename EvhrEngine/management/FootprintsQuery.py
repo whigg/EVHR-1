@@ -76,35 +76,28 @@ class FootprintsQuery(object):
     def _buildWhereClause(self):
         
         # Add pairs only, the start of a where clause.    
-        import pdb
-        pdb.set_trace()
-
         whereClause = '-where "('
         emptyLen = len(whereClause)
         
         # Add sensor list.
-        # first = True
-        #
-        # for sensor in FootprintsQuery.RUN_SENSORS:
-        #
-        #     if first:
-        #         first = False
-        #     else:
-        #         whereClause += ' OR '
-        #
-        #     whereClause += 'SENSOR=' + "'" + sensor + "'"
-        #
-        # if not first:
-        #     whereClause += ')'
+        first = True
+
+        for sensor in FootprintsQuery.RUN_SENSORS:
+
+            if first:
+                first = False
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'SENSOR=' + "'" + sensor + "'"
+
+        if not first:
+            whereClause += ')'
 
         # Add scene list.
-        first = True
-        
         for scene in self.scenes:
     
-            if first:
-                
-                first = False
+            if len(whereClause) == emptyLen:
                 whereClause += ' AND ('
 
             else:
@@ -116,13 +109,13 @@ class FootprintsQuery(object):
             whereClause += ')'
 
         # Add pairs only clause.
-        # if self.pairsOnly:
-        #     whereClause += 'pairname IS NOT NULL)'
+        if self.pairsOnly:
+            whereClause += 'pairname IS NOT NULL)'
 
         if len(whereClause) == emptyLen:
             whereClause = None
             
-        return whereClause
+        return unicode(whereClause)
         
     #---------------------------------------------------------------------------
     # getScenes
