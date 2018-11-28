@@ -84,7 +84,7 @@ class FootprintsQuery(object):
     def _buildWhereClause(self):
         
         # Add pairs only, the start of a where clause.    
-        whereClause = ' -where "('
+        whereClause = ' -where "'
         emptyLen = len(whereClause)
         
         # Add sensor list.
@@ -106,11 +106,15 @@ class FootprintsQuery(object):
             whereClause += ')'
 
         # Add scene list.
+        first = True
+        
         for scene in self.scenes:
     
             if len(whereClause) != emptyLen:
                 whereClause += ' AND ('
-
+                
+            if first:
+                first = False
             else:
                 whereClause += ' OR '
 
@@ -127,7 +131,7 @@ class FootprintsQuery(object):
             whereClause = None
             
         else:
-            whereClause += ')"'
+            whereClause += '"'
             
         return unicode(whereClause)
         
