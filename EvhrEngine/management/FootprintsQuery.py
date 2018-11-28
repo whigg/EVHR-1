@@ -115,6 +115,9 @@ class FootprintsQuery(object):
         if len(whereClause) == emptyLen:
             whereClause = None
             
+        else:
+            whereClause += '"'
+            
         return unicode(whereClause)
         
     #---------------------------------------------------------------------------
