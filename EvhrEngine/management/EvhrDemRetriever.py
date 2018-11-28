@@ -97,14 +97,17 @@ class EvhrDemRetriever(GeoRetriever):
         # Extract the pair names from the Footprints features.
         pairs = Set([])
 
-        for feature in features:
+        # for feature in features:
+        #
+        #     pair = feature. \
+        #            getElementsByTagName('ogr:pairname')[0]. \
+        #            firstChild. \
+        #            data
+        #
+        #     pairs.add(pair)
 
-            pair = feature. \
-                   getElementsByTagName('ogr:pairname')[0]. \
-                   firstChild. \
-                   data
-                
-            pairs.add(pair)
+        for fps in fpScenes:
+            pairs.add(fps.pairName())
             
         return pairs
 
