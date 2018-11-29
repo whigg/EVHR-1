@@ -76,28 +76,12 @@ class EvhrDemRetriever(GeoRetriever):
         
         else:
             
-            # features = self.evhrHelper.queryFootprints(ulx,
-            #                                            uly,
-            #                                            lrx,
-            #                                            lry,
-            #                                            srs,
-            #                                            request,
-            #                                            None,
-            #                                            True)
+            fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
             
         # Extract the pair names from the Footprints features.
         pairs = Set([])
-
-        # for feature in features:
-        #
-        #     pair = feature. \
-        #            getElementsByTagName('ogr:pairname')[0]. \
-        #            firstChild. \
-        #            data
-        #
-        #     pairs.add(pair)
 
         for fps in fpScenes:
             pairs.add(fps.pairName())
