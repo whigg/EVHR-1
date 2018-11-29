@@ -127,7 +127,7 @@ class FootprintsQuery(object):
 
         # Add pairs only clause.
         if self.pairsOnly:
-            whereClause += 'pairname IS NOT NULL)'
+            whereClause += ' AND (pairname IS NOT NULL)'
 
         if len(whereClause) == emptyLen:
             whereClause = None
