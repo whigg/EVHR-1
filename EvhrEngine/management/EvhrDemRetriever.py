@@ -84,6 +84,7 @@ class EvhrDemRetriever(GeoRetriever):
             #                                            request,
             #                                            None,
             #                                            True)
+            fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
             
         # Extract the pair names from the Footprints features.
