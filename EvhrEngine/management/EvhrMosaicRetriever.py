@@ -339,7 +339,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         for scene in scenes:
         
             try:
-                dg = DgFile(scene.fileName(), self.logger)
+                dg = DgFile(scene, self.logger)
                 
             except Exception, e:
                 
