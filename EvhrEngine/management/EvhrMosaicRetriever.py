@@ -315,7 +315,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                 evhrScene.sceneFile = scene.fileName()
                 evhrScene.save()
                 
-        return fpScenes
+        return [fps.fileName() for fps in fpScenes]
 
     #---------------------------------------------------------------------------
     # listConstituents
