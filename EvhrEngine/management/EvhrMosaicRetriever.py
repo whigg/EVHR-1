@@ -17,6 +17,8 @@ from django.conf import settings
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrHelper import EvhrHelper
+from EvhrEngine.management.FootprintsQuery import FootprintsQuery
+from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
 from EvhrEngine.management.commands.TOA import TOA
@@ -235,57 +237,85 @@ class EvhrMosaicRetriever(GeoRetriever):
     def getScenes(self, request, ulx, uly, lrx, lry, srs):
 
         # Check if there are already scenes associated with this request.
-        evhrScenes = EvhrScene.objects.filter(request = request)
-        scenes = []
+        # evhrScenes = EvhrScene.objects.filter(request = request)
+        # scenes = []
+        #
+        # if evhrScenes:
+        #
+        #     features = self.evhrHelper.queryFootprints(ulx,
+        #                                                uly,
+        #                                                lrx,
+        #                                                lry,
+        #                                                srs,
+        #                                                request,
+        #                                                evhrScenes)
+        #
+        #     # This raises an exception, when scenes are missing.
+        #     self.evhrHelper.checkForMissingScenes(features, evhrScenes)
+        #
+        #     # All EvhrScenes were found.
+        #     for es in evhrScenes:
+        #         scenes.append(es.sceneFile.name)
+        #
+        # else:
+        #
+        #     # AoI + FOOTPRINTS = scenes
+        #     fpRecs = self.evhrHelper.queryFootprints(ulx,
+        #                                              uly,
+        #                                              lrx,
+        #                                              lry,
+        #                                              srs,
+        #                                              request)
+        #
+        #     # Extract the scene names from the Footprints records.
+        #     scenes = []
+        #
+        #     for fpRec in fpRecs:
+        #
+        #         scene = str(fpRec. \
+        #                     getElementsByTagName('ogr:S_FILEPATH')[0]. \
+        #                     firstChild. \
+        #                     data)
+        #
+        #         scenes.append(scene)
+        #
+        #     # Create EvhrScenes from them.
+        #     for scene in scenes:
+        #
+        #         evhrScene = EvhrScene()
+        #         evhrScene.request = request
+        #         evhrScene.sceneFile = scene
+        #         evhrScene.save()
+        #
+        # return scenes
 
+        # Check if there are already scenes associated with this request.
+        evhrScenes = EvhrScene.objects.filter(request = request)
+        features = None
+        fpScenes = None
+        fpq = FootprintsQuery(logger=self.logger)
+        fpq.addAoI(ulx, uly, lrx, lry, srs)
+        
         if evhrScenes:
             
-            features = self.evhrHelper.queryFootprints(ulx, 
-                                                       uly, 
-                                                       lrx, 
-                                                       lry, 
-                                                       srs, 
-                                                       request,
-                                                       evhrScenes)
-
-            # This raises an exception, when scenes are missing.
-            self.evhrHelper.checkForMissingScenes(features, evhrScenes)
-
-            # All EvhrScenes were found.
-            for es in evhrScenes:
-                scenes.append(es.sceneFile.name)
-
+            fpq.addEvhrScenes(evhrScenes)
+            fpScenes = fpq.getScenes()
+            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
+        
         else:
             
-            # AoI + FOOTPRINTS = scenes
-            fpRecs = self.evhrHelper.queryFootprints(ulx, 
-                                                     uly, 
-                                                     lrx, 
-                                                     lry, 
-                                                     srs, 
-                                                     request)
-                                          
-            # Extract the scene names from the Footprints records.
-            scenes = []
+            fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
+            fpq.setPairsOnly()
+            fpScenes = fpq.getScenes()
+            
+            for scene in fpScenes:
 
-            for fpRec in fpRecs:
-
-                scene = str(fpRec. \
-                            getElementsByTagName('ogr:S_FILEPATH')[0]. \
-                            firstChild. \
-                            data)
-
-                scenes.append(scene)
-
-            # Create EvhrScenes from them.
-            for scene in scenes:
-                
                 evhrScene = EvhrScene()
                 evhrScene.request = request
-                evhrScene.sceneFile = scene
+                evhrScene.sceneFile = scene.fileName()
                 evhrScene.save()
                 
-        return scenes
+        return fpScenes
 
     #---------------------------------------------------------------------------
     # listConstituents
@@ -309,7 +339,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         for scene in scenes:
         
             try:
-                dg = DgFile(scene, self.logger)
+                dg = DgFile(scene.fileName(), self.logger)
                 
             except Exception, e:
                 

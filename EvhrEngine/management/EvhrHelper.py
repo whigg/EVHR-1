@@ -29,31 +29,6 @@ class EvhrHelper(object):
     #---------------------------------------------------------------------------
     # checkForMissingScenes
     #---------------------------------------------------------------------------
-    # def checkForMissingScenes(self, features, evhrScenes):
-    #
-    #     if len(evhrScenes) != len(features):
-    #
-    #         sceneFiles = [es.sceneFile.name for es in evhrScenes]
-    #
-    #         featureFiles = []
-    #
-    #         for feature in features:
-    #
-    #             featureFile = str(feature. \
-    #                               getElementsByTagName('ogr:S_FILEPATH')[0]. \
-    #                               firstChild. \
-    #                               data)
-    #
-    #             featureFiles.append(featureFile)
-    #
-    #         missingFiles = [sf for sf in sceneFiles if sf not in featureFiles]
-    #
-    #         msg = 'Unable to find Footprints records for ' + str(missingFiles)
-    #         raise RuntimeError(msg)
-        
-    #---------------------------------------------------------------------------
-    # checkForMissingScenes
-    #---------------------------------------------------------------------------
     def checkForMissingScenes(self, footprintsScenes, evhrScenes):
         
         if len(footprintsScenes) != len(evhrScenes):
