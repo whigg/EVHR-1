@@ -237,59 +237,6 @@ class EvhrMosaicRetriever(GeoRetriever):
     def getScenes(self, request, ulx, uly, lrx, lry, srs):
 
         # Check if there are already scenes associated with this request.
-        # evhrScenes = EvhrScene.objects.filter(request = request)
-        # scenes = []
-        #
-        # if evhrScenes:
-        #
-        #     features = self.evhrHelper.queryFootprints(ulx,
-        #                                                uly,
-        #                                                lrx,
-        #                                                lry,
-        #                                                srs,
-        #                                                request,
-        #                                                evhrScenes)
-        #
-        #     # This raises an exception, when scenes are missing.
-        #     self.evhrHelper.checkForMissingScenes(features, evhrScenes)
-        #
-        #     # All EvhrScenes were found.
-        #     for es in evhrScenes:
-        #         scenes.append(es.sceneFile.name)
-        #
-        # else:
-        #
-        #     # AoI + FOOTPRINTS = scenes
-        #     fpRecs = self.evhrHelper.queryFootprints(ulx,
-        #                                              uly,
-        #                                              lrx,
-        #                                              lry,
-        #                                              srs,
-        #                                              request)
-        #
-        #     # Extract the scene names from the Footprints records.
-        #     scenes = []
-        #
-        #     for fpRec in fpRecs:
-        #
-        #         scene = str(fpRec. \
-        #                     getElementsByTagName('ogr:S_FILEPATH')[0]. \
-        #                     firstChild. \
-        #                     data)
-        #
-        #         scenes.append(scene)
-        #
-        #     # Create EvhrScenes from them.
-        #     for scene in scenes:
-        #
-        #         evhrScene = EvhrScene()
-        #         evhrScene.request = request
-        #         evhrScene.sceneFile = scene
-        #         evhrScene.save()
-        #
-        # return scenes
-
-        # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
         features = None
         fpScenes = None
