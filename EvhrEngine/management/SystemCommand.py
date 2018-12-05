@@ -69,16 +69,15 @@ class SystemCommand(object):
             
         if nodeToUse == None:
            
-           logger.info('Unable to choose a node for pdsh to use for request ' + 
-                       str(request.id))
+           logger.info('Unable to choose a node for pdsh to use.')
                    
         else: 
                        
             # Wrap the command in pdsh.
-            pcmd = 'pdsh -w ' + nodeToUse + ' ' + cmd
+            cmd = 'pdsh -w ' + nodeToUse + ' ' + cmd
         
         # Run the pdsh version using runSingleProcess.
-        self.runSingleProcess(pcmd, inFile, logger, request, raiseException,
+        self.runSingleProcess(cmd, inFile, logger, request, raiseException,
                               nodeToUse)
         
     #---------------------------------------------------------------------------
