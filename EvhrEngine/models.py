@@ -74,10 +74,6 @@ class EvhrNodeGroup(models.Model):
 class EvhrNodePID(models.Model):
     
     node = models.ForeignKey('EvhrNode')
-
-    request = models.ForeignKey('ProcessingEngine.Request', 
-                                on_delete=models.CASCADE)
-    
     pid = models.IntegerField(null=True)
     
     #---------------------------------------------------------------------------
@@ -85,7 +81,7 @@ class EvhrNodePID(models.Model):
     #---------------------------------------------------------------------------
     class Meta:
 
-        unique_together = (('node', 'request', 'pid'),)
+        unique_together = (('node', 'pid'),)
         verbose_name = 'EVHR Node PID'
         verbose_name_plural = 'EVHR Node PIDs'
     
