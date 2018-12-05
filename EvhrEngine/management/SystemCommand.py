@@ -78,7 +78,7 @@ class SystemCommand(object):
                 logger.info('Using node ' + str(nodeToUse.name)) 
 
             # Wrap the command in pdsh.
-            cmd = 'pdsh -l rlgill -w ' + nodeToUse.name + ' ' + cmd
+            cmd = 'pdsh -w ' + nodeToUse.name + ' ' + cmd
         
         # Run the pdsh version using runSingleProcess.
         self.runSingleProcess(cmd, inFile, logger, request, raiseException,
