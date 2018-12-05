@@ -59,7 +59,7 @@ class SystemCommand(object):
 
         for node in nodes:
             
-            nodePIDs = EvhrNodePID.objects.filter(request=request, node=node)
+            nodePIDs = EvhrNodePID.objects.filter(node=node)
             numPIDs = len(nodePIDs)
             
             if numPIDs == 0:
@@ -92,25 +92,35 @@ class SystemCommand(object):
     def runSingleProcess(self, cmd, inFile, logger, request, raiseException,
                          node=None):
         
+        # Launch the command.
         process = subprocess.Popen(cmd, 
                                    shell = True,
                                    stderr = subprocess.PIPE,
                                    stdout = subprocess.PIPE,
                                    close_fds = True)
 
+        # If a node was passed, save its PID.  This tracks node usage.
+        nodePID = None
+        
         if node:
             
-            nodePID = EvhrNode()
+            nodePID = EvhrNodePID()
             nodePID.node = node
-            nodePID.request = request
             nodePID.pid = process.pid
             node.save()
             
         self.returnCode = process.returncode
-        stdOutStdErr = process.communicate()
+        stdOutStdErr = process.communicate()    # This makes Popen block.
         self.stdOut = stdOutStdErr[0]
         self.msg = stdOutStdErr[1]
         
+        #---
+        # The process blocked on the communicate statement, so now it has
+        # finished and the PID must be deleted to indicate less use of the node.
+        #---
+        if nodePID:
+            nodePID.delete()
+            
         if logger:
 
             logger.info('Return code: ' + str(self.returnCode))
