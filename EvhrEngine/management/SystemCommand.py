@@ -69,7 +69,8 @@ class SystemCommand(object):
             
         if nodeToUse == None:
            
-           logger.info('Unable to choose a node for pdsh to use.')
+           if logger:
+               logger.info('Unable to choose a node for pdsh to use.')
                    
         else: 
                        
