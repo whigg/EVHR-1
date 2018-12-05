@@ -105,7 +105,7 @@ class SystemCommand(object):
             nodePID = EvhrNodePID()
             nodePID.node = node
             nodePID.pid = process.pid
-            node.save()
+            nodePID.save()
             
         self.returnCode = process.returncode
         stdOutStdErr = process.communicate()    # This makes Popen block.
