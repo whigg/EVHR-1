@@ -79,6 +79,7 @@ class SystemCommand(object):
 
             # Wrap the command in pdsh.
             cmd = 'pdsh -l rlgill -w ' + nodeToUse.name + ' ' + cmd
+            print 'cmd = ' + str(cmd)
         
         # Run the pdsh version using runSingleProcess.
         self.runSingleProcess(cmd, inFile, logger, request, raiseException,
