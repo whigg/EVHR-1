@@ -73,7 +73,10 @@ class SystemCommand(object):
                logger.info('Unable to choose a node for pdsh to use.')
                    
         else: 
-                       
+                      
+            if logger:
+                logger.info('Using node ' + str(nodeToUse)) 
+
             # Wrap the command in pdsh.
             cmd = 'pdsh -w ' + nodeToUse + ' ' + cmd
         
