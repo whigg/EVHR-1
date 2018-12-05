@@ -486,7 +486,6 @@ class EvhrMosaicRetriever(GeoRetriever):
             orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
             bandName = DgFile(bandFile).getBandName()
 
-
             # to project, add: --t_srs "+proj=utm +zone=? +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
                   ' --threads=2 -t rpc --mpp=2'                         + \
