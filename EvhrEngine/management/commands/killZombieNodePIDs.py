@@ -10,6 +10,8 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
 
+        nodePIDs = EvhrNodePID.objects.all()
+        
         for nodePID in nodePIDs:
             
             try:
