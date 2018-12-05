@@ -15,6 +15,7 @@ class Command(BaseCommand):
         for nodePID in nodePIDs:
             
             try:
+                print 'Deleting NodePID with invalid pid.'
                 os.kill(nodePID, 0)
                 
             except OSError:
