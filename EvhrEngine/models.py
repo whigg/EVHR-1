@@ -44,6 +44,7 @@ class EvhrNode(models.Model):
     
     group = models.ForeignKey('EvhrNodeGroup')
     name = models.CharField(max_length=20)
+    enabled = models.BooleanField(default=True)
     
     #---------------------------------------------------------------------------
     # Meta
@@ -60,6 +61,7 @@ class EvhrNode(models.Model):
 class EvhrNodeGroup(models.Model):
     
     name = models.CharField(max_length=20, primary_key=True)
+    enabled = models.BooleanField(default=True)
     
     #---------------------------------------------------------------------------
     # Meta
