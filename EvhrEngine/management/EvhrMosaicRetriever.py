@@ -439,8 +439,8 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' ' + str(lry)          + \
               ' ' + ' '.join(tiles)
 
-        sCmd = SystemCommand(cmd, outDemNameTemp, \
-                                                self.logger, self.request, True)
+        sCmd = SystemCommand(cmd, outDemNameTemp, self.logger, self.request, 
+                             True, True)
 
         # Run mosaicked DEM through geoid correction
         cmd = '/opt/StereoPipeline/bin/dem_geoid '  + \
@@ -449,7 +449,7 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' --reverse-adjustment'
 
         sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True,
-                             distribute=True)
+                             True)
         
         for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
                                  os.remove(log) # remove dem_geoid log file
@@ -500,7 +500,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                                  self.logger, 
                                  self.request, 
                                  True,
-                                 distribute=True)
+                                 True)
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
@@ -508,7 +508,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                                             settings.NO_DATA_VALUE, orthoFile)
 
             sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,
-                                 True, distribute=True)
+                                 True, True)
 
             # Copy xml to accompany ortho file (needed for TOA)
             shutil.copy(origDgFile.xmlFileName, \
