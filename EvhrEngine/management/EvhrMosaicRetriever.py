@@ -601,7 +601,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                                                                   bandScenesStr)
 
             sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-                                 True, distribute=True)
+                                 True, True)
                 
             DgFile(stripBandFile).setBandName(bandName)
                           
