@@ -448,7 +448,8 @@ class EvhrMosaicRetriever(GeoRetriever):
               outDemName.strip('-adj.tif')          + \
               ' --reverse-adjustment'
 
-        sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True)
+        sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True,
+                             distribute=True)
         
         for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
                                  os.remove(log) # remove dem_geoid log file
@@ -498,14 +499,16 @@ class EvhrMosaicRetriever(GeoRetriever):
                                  orthoFileTemp, 
                                  self.logger, 
                                  self.request, 
-                                 True)
+                                 True,
+                                 distribute=True)
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
                         --output-nodata-value {} -o {}'.format(orthoFileTemp,  \
                                             settings.NO_DATA_VALUE, orthoFile)
 
-            sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,True)
+            sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,
+                                 True, distribute=True)
 
             # Copy xml to accompany ortho file (needed for TOA)
             shutil.copy(origDgFile.xmlFileName, \
@@ -597,14 +600,14 @@ class EvhrMosaicRetriever(GeoRetriever):
                                .format(stripBandFile.replace('.r100.tif', ''), \
                                                                   bandScenesStr)
 
-            sCmd = SystemCommand(cmd, stripBandFile, self.logger,              \
-                                                             self.request, True)
+            sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
+                                 True, distribute=True)
                 
             DgFile(stripBandFile).setBandName(bandName)
                           
             stripBandList.append(stripBandFile) 
 
-	# Return the list of band strips
+        # Return the list of band strips
         return stripBandList
 
     #---------------------------------------------------------------------------
