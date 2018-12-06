@@ -29,9 +29,6 @@ class SystemCommand(object):
     def __init__(self, cmd, inFile, logger, request=None, raiseException=False,
                  distribute=False):
 
-        if logger:
-            logger.info(cmd)
-            
         if distribute:
             self.distribute(cmd, inFile, logger, request, raiseException)
             
@@ -96,7 +93,7 @@ class SystemCommand(object):
                          node=None):
         
         if logger:
-            logger.info('Command: ' + cmd)
+            logger.info(cmd)
 
         # Launch the command.
         process = subprocess.Popen(cmd, 
