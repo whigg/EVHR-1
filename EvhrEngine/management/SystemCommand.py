@@ -26,12 +26,17 @@ class SystemCommand(object):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, cmd, inFile, logger, request=None, raiseException=False):
+    def __init__(self, cmd, inFile, logger, request=None, raiseException=False,
+                 distribute=False):
 
         if logger:
             logger.info(cmd)
             
-        self.distribute(cmd, inFile, logger, request, raiseException)
+        if distribute:
+            self.distribute(cmd, inFile, logger, request, raiseException)
+            
+        else:
+            self.runSingleProcess(cmd, inFile, logger, request, raiseException)
             
     #---------------------------------------------------------------------------
     # distribute
