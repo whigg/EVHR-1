@@ -45,7 +45,23 @@ class SystemCommand(object):
         
         if hasattr(settings, 'NODE_GROUP'):
 
-            nodes = EvhrNode.objects.filter(group=settings.NODE_GROUP)
+            # Ensure the node group exists and is enabled.
+            if EvhrNodeGroup.objects.filter(name=settings.NODE_GROUP,
+                                            enabled=True).count() == 0:
+                
+                msg = 'Node group, ' + 
+                      str(settings.NODE_GROUP) +
+                      ' does not exist or is disabled.'
+                      
+                if logger:
+                    self.logger.error(msg)
+                    
+                if raiseException:
+                    raise RuntimeError(msg)
+                
+            # Get the nodes in the group.                                 
+            nodes = EvhrNode.objects.filter(group=settings.NODE_GROUP,
+                                            enabled=True)
             
         else:
             nodes = EvhrNode.objects.all()
