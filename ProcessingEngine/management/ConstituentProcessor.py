@@ -146,7 +146,7 @@ class ConstituentProcessor():
 
             # Register that this instance is running.
             if logger:
-                logger.info('Registering constituent process for ' + 
+                logger.info('Registering constituent cProcess for ' + 
                             constituent.getName())
         
             cProcess             = ConstituentProcess()

@@ -28,7 +28,7 @@ class RequestProcessor():
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, numProcs = 1, logger = None):
+    def __init__(self, request, numProcs, logger = None):
         
         if not request:
             raise RuntimeError('A request must be provided.')
