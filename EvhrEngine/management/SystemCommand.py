@@ -49,8 +49,8 @@ class SystemCommand(object):
             if EvhrNodeGroup.objects.filter(name=settings.NODE_GROUP,
                                             enabled=True).count() == 0:
                 
-                msg = 'Node group, ' + 
-                      str(settings.NODE_GROUP) +
+                msg = 'Node group, ' + \
+                      str(settings.NODE_GROUP) + \
                       ' does not exist or is disabled.'
                       
                 if logger:
