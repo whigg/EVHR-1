@@ -88,8 +88,8 @@ class SystemCommand(object):
         if nodeToUse == None:
            
            if logger:
-               logger.info('Unable to choose a node for pdsh to use.')
-                   
+               logger.info('Unable to choose a node for pdsh to use, so \
+                           running on the local node.')
         else: 
                       
             if logger:
