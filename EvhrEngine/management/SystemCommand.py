@@ -63,8 +63,8 @@ class SystemCommand(object):
             nodes = EvhrNode.objects.filter(group=settings.NODE_GROUP,
                                             enabled=True)
             
-        else:
-            nodes = EvhrNode.objects.all()
+        # else:
+        #     nodes = EvhrNode.objects.all()
         
         # Decide which node is least busy and use it.
         nodeToUse = None
