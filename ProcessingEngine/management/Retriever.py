@@ -53,13 +53,10 @@ class Retriever(object):
     #---------------------------------------------------------------------------
     # __init__ 
     #---------------------------------------------------------------------------
-    def __init__(self, request, logger = None, maxProcesses = 1):
+    def __init__(self, request, logger = None, maxProcesses = -1):
 
         if not request:
             raise RuntimeError('A request must be provided.')
-            
-        if maxProcesses < 1:
-            raise RuntimeError('Maximum processes must be greater than 0.')
             
         self.logger       = logger
         self.maxProcesses = maxProcesses

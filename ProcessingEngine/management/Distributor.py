@@ -9,11 +9,14 @@ class Distributor(object):
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, cpList, maxRunning = 1, logger = None):
+    def __init__(self, cpList, maxRunning, logger = None):
         
         self.constituentProcessors = cpList
         self.logger = logger
         self.maxRunning = maxRunning
+        
+        if self.maxRunning == -1:
+            self.maxRunning = len(cpList)
 
         #---
         # Use a queue to collect failure status from distributed 

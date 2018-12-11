@@ -28,7 +28,7 @@ class RequestProcessor():
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
-    def __init__(self, request, numProcs, logger = None):
+    def __init__(self, request, numProcs = -1, logger = None):
         
         if not request:
             raise RuntimeError('A request must be provided.')
@@ -97,7 +97,7 @@ class RequestProcessor():
             # you are asking MODIS to work out of multiple FTP directories
             # from a single connection.
             #---
-            maxRunning = min(self.retriever.maxProcesses, self.numProcs)
+            maxRunning = max(self.retriever.maxProcesses, self.numProcs)
 
             #---
             # Activate the constituent processors using distributed processing.

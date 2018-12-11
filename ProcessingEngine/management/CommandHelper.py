@@ -18,7 +18,7 @@ class CommandHelper(object):
         
         parser.add_argument('--name')
         parser.add_argument('-o', help = 'path to output directory')
-        parser.add_argument('-n', default = 5, help = 'number of proceses')
+        parser.add_argument('-n', default = -1, help = 'number of proceses')
         parser.add_argument('--startDate', type = makeDate, help = 'mm-dd-yyyy')
         parser.add_argument('--endDate',   type = makeDate, help = 'mm-dd-yyyy')
 
@@ -42,7 +42,7 @@ class CommandHelper(object):
     @staticmethod
     def handle(request, args = [], options = []):
 
-        numProcesses = int(options['n']) if 'n' in options else 1
+        numProcesses = int(options['n']) if 'n' in options else -1
         logger       = logging.getLogger('console') # standard output.
         reqProc      = RequestProcessor(request, numProcesses, logger)
         
