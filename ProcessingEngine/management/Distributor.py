@@ -18,6 +18,11 @@ class Distributor(object):
         if self.maxRunning == -1:
             self.maxRunning = len(cpList)
 
+        if self.logger:
+            self.logger.info('Distributor will run up to ' + \
+                             str(self.maxRunning) + \
+                             ' constituents simultaneously.')
+
         #---
         # Use a queue to collect failure status from distributed 
         # ConstituentProcessors.

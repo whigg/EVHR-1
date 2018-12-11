@@ -51,8 +51,14 @@ class PythonMultiprocessingDistributor(Distributor):
                     else:
                         threads.remove(thread)
 
+                if self.logger:
+                    self.logger.info(str(numRunning) + \
+                                     ' of ' + \
+                                     str(self.maxRunning) + \
+                                     ' maximum constituents running.')
+
                 # Spawn threads.
-                for i in range(numRunning + 1, self.maxRunning + 1):
+                for i in range(numRunning, self.maxRunning):
 
                     if len(self.constituentProcessors) < 1:
                         break
@@ -60,8 +66,8 @@ class PythonMultiprocessingDistributor(Distributor):
                     constituentProcessor = self.constituentProcessors.pop()
                     
                     thread = multiprocessing.\
-                        Process(target = constituentProcessor,
-                                args   = (self.errorQueue,))
+                             Process(target=constituentProcessor,
+                                     args=(self.errorQueue,))
                     
                     threads.append(thread)
                     db.connections.close_all()
