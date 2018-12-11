@@ -283,7 +283,7 @@ case "$1" in
     umask 0000
     # sudo -u $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
     # sudo su -m $JD_USER $PYTHON_BIN $MGMT_SCRIPT $JD_SCRIPT &
-    su -l $JD_USER -c 'source /att/gpfsfs/opt/debian/8/static_gdal_pyExtended-2.2.2-1/init_gdal.sh; export PYTHONPATH=$PYTHONPATH:$NOBACKUP/DgStereo/dgtools:$NOBACKUP/DgStereo/pygeotools:$NOBACKUP/DgStereo/imview; umask 0002; '$PYTHON_BIN' '$MGMT_SCRIPT' '$JD_SCRIPT' &'
+    su -l $JD_USER -c 'source /att/gpfsfs/opt/debian/8/static_gdal_pyExtended-2.2.2-1/init_gdal.sh; umask 0002; '$PYTHON_BIN' '$MGMT_SCRIPT' '$JD_SCRIPT' &'
 
 	# Remember status and be verbose
 	rc_status -v

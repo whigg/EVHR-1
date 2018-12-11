@@ -51,7 +51,7 @@ class Command(BaseCommand):
         self.logger.setLevel(logging.INFO)
         
         self.maxProcesses = 10
-        self.requestProcesses = 1
+        self.requestProcesses = -1
         
         for jdp in models.JobDaemonProcess.objects.iterator():
             
@@ -87,13 +87,6 @@ class Command(BaseCommand):
                 pendingReqs = Request.objects.   \
                               filter(started = False).  \
                               order_by('created')[:numToRun]
-
-                # pendingReqs = Request.objects.                           \
-                #               filter(started = False).                   \
-                #               order_by('created').                       \
-                #               select_related(selectRelatedString)
-                #
-                # pendingReqs = pendingReqs[:numToRun]
 
                 for requestType in requestTypes:
                     pendingReqs = pendingReqs.select_related(requestType)
