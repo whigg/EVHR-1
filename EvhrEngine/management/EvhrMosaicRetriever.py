@@ -335,14 +335,21 @@ class EvhrMosaicRetriever(GeoRetriever):
                                        'same SRS.')
                                        
                 if tile.Intersects(sceneGeoms[scene]):
+                    
                     constituents[tileFile].append(scene)
+                    
+                    if hasattr(settings, 'MAX_SCENES_PER_TILE') and
+                       len(constituents[tileFile]) >= \
+                           settings.MAX_SCENES_PER_TILE:
+                        
+                           break
                     
             # Ensure the tile has scenes covering it.
             if not constituents[tileFile]:
                 
                 raise RuntimeError('There were no scenes covering tile ' + \
                                    str(tile))
-                    
+             
         return constituents
         
     #---------------------------------------------------------------------------
@@ -533,7 +540,9 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Get the output name to see if it exists.
         bname = '{}-ortho.tif'.format(stripName)
-        toaFinal = os.path.join(self.toaDir, 'EVHR_{}'.format(bname.replace\
+        
+        toaFinal = os.path.join(self.toaDir, 
+                                'EVHR_{}'.format(bname.replace \
                                                     ('-ortho.tif', '-TOA.tif')))
 
         # If the output file exists, don't bother running it again.
@@ -544,10 +553,13 @@ class EvhrMosaicRetriever(GeoRetriever):
 
                 toaBands = []
                 #orthoBands = [] # temp-yujie
+                
                 for stripBand in stripBands:
+
                     dgStrip = DgFile(stripBand)
                     orthoBand = self.orthoOne(stripBand, dgStrip)
                     #orthoBands.append(orthoBand) # yujie
+
                     toaBands.append(TOA.run(orthoBand,
                                             self.toaDir,
                                             stripBand, # instead of inputNitf
@@ -632,8 +644,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         # For each strip, extract bands --> mosaic, ortho, toa each band
         for stripName in stripNameList:
 
-            stripScenes = [scene for scene in fileList if \
-                                   DgFile(scene).getStripName() == stripName]
+            stripScenes = [scene for scene in fileList \
+                            if DgFile(scene).getStripName() == stripName]
 
             stripBandList = self.scenesToStrip(stripName, stripScenes)
             completedStrips.append(self.processStrip(stripName, stripBandList))
