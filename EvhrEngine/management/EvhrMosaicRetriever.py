@@ -338,7 +338,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                     
                     constituents[tileFile].append(scene)
                     
-                    if hasattr(settings, 'MAX_SCENES_PER_TILE') and
+                    if hasattr(settings, 'MAX_SCENES_PER_TILE') and \
                        len(constituents[tileFile]) >= \
                            settings.MAX_SCENES_PER_TILE:
                         
