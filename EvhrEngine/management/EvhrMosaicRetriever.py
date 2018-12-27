@@ -238,19 +238,30 @@ class EvhrMosaicRetriever(GeoRetriever):
 
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
-        features = None
-        fpScenes = None
-        fpq = FootprintsQuery(logger=self.logger)
-        fpq.addAoI(ulx, uly, lrx, lry, srs)
+        sceneFiles = []
         
         if evhrScenes:
-            
-            fpq.addEvhrScenes(evhrScenes)
-            fpScenes = fpq.getScenes()
-            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
+
+            if request.started:
+                
+                sceneFiles = [es.sceneFile for es in evhrScenes]
+                
+            else:
+                
+                fpScenes = None
+                fpq = FootprintsQuery(logger=self.logger)
+                fpq.addAoI(ulx, uly, lrx, lry, srs)
+                fpq.addEvhrScenes(evhrScenes)
+                fpScenes = fpq.getScenes()
+                self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
+                sceneFiles = fps.fileName() for fps in fpScenes]
         
         else:
             
+            fpScenes = None
+            fpq = FootprintsQuery(logger=self.logger)
+            fpq.addAoI(ulx, uly, lrx, lry, srs)
+
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
 
@@ -263,8 +274,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                 evhrScene.request = request
                 evhrScene.sceneFile = scene.fileName()
                 evhrScene.save()
+
+            sceneFiles = fps.fileName() for fps in fpScenes]
                 
-        return [fps.fileName() for fps in fpScenes]
+        return sceneFiles
 
     #---------------------------------------------------------------------------
     # listConstituents
