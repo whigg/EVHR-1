@@ -254,7 +254,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                 fpq.addEvhrScenes(evhrScenes)
                 fpScenes = fpq.getScenes()
                 self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
-                sceneFiles = fps.fileName() for fps in fpScenes]
+                sceneFiles = [fps.fileName() for fps in fpScenes]
         
         else:
             
@@ -275,7 +275,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                 evhrScene.sceneFile = scene.fileName()
                 evhrScene.save()
 
-            sceneFiles = fps.fileName() for fps in fpScenes]
+            sceneFiles = [fps.fileName() for fps in fpScenes]
                 
         return sceneFiles
 
