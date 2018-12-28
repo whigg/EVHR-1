@@ -666,10 +666,10 @@ class EvhrMosaicRetriever(GeoRetriever):
             stripBandList = self.scenesToStrip(stripName, stripScenes)
             completedStrips.append(self.processStrip(stripName, stripBandList))
         
-        self.deleteFiles(self.bandDir)
-        self.deleteFiles(self.stripDir)
-        self.deleteFiles(self.demDir)
-        self.deleteFiles(self.orthoDir)
+        # self.deleteFiles(self.bandDir)
+        # self.deleteFiles(self.stripDir)
+        # self.deleteFiles(self.demDir)
+        # self.deleteFiles(self.orthoDir)
  
         # Mosaic the scenes into a single file.
         
