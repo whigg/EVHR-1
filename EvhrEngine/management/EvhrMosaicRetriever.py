@@ -383,7 +383,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                        ' '.join(bandFiles))
 
         sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, True)
-        for bandFile in bandFiles: os.remove(bandFile)
+        # for bandFile in bandFiles: os.remove(bandFile)
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -619,8 +619,9 @@ class EvhrMosaicRetriever(GeoRetriever):
  
             bandScenesStr = ' '.join(bandScenes)
 
-            stripBandFile = os.path.join(self.stripDir, '{}_{}.r100.tif'\
-                                                  .format(stripName, bandName))
+            stripBandFile = os.path.join(self.stripDir, 
+                                         '{}_{}.r100.tif'.format(stripName, 
+                                                                 bandName))
 
             cmd = '/opt/StereoPipeline/bin/dg_mosaic --output-nodata-value 0' +\
                              ' --ignore-inconsistencies --output-prefix {} {}' \
