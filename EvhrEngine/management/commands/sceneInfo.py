@@ -22,7 +22,7 @@ class Command(BaseCommand):
         query = FootprintsQuery()
 
         if options['c'] is not None:
-            query.addCatalogID(options['c')
+            query.addCatalogID(options['c'])
             
         if options['n'] is not None:
             query.addScenesFromNtf([options['n']])
