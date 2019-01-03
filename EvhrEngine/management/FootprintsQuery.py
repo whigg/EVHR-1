@@ -30,6 +30,7 @@ class FootprintsQuery(object):
                                
         self.footprintsFile = footprintsFile
         self.logger = logger
+        self.catalogID = None
         self.maxScenes = None
         self.pairsOnly = False
         self.scenes = []
@@ -51,6 +52,13 @@ class FootprintsQuery(object):
         self.lrx = lrx
         self.lry = lry
         self.srs = srs
+        
+    #---------------------------------------------------------------------------
+    # addCatalogID
+    #---------------------------------------------------------------------------
+    def addCatalogID(self, catalogID):
+        
+        self.catalogID = catalogID
         
     #---------------------------------------------------------------------------
     # addEvhrScenes
@@ -129,6 +137,11 @@ class FootprintsQuery(object):
         if self.pairsOnly:
             whereClause += ' AND (pairname IS NOT NULL)'
 
+        # Add the catalog ID.
+        if self.catalogID:
+            whereClause += ' AND (CATID=' "'" + self.catalogID + "'" + ')'
+        
+        # Finish the clause.
         if len(whereClause) == emptyLen:
             whereClause = None
             
