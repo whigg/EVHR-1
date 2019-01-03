@@ -10,7 +10,9 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('-n', help='Full path to NITF file', required=True)
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument('-c', help='Catalog ID')
+        group.add_argument('-n', help='Full path to NITF file')
 
     #---------------------------------------------------------------------------
     # handle
@@ -18,7 +20,13 @@ class Command(BaseCommand):
     def handle(*args, **options):
 
         query = FootprintsQuery()
-        query.addScenesFromNtf([options['n']])
+
+        if options.c is not None:
+            query.addCatalogID([options['c']])
+            
+        if options.n is not None:
+            query.addScenesFromNtf([options['n']])
+
         scene = query.getScenes()
         
         if not scene:
