@@ -20,6 +20,10 @@ class Command(BaseCommand):
         query = FootprintsQuery()
         query.addScenesFromNtf([options['n']])
         scene = query.getScenes()
+        
+        if not scene:
+            raise RuntimeError('Scene does not exist.')
+            
         print 'Pair name:  ' + str(scene[0].pairName())
 
 
