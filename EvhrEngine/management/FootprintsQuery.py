@@ -139,7 +139,7 @@ class FootprintsQuery(object):
 
         # Add the catalog ID.
         if self.catalogID:
-            whereClause += ' AND (CATID=' "'" + self.catalogID + "'" + ')'
+            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'
         
         # Finish the clause.
         if len(whereClause) == emptyLen:

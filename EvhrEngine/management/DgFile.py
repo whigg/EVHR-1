@@ -189,14 +189,23 @@ class DgFile(GdalFile):
     def getStripName(self):
         
         try:
-            if self.specTypeCode() == 'MS': prodCode = 'M1BS'
-            else: prodCode = 'P1BS'
-            dateStr = '{}{}{}'.format(self.year(),                             \
-                                     str(self.firstLineTime().month).zfill(2), \
-                                         str(self.firstLineTime().day).zfill(2))
+            prodCode = None
+            
+            if self.specTypeCode() == 'MS': 
 
-            return '{}_{}_{}_{}'.format(self.sensor(), dateStr, prodCode,      \
-                                                            self.getCatalogId())
+                prodCode = 'M1BS'
+
+            else: 
+                prodCode = 'P1BS'
+            
+            dateStr = '{}{}{}'.format(self.year(),                             
+                                      str(self.firstLineTime().month).zfill(2), 
+                                      str(self.firstLineTime().day).zfill(2))
+
+            return '{}_{}_{}_{}'.format(self.sensor(), 
+                                        dateStr, 
+                                        prodCode,      
+                                        self.getCatalogId())
 
         except:
             return None   
