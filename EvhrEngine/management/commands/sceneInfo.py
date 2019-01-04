@@ -27,11 +27,14 @@ class Command(BaseCommand):
         if options['n'] is not None:
             query.addScenesFromNtf([options['n']])
 
-        scene = query.getScenes()
+        fpScenes = query.getScenes()
         
-        if not scene:
-            raise RuntimeError('Scene does not exist.')
+        if not fpScenes:
+            raise RuntimeError('No matching scenes found in Footprints.')
+
+        for fpscene in fpScenes:
             
-        print 'Pair name:  ' + str(scene[0].pairName())
+            print 'NITF:  ' + str(fpScene.fileName())
+            print 'Pair name:  ' + str(scene.pairName())
 
 
