@@ -35,6 +35,6 @@ class Command(BaseCommand):
         for fpScene in fpScenes:
             
             print 'NITF:  ' + str(fpScene.fileName())
-            print 'Pair name:  ' + str(scene.pairName())
+            print 'Pair name:  ' + str(fpScene.pairName())
 
 
