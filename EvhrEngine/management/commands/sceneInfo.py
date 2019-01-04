@@ -32,7 +32,7 @@ class Command(BaseCommand):
         if not fpScenes:
             raise RuntimeError('No matching scenes found in Footprints.')
 
-        for fpscene in fpScenes:
+        for fpScene in fpScenes:
             
             print 'NITF:  ' + str(fpScene.fileName())
             print 'Pair name:  ' + str(scene.pairName())
