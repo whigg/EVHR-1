@@ -25,7 +25,7 @@ class FootprintsQuery(object):
         if not os.path.exists(footprintsFile):
             
             raise RuntimeError('Footprints file, ' + \
-                               footprintsFileE + \
+                               footprintsFile + \
                                ' does not exist.')
                                
         self.footprintsFile = footprintsFile
