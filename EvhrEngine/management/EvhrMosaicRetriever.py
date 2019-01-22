@@ -557,8 +557,8 @@ class EvhrMosaicRetriever(GeoRetriever):
         bname = '{}-ortho.tif'.format(stripName)
         
         toaFinal = os.path.join(self.toaDir, 
-                                'EVHR_{}'.format(bname.replace \
-                                                    ('-ortho.tif', '-TOA.tif')))
+                                'EVHR_{}'.format(bname.replace ('-ortho.tif', 
+                                                                '-TOA.tif')))
 
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
@@ -586,16 +586,14 @@ class EvhrMosaicRetriever(GeoRetriever):
                                               toaFinal.replace('.tif', '.xml'))    
                 #self.mergeBands(orthoBands, os.path.join(self.toaDir, bname)) # yujie
 
-
             except:
                 pass
 
         return toaFinal
 
-
     #---------------------------------------------------------------------------
     # scenesToStrips()
-
+    #
     # Takes a list of scenes belonging to a strip and mosaics the scenes
     # together with dg_mosaic
     #---------------------------------------------------------------------------
@@ -615,7 +613,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         for bandName in bands:
            
             bandScenes = [DgFile(scene).getBand(self.bandDir, bandName) \
-                                                       for scene in stripScenes]
+                         for scene in stripScenes]
  
             bandScenesStr = ' '.join(bandScenes)
 
@@ -624,15 +622,13 @@ class EvhrMosaicRetriever(GeoRetriever):
                                                                  bandName))
 
             cmd = '/opt/StereoPipeline/bin/dg_mosaic --output-nodata-value 0' +\
-                             ' --ignore-inconsistencies --output-prefix {} {}' \
-                               .format(stripBandFile.replace('.r100.tif', ''), \
-                                                                  bandScenesStr)
+                  ' --ignore-inconsistencies --output-prefix {} {}'. \
+                  format(stripBandFile.replace('.r100.tif', ''), bandScenesStr)
 
             sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
                                  True, True)
                 
-            DgFile(stripBandFile).setBandName(bandName)
-                          
+            DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
 
         # Return the list of band strips
@@ -655,13 +651,13 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         # Get list of unique strip names for scenes in AOI
         stripNameList = list(set([DgFile(scene).getStripName() \
-                                                        for scene in fileList]))
+                                  for scene in fileList]))
 
         # For each strip, extract bands --> mosaic, ortho, toa each band
         for stripName in stripNameList:
 
             stripScenes = [scene for scene in fileList \
-                            if DgFile(scene).getStripName() == stripName]
+                           if DgFile(scene).getStripName() == stripName]
 
             stripBandList = self.scenesToStrip(stripName, stripScenes)
             completedStrips.append(self.processStrip(stripName, stripBandList))

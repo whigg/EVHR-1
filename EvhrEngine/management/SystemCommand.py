@@ -15,13 +15,14 @@ class SystemCommand(object):
 
     # These must be in lower case.
     ERROR_STRINGS_TO_TEST = [ \
-        'traceback',
-        'error',
         'command not found',
-        'stale file handle',
+        'exiting',
+        'error',
         'failed to access',
+        'ssh exited with exit code 255',
+        'stale file handle',
         'stereogrammetry unsuccessful',
-        'exiting']
+        'traceback']
         
     #---------------------------------------------------------------------------
     # __init__
