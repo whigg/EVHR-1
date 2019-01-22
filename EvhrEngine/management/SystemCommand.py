@@ -13,13 +13,15 @@ from EvhrEngine.models import EvhrNodePID
 #-------------------------------------------------------------------------------
 class SystemCommand(object):
 
+    NODE_FAILURE_MSG = 'ssh exited with exit code 255'
+    
     # These must be in lower case.
     ERROR_STRINGS_TO_TEST = [ \
         'command not found',
         'exiting',
         'error',
         'failed to access',
-        'ssh exited with exit code 255',
+        NODE_FAILURE_MSG,
         'stale file handle',
         'stereogrammetry unsuccessful',
         'traceback']
@@ -40,6 +42,8 @@ class SystemCommand(object):
     # distribute
     #---------------------------------------------------------------------------
     def distribute(self, cmd, inFile, logger, request, raiseException):
+        
+        origCmd = cmd
         
         # Get the candidate nodes on which to run.
         nodes = []
@@ -100,7 +104,7 @@ class SystemCommand(object):
             cmd = 'pdsh -w ' + nodeToUse.name + ' ' + cmd
         
         # Run the pdsh version using runSingleProcess.
-        self.runSingleProcess(cmd, inFile, logger, request, raiseException,
+        self.runSingleProcess(cmd, inFile, logger, request, raiseException, 
                               nodeToUse)
         
     #---------------------------------------------------------------------------
@@ -109,9 +113,6 @@ class SystemCommand(object):
     def runSingleProcess(self, cmd, inFile, logger, request, raiseException,
                          node=None):
         
-        if logger:
-            logger.info(cmd)
-
         # Launch the command.
         process = subprocess.Popen(cmd, 
                                    shell = True,
@@ -158,10 +159,12 @@ class SystemCommand(object):
             
             if lcMsg.find(eMsg) != -1:
 
+                if NODE_FAILURE_MSG in eMsg:
+                    logger.warning('Node failed. ' + str(self.msg))
+                    
                 hasErrorString = True
                 break
         
-        # if self.returnCode or self.msg.startswith('Traceback'):
         if (self.returnCode or hasErrorString) and request != None:
             
             err             = EvhrError()
