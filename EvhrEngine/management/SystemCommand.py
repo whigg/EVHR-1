@@ -159,7 +159,7 @@ class SystemCommand(object):
             
             if lcMsg.find(eMsg) != -1:
 
-                if NODE_FAILURE_MSG in eMsg:
+                if SystemCommand.NODE_FAILURE_MSG in eMsg:
                     logger.warning('Node failed. ' + str(self.msg))
                     
                 hasErrorString = True
