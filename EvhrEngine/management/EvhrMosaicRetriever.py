@@ -606,7 +606,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         stripBandList = [] # Length of list = number of bands
             
         bands = ['BAND_P'] if 'P1BS' in stripName else \
-                                        ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
+                ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
 	
         bands =	DgFile(stripScenes[0]).bandNameList # yujie. might use later
 
@@ -625,8 +625,16 @@ class EvhrMosaicRetriever(GeoRetriever):
                   ' --ignore-inconsistencies --output-prefix {} {}'. \
                   format(stripBandFile.replace('.r100.tif', ''), bandScenesStr)
 
+            #---
+            # There is a race condition when a scene is used in multiple tiles.
+            # Both tile processes can run this dg_mosaic simultaneously on the
+            # same output file, causing corruption.
+            #
+            # sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
+            #                      True, True)
+            #---
             sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-                                 True, True)
+                                 True)
                 
             DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
