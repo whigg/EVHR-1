@@ -3,6 +3,7 @@ import glob
 import json
 import math
 import os
+import random
 import shutil
 import traceback
 
@@ -616,10 +617,12 @@ class EvhrMosaicRetriever(GeoRetriever):
                          for scene in stripScenes]
  
             bandScenesStr = ' '.join(bandScenes)
+            randomTag = random.randint(0, 1000000)
 
             stripBandFile = os.path.join(self.stripDir, 
-                                         '{}_{}.r100.tif'.format(stripName, 
-                                                                 bandName))
+                                         '{}_{}_{}.r100.tif'.format(stripName, 
+                                                                    bandName,
+                                                                    randomTag))
 
             cmd = '/opt/StereoPipeline/bin/dg_mosaic --output-nodata-value 0' +\
                   ' --ignore-inconsistencies --output-prefix {} {}'. \
