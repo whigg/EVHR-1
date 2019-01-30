@@ -278,7 +278,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             sceneFiles = [fps.fileName() for fps in fpScenes]
                 
-        return sceneFiles
+        return sceneFiles.sort()
 
     #---------------------------------------------------------------------------
     # listConstituents
