@@ -550,7 +550,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     # unclipped.  Only the final orthorectified image is clipped in mergeBands
     # or compress. 
     #---------------------------------------------------------------------------
-    def processStrip(self, stripName, stripBands):
+    def processStrip(self, stripName, stripBands, tileName):
 
         if self.logger:
             self.logger.info('Processing strip {}'.format(stripName))
@@ -559,8 +559,9 @@ class EvhrMosaicRetriever(GeoRetriever):
         bname = '{}-ortho.tif'.format(stripName)
         
         toaFinal = os.path.join(self.toaDir, 
-                                'EVHR_{}'.format(bname.replace ('-ortho.tif', 
-                                                                '-TOA.tif')))
+                                'EVHR_{}_{}'.format(str(tileName),
+                                                    bname.replace ('-ortho.tif', 
+                                                                   '-TOA.tif')))
 
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
