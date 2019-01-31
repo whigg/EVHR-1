@@ -245,7 +245,7 @@ class EvhrMosaicRetriever(GeoRetriever):
 
             if request.started:
                 
-                sceneFiles = [es.sceneFile.fileName() for es in evhrScenes]
+                sceneFiles = [es.sceneFile.filename for es in evhrScenes]
                 
             else:
                 
