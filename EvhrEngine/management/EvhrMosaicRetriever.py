@@ -673,7 +673,9 @@ class EvhrMosaicRetriever(GeoRetriever):
                            if DgFile(scene).getStripName() == stripName]
 
             stripBandList = self.scenesToStrip(stripName, stripScenes)
-            tileName = os.path.basename(constituentFileName)
+
+            tileName = \
+                os.path.splitext(os.path.basename(constituentFileName))[0]
             
             completedStrips.append(self.processStrip(stripName, 
                                                      stripBandList,
