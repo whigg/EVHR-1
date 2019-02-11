@@ -171,7 +171,7 @@ class EvhrDemRetriever(GeoRetriever):
         for scene in fileList.items()[0][1]:
             
             shutil.copy(scene, workDir)
-            xmlName = scene.replace('.tif', '.xml')
+            xmlName = scene.replace('.ntf', '.xml')
             shutil.copy(xmlName, workDir)
         
         # PAIR_NAME     = fileList[0]
