@@ -179,6 +179,6 @@ class SystemCommand(object):
                 
                 msg = 'A system command error occurred.  ' + \
                       str(self.msg) + \
-                      ' ' + str(cmd)
+                      ' Command: ' + str(cmd)
                       
                 raise RuntimeError(msg)
