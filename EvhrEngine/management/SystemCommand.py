@@ -177,5 +177,8 @@ class SystemCommand(object):
             
             if raiseException:
                 
-                msg = 'A system command error occurred.  ' + str(self.msg)
+                msg = 'A system command error occurred.  ' + \
+                      str(self.msg) + \
+                      ' ' + str(cmd)
+                      
                 raise RuntimeError(msg)
