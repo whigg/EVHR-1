@@ -165,12 +165,14 @@ class EvhrDemRetriever(GeoRetriever):
         # Create the working directory.
         pairName = fileList.items()[0][0]
         workDir = os.path.join(self.demDir, pairName)
+        os.path.mkdir(workDir)
         
         # Copy the scenes to the working directory.
         for scene in fileList.items()[0][1]:
             
-            workingScene = os.path.join(workDir, os.path.basename(scene))
-            cmd = shutil.copyfile(scene, workingScene)
+            shutil.copy(scene, workDir)
+            xmlName = scene.replace('.tif', '.xml')
+            shutil.copy(xmlName, workDir)
         
         # PAIR_NAME     = fileList[0]
         PAIR_NAME     = pairName
