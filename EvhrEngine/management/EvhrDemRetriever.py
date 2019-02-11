@@ -139,14 +139,14 @@ class EvhrDemRetriever(GeoRetriever):
         # print '*** ONLY RUNNING SCENE ' + str(pairs[0])
 
         # Create the constituents, which now look like:
-        import pdb
-        pdb.set_trace()
+        # {pairName.tif: []}
         constituents = {}
 
         for pair in pairs:
 
             consName = os.path.join(self.demDir, pair + '.tif')
-            constituents[consName] = [pair]
+            # constituents[consName] = [pair]
+            constituents[consName] = {pair : pairs[pair]}
             
         if self.logger:
             
