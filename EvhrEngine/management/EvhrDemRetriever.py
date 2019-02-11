@@ -180,9 +180,7 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + OUT_DIR               + \
               ' ' + CROP_WINDOW
               
-        import pdb
-        pdb.set_trace()
-        sCmd = SystemCommand(cmd, None, self.logger, self.request)
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
             
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
