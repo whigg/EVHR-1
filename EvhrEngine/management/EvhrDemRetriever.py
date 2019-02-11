@@ -155,6 +155,7 @@ class EvhrDemRetriever(GeoRetriever):
         COR_KNL_SIZE  = '21'
         MYSTERY1      = '300'
         OUT_DIR       = self.demDir
+        QUERY         = 'false'
         CROP_WINDOW   = '"0 15000 5000 5000"'
 
         USE_NODE_LIST = 'true'
@@ -178,6 +179,7 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + COR_KNL_SIZE          + \
               ' ' + MYSTERY1              + \
               ' ' + OUT_DIR               + \
+              ' ' + QUERY                 + \
               ' ' + CROP_WINDOW
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
