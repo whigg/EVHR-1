@@ -84,10 +84,26 @@ class EvhrDemRetriever(GeoRetriever):
             fpScenes = fpq.getScenes()
             
         # Extract the pair names from the Footprints features.
-        pairs = Set([])
+        # pairs = Set([])
+        #
+        # for fps in fpScenes:
+        #     pairs.add(fps.pairName())
+
+        # ---
+        # Now that dg_stereo.sh does not query redundantly, EDR must copy each
+        # pair's files to the request directory for dg_stereo.sh to find them.
+        # The first step is to associate the pair name with its files.
+        # ---
+        pairs = {}
 
         for fps in fpScenes:
-            pairs.add(fps.pairName())
+            
+            pairName = fps.pairName()
+            
+            if not pairs.has_key(pairName):
+                pairs[pairName] = []
+                
+            pairs[pairName].append(fps.fileName())
             
         return pairs
 
@@ -122,7 +138,9 @@ class EvhrDemRetriever(GeoRetriever):
         # pairs = ['WV02_20160630_1030010058056300_1030010057266900'] # works
         # print '*** ONLY RUNNING SCENE ' + str(pairs[0])
 
-        # Create the constituents.
+        # Create the constituents, which now look like:
+        import pdb
+        pdb.set_trace()
         constituents = {}
 
         for pair in pairs:
