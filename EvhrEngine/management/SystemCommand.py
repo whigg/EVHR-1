@@ -22,6 +22,7 @@ class SystemCommand(object):
         'error',
         'failed to access',
         NODE_FAILURE_MSG,
+        'no such file or directory',
         'stale file handle',
         'stereogrammetry unsuccessful',
         'traceback']
