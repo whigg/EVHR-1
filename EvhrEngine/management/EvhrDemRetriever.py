@@ -1,6 +1,7 @@
 
 import os
 from sets import Set
+import shutil
 
 from django.conf import settings
 
@@ -139,7 +140,7 @@ class EvhrDemRetriever(GeoRetriever):
         # print '*** ONLY RUNNING SCENE ' + str(pairs[0])
 
         # Create the constituents, which now look like:
-        # {pairName.tif: []}
+        # {pairName.tif: {pair name: [scene1, scene2, ...]}, ...}
         constituents = {}
 
         for pair in pairs:
@@ -161,7 +162,18 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
-        PAIR_NAME     = fileList[0]
+        # Create the working directory.
+        pairName = fileList.items()[0][0]
+        workDir = os.path.join(self.demDir, pairName)
+        
+        # Copy the scenes to the working directory.
+        for scene in fileList[0][1]:
+            
+            workingScene = os.path.join(workDir, os.path.basename(scene))
+            cmd = shutil.copyfile(scene, workingScene)
+        
+        # PAIR_NAME     = fileList[0]
+        PAIR_NAME     = pairName
         TEST          = 'true'
         ADAPT         = 'true'
         MAP           = 'false'
