@@ -167,7 +167,7 @@ class EvhrDemRetriever(GeoRetriever):
         workDir = os.path.join(self.demDir, pairName)
         
         # Copy the scenes to the working directory.
-        for scene in fileList[0][1]:
+        for scene in fileList.items()[0][1]:
             
             workingScene = os.path.join(workDir, os.path.basename(scene))
             cmd = shutil.copyfile(scene, workingScene)
