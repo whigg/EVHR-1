@@ -165,7 +165,7 @@ class EvhrDemRetriever(GeoRetriever):
         # Create the working directory.
         pairName = fileList.items()[0][0]
         workDir = os.path.join(self.demDir, pairName)
-        os.path.mkdir(workDir)
+        os.mkdir(workDir)
         
         # Copy the scenes to the working directory.
         for scene in fileList.items()[0][1]:
