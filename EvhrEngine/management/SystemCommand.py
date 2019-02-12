@@ -33,6 +33,10 @@ class SystemCommand(object):
     def __init__(self, cmd, inFile, logger, request=None, raiseException=False,
                  distribute=False):
 
+        self.msg = None
+        self.returnCode = None
+        self.stdOut = None
+
         if distribute:
             self.distribute(cmd, inFile, logger, request, raiseException)
             
