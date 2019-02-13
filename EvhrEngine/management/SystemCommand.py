@@ -14,6 +14,7 @@ from EvhrEngine.models import EvhrNodePID
 class SystemCommand(object):
 
     NODE_FAILURE_MSG = 'ssh exited with exit code 255'
+    RANSAC_MSG = 'ransac'
     
     # These must be in lower case.
     ERROR_STRINGS_TO_TEST = [ \
@@ -23,6 +24,7 @@ class SystemCommand(object):
         'failed to access',
         NODE_FAILURE_MSG,
         'no such file or directory',
+        RANSAC_MSG,
         'stale file handle',
         'stereogrammetry unsuccessful',
         'traceback']
@@ -165,6 +167,7 @@ class SystemCommand(object):
             if lcMsg.find(eMsg) != -1:
 
                 if SystemCommand.NODE_FAILURE_MSG in eMsg:
+                    
                     logger.warning('Node failed. ' + str(self.msg))
                     
                 hasErrorString = True
