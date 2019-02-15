@@ -228,7 +228,7 @@ class EvhrDemRetriever(GeoRetriever):
             
             print '*** EDR sCmd.msg = ' + str(sCmd.msg)
             
-            if SystemCommand.RANSAC_MSG in sCmd.msg:
+            if SystemCommand.RANSAC_MSG in sCmd.msg.lower():
                 
                 self.logger.warning('ASP was unable to match the left and ' + \
                                     'right images of a pair.  This pair ' + \
