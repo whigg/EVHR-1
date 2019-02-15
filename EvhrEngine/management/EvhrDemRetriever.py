@@ -224,7 +224,7 @@ class EvhrDemRetriever(GeoRetriever):
         try:
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
-        except RuntimeException:
+        except RuntimeError:
             
             print '*** EDR sCmd.msg = ' + str(sCmd.msg)
             
