@@ -185,7 +185,7 @@ class FootprintsQuery(object):
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
 
-        SystemCommand(cmd, inFile=None, self.logger, request=None, 
+        SystemCommand(cmd, inFile=None, logger=self.logger, request=None, 
                       raiseException=True, distribute=False)
                       
         resultGML = minidom.parse(queryResult)
