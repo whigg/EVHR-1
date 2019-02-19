@@ -173,14 +173,16 @@ class SystemCommand(object):
                 hasErrorString = True
                 break
         
-        if (self.returnCode or hasErrorString) and request != None:
+        if self.returnCode or hasErrorString:
             
-            err             = EvhrError()
-            err.request     = request
-            err.inputFile   = inFile
-            err.errorOutput = self.msg
-            err.command     = cmd
-            err.save()
+            if request != None:
+            
+                err             = EvhrError()
+                err.request     = request
+                err.inputFile   = inFile
+                err.errorOutput = self.msg
+                err.command     = cmd
+                err.save()
             
             if raiseException:
                 
