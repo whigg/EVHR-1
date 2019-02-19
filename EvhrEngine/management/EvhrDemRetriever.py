@@ -214,16 +214,9 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + QUERY                 + \
               ' ' + CROP_WINDOW
               
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
-            
-        # Move the primary output file to the constituent name.
-        pairDir = os.path.join(self.demDir, PAIR_NAME)
-        outDemName = os.path.join(pairDir, 'out-DEM_4m.tif')
-        cmd = 'mv ' + outDemName + ' ' + constituentFileName
-        
         try:
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
-        
+            
         except RuntimeError:
             
             print '*** EDR sCmd.msg = ' + str(sCmd.msg)
@@ -237,6 +230,12 @@ class EvhrDemRetriever(GeoRetriever):
             else:
                 raise 
                 
+        # Move the primary output file to the constituent name.
+        pairDir = os.path.join(self.demDir, PAIR_NAME)
+        outDemName = os.path.join(pairDir, 'out-DEM_4m.tif')
+        cmd = 'mv ' + outDemName + ' ' + constituentFileName
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+        
         return constituentFileName    
               
               
