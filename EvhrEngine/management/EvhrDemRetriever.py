@@ -215,7 +215,10 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + CROP_WINDOW
             
         sCmd = None
-          
+
+        import pdb
+        pdb.set_trace()
+        
         try:
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
             
