@@ -213,7 +213,9 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + OUT_DIR               + \
               ' ' + QUERY                 + \
               ' ' + CROP_WINDOW
-              
+            
+        sCmd = None
+          
         try:
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
             
