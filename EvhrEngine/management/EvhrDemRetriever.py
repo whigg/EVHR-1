@@ -214,17 +214,14 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + QUERY                 + \
               ' ' + CROP_WINDOW
             
-        sCmd = None
-
-        import pdb
-        pdb.set_trace()
-        
         try:
-            sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+            SystemCommand(cmd, None, self.logger, self.request, True)
             
-        except RuntimeError:
+        except RuntimeError as error:
             
-            if SystemCommand.RANSAC_MSG in sCmd.msg.lower():
+            import pdb
+            pdb.set_trace()
+            if SystemCommand.RANSAC_MSG in error:
                 
                 self.logger.warning('ASP was unable to match the left and ' + \
                                     'right images of a pair.  This pair ' + \
