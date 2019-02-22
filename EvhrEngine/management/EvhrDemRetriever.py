@@ -221,7 +221,7 @@ class EvhrDemRetriever(GeoRetriever):
             
             import pdb
             pdb.set_trace()
-            if SystemCommand.RANSAC_MSG in error:
+            if SystemCommand.RANSAC_MSG in error.message:
                 
                 self.logger.warning('ASP was unable to match the left and ' + \
                                     'right images of a pair.  This pair ' + \
