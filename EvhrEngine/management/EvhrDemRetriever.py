@@ -231,8 +231,11 @@ class EvhrDemRetriever(GeoRetriever):
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
         outDemName = os.path.join(pairDir, 'out-DEM_4m.tif')
-        cmd = 'mv ' + outDemName + ' ' + constituentFileName
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+
+        if os.path.exists(outDemName):
+
+            cmd = 'mv ' + outDemName + ' ' + constituentFileName
+            sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
         
         return constituentFileName    
               
