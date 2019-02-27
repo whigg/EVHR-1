@@ -41,3 +41,4 @@ class TestFootprintsQuery(TestCase):
         
         for i in range(len(fpScenes1)):
             self.assertEqual(fpScenes1[i].fileName(), fpScenes2[i].fileName())
+            
