@@ -37,5 +37,6 @@ class TestFootprintsQuery(TestCase):
         fpScenes1 = fpq.getScenes()
         fpScenes2 = fpq.getScenes()
         
-        assertEqual(len(fpScenes1), len(fpScenes2))
+        self.assertEqual(len(fpScenes1), len(fpScenes2))
+        
     
