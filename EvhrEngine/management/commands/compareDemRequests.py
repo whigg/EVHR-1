@@ -11,8 +11,8 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('requestDir1', nargs='1')
-        parser.add_argument('requestDir2', nargs='1')
+        parser.add_argument('requestDir1')
+        parser.add_argument('requestDir2')
 
     #---------------------------------------------------------------------------
     # handle
