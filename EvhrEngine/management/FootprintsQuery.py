@@ -114,7 +114,7 @@ class FootprintsQuery(object):
     def _buildWhereClause(self):
         
         # Add pairs only, the start of a where clause.    
-        whereClause = ' -where "'
+        whereClause = ' -where '
         emptyLen = len(whereClause)
         
         # Add sensor list.
@@ -167,10 +167,74 @@ class FootprintsQuery(object):
         if len(whereClause) == emptyLen:
             whereClause = None
             
-        else:
-            whereClause += '"'
+        # else:
+        #     whereClause += '"'
             
         return unicode(whereClause)
+        
+    #---------------------------------------------------------------------------
+    # _buildWhereClause
+    #---------------------------------------------------------------------------
+    # def _buildWhereClause(self):
+    #
+    #     # Add pairs only, the start of a where clause.
+    #     whereClause = ' -where "'
+    #     emptyLen = len(whereClause)
+    #
+    #     # Add sensor list.
+    #     first = True
+    #
+    #     for sensor in FootprintsQuery.RUN_SENSORS:
+    #
+    #         if first:
+    #
+    #             first = False
+    #             whereClause += '('
+    #
+    #         else:
+    #             whereClause += ' OR '
+    #
+    #         whereClause += 'SENSOR=' + "'" + sensor + "'"
+    #
+    #     if not first:
+    #         whereClause += ')'
+    #
+    #     # Add scene list.
+    #     first = True
+    #
+    #     for scene in self.scenes:
+    #
+    #         if first:
+    #
+    #             first = False
+    #
+    #             if len(whereClause) != emptyLen:
+    #                 whereClause += ' AND ('
+    #
+    #         else:
+    #             whereClause += ' OR '
+    #
+    #         whereClause += 'S_FILEPATH=' + "'" + scene + "'"
+    #
+    #     if not first:
+    #         whereClause += ')'
+    #
+    #     # Add pairs only clause.
+    #     if self.pairsOnly:
+    #         whereClause += ' AND (pairname IS NOT NULL)'
+    #
+    #     # Add the catalog ID.
+    #     if self.catalogID:
+    #         whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'
+    #
+    #     # Finish the clause.
+    #     if len(whereClause) == emptyLen:
+    #         whereClause = None
+    #
+    #     else:
+    #         whereClause += '"'
+    #
+    #     return unicode(whereClause)
         
     #---------------------------------------------------------------------------
     # getScenes
@@ -199,11 +263,18 @@ class FootprintsQuery(object):
                    ' ' + str(ulx)                   + \
                    ' ' + str(lry)                   + \
                    ' ' + str(lrx)                   + \
-                   ' ' + str(uly)                   + \
-                   ' -spat_srs'                     + \
-                   ' "' + self.srs.ExportToProj4() + '"'
+                   ' ' + str(uly)                   
+                   # ' -spat_srs'                     + \
+                   # ' "' + self.srs.ExportToProj4() + '"'
 
-        cmd += self._buildWhereClause()
+        where = self._buildWhereClause()
+
+        if len(where):
+            
+            cmd += ' -sql "select * from nga_inventory "' + \
+                   where + \
+                   ' order by S_FILEPATH"'
+        
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
 
