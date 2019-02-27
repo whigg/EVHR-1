@@ -91,7 +91,7 @@ class EvhrDemRetriever(GeoRetriever):
 
         # ---
         # Now that dg_stereo.sh does not query redundantly, EDR must copy each
-        # pair's files to the request directory for dg_stereo.sh to find them.
+        # pairs' files to the request directory for dg_stereo.sh to find them.
         # The first step is to associate the pair name with its files.
         # ---
         pairs = {}
