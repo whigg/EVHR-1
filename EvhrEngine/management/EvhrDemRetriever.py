@@ -77,7 +77,6 @@ class EvhrDemRetriever(GeoRetriever):
         
         else:
             
-            
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
