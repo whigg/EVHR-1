@@ -31,7 +31,11 @@ class TestFootprintsQuery(TestCase):
         srs = SpatialReference()
         srs.ImportFromEPSG(4326)
         
-        fpq = FootprintsQuery(logger=self.logger)
+        fpq = FootprintsQuery()
         fpq.addAoI(ulx, uly, lrx, lry, srs)
+        fpq.setPairsOnly()
+        fpScenes = fpq.getScenes()
+        # expectedFpScenes = fpq.getScenes()
+        print str(fpScenes)
         
     
