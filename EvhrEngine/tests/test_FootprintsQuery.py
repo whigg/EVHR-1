@@ -34,8 +34,8 @@ class TestFootprintsQuery(TestCase):
         fpq = FootprintsQuery()
         fpq.addAoI(ulx, uly, lrx, lry, srs)
         fpq.setPairsOnly()
-        fpScenes = fpq.getScenes()
-        # expectedFpScenes = fpq.getScenes()
-        print str(fpScenes)
+        fpScenes1 = fpq.getScenes()
+        fpScenes2 = fpq.getScenes()
         
+        assertEqual(len(fpScenes1), len(fpScenes2))
     
