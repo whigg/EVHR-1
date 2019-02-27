@@ -3,6 +3,9 @@ import os
 import tempfile
 from xml.dom import minidom
 
+from osgeo.osr import CoordinateTransformation
+from osgeo.osr import SpatialReference
+
 from django.conf import settings
 
 from EvhrEngine.management.FootprintsScene import FootprintsScene
@@ -42,11 +45,30 @@ class FootprintsQuery(object):
         self.lry = None
         self.srs = None
         
+        #---
+        # Queries must be in geographic coordinates because this class uses
+        # the ogr2ogr option -sql to sort the results.  When -sql is used
+        # -spat_srs cannot be used.
+        #---
+        self.targetSRS = SpatialReference()
+        self.targetSRS.ImportFromEPSG(4326)
+        
     #---------------------------------------------------------------------------
     # addAoI
     #---------------------------------------------------------------------------
     def addAoI(self, ulx, uly, lrx, lry, srs):
         
+        if not srs.IsSame(self.targetSRS):
+            
+            xform = CoordinateTransformation(srs, self.targetSRS)
+            ulPt = xform.TransformPoint(ulx, uly)
+            lrPt = xform.TransformPoint(lrx, lry)
+            
+            ulx = ulPt.GetX()
+            uly = ulPt.GetY()
+            lrx = lrPt.GetX()
+            lry = lrPt.GetY()
+            
         self.ulx = ulx
         self.uly = uly
         self.lrx = lrx

@@ -10,7 +10,6 @@ import traceback
 import numpy
 
 from osgeo import gdal
-from osgeo.osr import CoordinateTransformation
 from osgeo.osr import SpatialReference
 
 from django.conf import settings
