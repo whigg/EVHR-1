@@ -20,6 +20,23 @@ class TestFootprintsQuery(TestCase):
         FootprintsQuery()
 
     #---------------------------------------------------------------------------
+    # testAddAoi 
+    #---------------------------------------------------------------------------
+    def testAddAoi(self):
+        
+        ulx = 374187
+        uly = 4202663
+        lrx = 501598
+        lry = 4100640
+        
+        srs = SpatialReference()
+        srs.ImportFromEPSG(32612)
+        
+        fpq = FootprintsQuery()
+        fpq.addAoi(ulx, uly, lrx, lry, srs)
+        fpq.getScenes()
+        
+    #---------------------------------------------------------------------------
     # testConsistentResults 
     #---------------------------------------------------------------------------
     def testConsistentResults(self):
