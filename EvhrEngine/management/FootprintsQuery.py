@@ -64,10 +64,10 @@ class FootprintsQuery(object):
             ulPt = xform.TransformPoint(ulx, uly)
             lrPt = xform.TransformPoint(lrx, lry)
             
-            ulx = ulPt.GetX()
-            uly = ulPt.GetY()
-            lrx = lrPt.GetX()
-            lry = lrPt.GetY()
+            ulx = ulPt[0]
+            uly = ulPt[1]
+            lrx = lrPt[0]
+            lry = lrPt[1]
             
         self.ulx = ulx
         self.uly = uly
