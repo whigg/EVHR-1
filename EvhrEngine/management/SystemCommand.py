@@ -121,6 +121,9 @@ class SystemCommand(object):
     def runSingleProcess(self, cmd, inFile, logger, request, raiseException,
                          node=None):
         
+        if logger:
+            logger.info('Cmd: ' + str(cmd))
+            
         # Launch the command.
         process = subprocess.Popen(cmd, 
                                    shell = True,
