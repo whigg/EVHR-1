@@ -8,7 +8,7 @@ from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 #--------------------------------------------------------------------------------
 # TestFootprintsQuery
 #
-# ./manage.py test EvhrEngine.tests.test_FootprintsQuery
+# ./manage.py test EvhrEngine.tests.test_FootprintsQuery --failfast
 #--------------------------------------------------------------------------------
 class TestFootprintsQuery(TestCase):
 
@@ -20,9 +20,9 @@ class TestFootprintsQuery(TestCase):
         FootprintsQuery()
 
     #---------------------------------------------------------------------------
-    # testAddAoi 
+    # testAddAoI
     #---------------------------------------------------------------------------
-    def testAddAoi(self):
+    def testAddAoI(self):
         
         ulx = 374187
         uly = 4202663
@@ -33,7 +33,7 @@ class TestFootprintsQuery(TestCase):
         srs.ImportFromEPSG(32612)
         
         fpq = FootprintsQuery()
-        fpq.addAoi(ulx, uly, lrx, lry, srs)
+        fpq.addAoI(ulx, uly, lrx, lry, srs)
         fpq.getScenes()
         
     #---------------------------------------------------------------------------
