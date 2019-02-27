@@ -44,16 +44,16 @@ class Command(BaseCommand):
         reqDir2 = os.path.join(reqDir2, 'dems')
 
         # Check for the same pairs.
-        # req1PairDirs = [f for f in os.listdir(reqDir1) if os.path.isdir(f)]
+        req1PairDirs = [f for f in glob(reqDir1 + '/W*') if os.path.isdir(f)]
         
-        req1PairDirs = []
-        allDirs = glob(reqDir1 + '/*')
-        print 'ad = ' + str(allDirs)
-        
-        for f in allDirs:
-            
-            if os.path.isdir(f):
-                req1PairDirs.append(f)
+        # req1PairDirs = []
+        # allDirs = glob(reqDir1 + '/*')
+        # print 'ad = ' + str(allDirs)
+        #
+        # for f in allDirs:
+        #
+        #     if os.path.isdir(f):
+        #         req1PairDirs.append(f)
         
         print (str(req1PairDirs))
 
