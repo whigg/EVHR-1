@@ -4,6 +4,12 @@ import os
 
 from django.core.management.base import BaseCommand
 
+#-------------------------------------------------------------------------------
+# compareDemRequests
+#
+# ./manage.py compareDemRequests /att/nobackup/rlgill/evhrDevelopmentOutput/requests/Myanmar_DEM_Roger-bdA0xCH1pfPdvKjkPOdkiP4asDnVAOp1G-vQx_MC /att/nobackup/rlgill/evhrDevelopmentOutput/requests/Myanmar_DEM_Roger-jQK9GA_uur3VfnhxtliITR-oMpGWEn1nwAlJPh1-
+# 
+#-------------------------------------------------------------------------------
 class Command(BaseCommand):
 
     #---------------------------------------------------------------------------
@@ -38,7 +44,8 @@ class Command(BaseCommand):
         reqDir2 = os.path.join(reqDir2, 'dems')
 
         # Check for the same pairs.
-        req1PairDirs = [f for f in os.path.listdir(reqDir1) if os.path.isdir(f)]
+        req1PairDirs = [f for f in os.listdir(reqDir1) if os.path.isdir(f)]
         print (str(req1PairDirs))
+
         
         
