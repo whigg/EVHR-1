@@ -1,3 +1,6 @@
+
+from osgeo.osr import SpatialReference
+
 from django.test import TestCase
 
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
@@ -5,7 +8,7 @@ from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 #--------------------------------------------------------------------------------
 # TestFootprintsQuery
 #
-# python -m unittest EvhrEngine.tests.test_FootprintsQuery
+# ./manage.py test EvhrEngine.tests.test_FootprintsQuery
 #--------------------------------------------------------------------------------
 class TestFootprintsQuery(TestCase):
 
@@ -15,5 +18,20 @@ class TestFootprintsQuery(TestCase):
     def testInit(self):
         
         FootprintsQuery()
-    
+
+    #---------------------------------------------------------------------------
+    # testConsistentResults 
+    #---------------------------------------------------------------------------
+    def testConsistentResults(self):
+        
+        ulx = 94.2
+        uly = 19.4
+        lrx = 94.6
+        lry = 19.1
+        srs = SpatialReference()
+        srs.ImportFromEPSG(4326)
+        
+        fpq = FootprintsQuery(logger=self.logger)
+        fpq.addAoI(ulx, uly, lrx, lry, srs)
+        
     
