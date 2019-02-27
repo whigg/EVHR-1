@@ -47,6 +47,9 @@ class Command(BaseCommand):
         req1PairDirs = [f for f in glob(reqDir1 + '/W*') if os.path.isdir(f)]
         req2PairDirs = [f for f in glob(reqDir2 + '/W*') if os.path.isdir(f)]
         
+        req1PairDirs = sort(req1PairDirs)
+        req2PairDirs = sort(req2PairDirs)
+        
         if req1PairDirs == req2PairDirs:
             
             print 'Both requests have the same pairs.'
