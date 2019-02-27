@@ -1,4 +1,5 @@
 
+import logging
 import subprocess
 
 from django.conf import settings
@@ -39,6 +40,9 @@ class SystemCommand(object):
         self.returnCode = None
         self.stdOut = None
 
+        if not logger:
+            logger = logging.getLogger('console') # standard output.
+            
         if distribute:
             self.distribute(cmd, inFile, logger, request, raiseException)
             
@@ -75,9 +79,6 @@ class SystemCommand(object):
             nodes = EvhrNode.objects.filter(group=settings.NODE_GROUP,
                                             enabled=True)
             
-        # else:
-        #     nodes = EvhrNode.objects.all()
-        
         # Decide which node is least busy and use it.
         nodeToUse = None
         maxPIDs = 10000
