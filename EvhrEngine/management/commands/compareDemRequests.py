@@ -47,7 +47,7 @@ class Command(BaseCommand):
         # req1PairDirs = [f for f in os.listdir(reqDir1) if os.path.isdir(f)]
         
         req1PairDirs = []
-        allDirs = os.listdir(reqDir1)
+        allDirs = glob(reqDir1 + '/*')
         print 'ad = ' + str(allDirs)
         
         for f in allDirs:
