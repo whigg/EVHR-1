@@ -188,11 +188,8 @@ class EvhrDemRetriever(GeoRetriever):
         OUT_DIR       = self.demDir
         QUERY         = 'false'
         CROP_WINDOW   = '"0 15000 5000 5000"'
-
         USE_NODE_LIST = 'true'
         NODES         = '/att/nobackup/rlgill/DgStereo/nodeList.txt'
-        # USE_NODE_LIST = 'false'
-        # NODES         = '""'
         
         cmd = settings.DEM_APPLICATION    + \
               ' ' + PAIR_NAME             + \
