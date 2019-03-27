@@ -1,5 +1,6 @@
 
 import os
+import re
 from sets import Set
 import shutil
 
@@ -109,12 +110,14 @@ class EvhrDemRetriever(GeoRetriever):
             
             for mate in mates:
                 
-                if not mate in pairs[pairName]:
+                r = re.compile('.*' + mate + '.*')
+                
+                if not (filter(r.match, pairs[pairName])):
 
                     raise RuntimeError('Pair ' + 
                                        pairName +
                                        ' does not contain any scenes for' +
-                                       mate1)
+                                       mate)
             
         return pairs
 
