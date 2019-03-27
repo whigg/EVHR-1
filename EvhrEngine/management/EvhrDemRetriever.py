@@ -105,7 +105,7 @@ class EvhrDemRetriever(GeoRetriever):
         pdb.set_trace()
         for pairName in pairs.iterkeys():
             
-            mates = pairName.split('_')[:2]
+            mates = pairName.split('_')[2:]
             
             for mate in mates:
                 
