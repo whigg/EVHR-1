@@ -100,12 +100,6 @@ class EvhrDemRetriever(GeoRetriever):
                 
             pairs[pairName].append(fps.fileName())
             
-        if self.logger:
-            
-            self.logger.info('There are ' + \
-                             str(len(pairs)) + \
-                             ' pairs amongst the input scenes.')
-
         # Ensure that each pair has its mates.
         pairsWithMissingScenes = []
         
@@ -134,6 +128,12 @@ class EvhrDemRetriever(GeoRetriever):
         for pair in pairsWithMissingScenes:
             del pairs[pair]
             
+        if self.logger:
+            
+            self.logger.info('There are ' + \
+                             str(len(pairs)) + \
+                             ' pairs amongst the input scenes.')
+
         return pairs
 
     #---------------------------------------------------------------------------
