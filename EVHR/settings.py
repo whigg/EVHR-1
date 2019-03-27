@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'corsheaders',
+    # 'corsheaders',
     
     'api',
     'ProcessingEngine',
@@ -59,15 +59,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
+    'EvhrEngine.CorsMiddleware'
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = (
-    'cad4nasa-dev.gsfc.nasa.gov',
-    'gs618-dslaybl1.ndc.nasa.gov',
-)
+# CORS_ORIGIN_ALLOW_ALL = False
+#
+# CORS_ORIGIN_WHITELIST = (
+#     'cad4nasa-dev.gsfc.nasa.gov',
+#     'gs618-dslaybl1.ndc.nasa.gov',
+# )
 
 ROOT_URLCONF = 'EVHR.urls'
 
