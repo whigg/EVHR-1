@@ -100,6 +100,12 @@ class EvhrDemRetriever(GeoRetriever):
                 
             pairs[pairName].append(fps.fileName())
             
+        if self.logger:
+            
+            self.logger.info('There are ' + \
+                             str(len(pairs)) + \
+                             ' pairs amongst the input scenes.')
+
         # Ensure that each pair has its mates.
         for pairName in pairs.iterkeys():
             
@@ -156,14 +162,13 @@ class EvhrDemRetriever(GeoRetriever):
         for pair in pairs:
 
             consName = os.path.join(self.demDir, pair + '.tif')
-            # constituents[consName] = [pair]
             constituents[consName] = {pair : pairs[pair]}
             
-        if self.logger:
-            
-            self.logger.info('There are ' + \
-                             str(len(pairs)) + \
-                             ' pairs amongst the input scenes.')
+        # if self.logger:
+        #
+        #     self.logger.info('There are ' + \
+        #                      str(len(pairs)) + \
+        #                      ' pairs amongst the input scenes.')
 
         return constituents
 
