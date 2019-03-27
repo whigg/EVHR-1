@@ -107,6 +107,8 @@ class EvhrDemRetriever(GeoRetriever):
                              ' pairs amongst the input scenes.')
 
         # Ensure that each pair has its mates.
+        pairsWithMissingScenes = []
+        
         for pairName in pairs.iterkeys():
             
             mates = pairName.split('_')[2:]
@@ -117,10 +119,20 @@ class EvhrDemRetriever(GeoRetriever):
                 
                 if not (filter(r.match, pairs[pairName])):
 
-                    raise RuntimeError('Pair ' + 
-                                       pairName +
-                                       ' does not contain any scenes for ' +
-                                       mate)
+                    if self.logger:
+                        
+                        self.logger.warning('Pair ' + 
+                                            pairName +
+                                            ' does not contain any scenes' +
+                                            ' for ' +
+                                            mate)
+                                            
+                    pairsWithMissingScenes.append(pairName)
+                    continue
+                    
+        # Remove pairs without scenes for both mates.
+        for pair in pairsWithMissingScenes:
+            del pairs[pair]
             
         return pairs
 
