@@ -83,12 +83,6 @@ class EvhrDemRetriever(GeoRetriever):
             fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
             
-        # Extract the pair names from the Footprints features.
-        # pairs = Set([])
-        #
-        # for fps in fpScenes:
-        #     pairs.add(fps.pairName())
-
         # ---
         # Now that dg_stereo.sh does not query redundantly, EDR must copy each
         # pairs' files to the request directory for dg_stereo.sh to find them.
@@ -104,6 +98,23 @@ class EvhrDemRetriever(GeoRetriever):
                 pairs[pairName] = []
                 
             pairs[pairName].append(fps.fileName())
+            
+        # Ensure that each pair has its mates.
+        # WV02_20141130_1030010039503100_1030010039050800
+        import pdb
+        pdb.set_trace()
+        for pairName in pairs.iterkeys():
+            
+            mates = pairName.split('_')[:2]
+            
+            for mate in mates:
+                
+                if not mate in pairs[pairName]:
+
+                    raise RuntimeError('Pair ' + 
+                                       pairName +
+                                       ' does not contain any scenes for' +
+                                       mate1)
             
         return pairs
 
