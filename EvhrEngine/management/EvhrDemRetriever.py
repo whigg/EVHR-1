@@ -101,9 +101,6 @@ class EvhrDemRetriever(GeoRetriever):
             pairs[pairName].append(fps.fileName())
             
         # Ensure that each pair has its mates.
-        # WV02_20141130_1030010039503100_1030010039050800
-        import pdb
-        pdb.set_trace()
         for pairName in pairs.iterkeys():
             
             mates = pairName.split('_')[2:]
@@ -116,7 +113,7 @@ class EvhrDemRetriever(GeoRetriever):
 
                     raise RuntimeError('Pair ' + 
                                        pairName +
-                                       ' does not contain any scenes for' +
+                                       ' does not contain any scenes for ' +
                                        mate)
             
         return pairs
