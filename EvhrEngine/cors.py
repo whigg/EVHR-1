@@ -5,9 +5,17 @@
 class CorsMiddleware(object):
 
     #---------------------------------------------------------------------------
-    # process_response
+    # __init__
     #---------------------------------------------------------------------------
-    def process_response(self, req, resp):
+    def __init__(self, get_response):
+        self.get_response = get_response
+                        
+    #---------------------------------------------------------------------------
+    # __call__
+    #---------------------------------------------------------------------------
+    def __call__(self, req):
+        
+        response = self.get_response(request)
         
         response["Access-Control-Allow-Origin"] = [
             'cad4nasa-dev.gsfc.nasa.gov',
