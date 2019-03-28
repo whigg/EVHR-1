@@ -41,5 +41,5 @@ class Command(BaseCommand):
                 
             pairs[pairName].append(filePath)
             
-        print 'Pairs: ' + str(pairs)
+        print 'Number of pairs: ' + str(len(pairs))
             
