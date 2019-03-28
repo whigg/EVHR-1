@@ -34,5 +34,5 @@ class Command(BaseCommand):
 
             import pdb
             pdb.set_trace()
-            pairName = feature.find('ogr:pairname', ns)
+            pairName = feature.findall('ogr:pairname', ns)
             print pairName
