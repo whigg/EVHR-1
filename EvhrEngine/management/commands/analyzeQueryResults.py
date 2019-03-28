@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
         FEATURE_TAG = 'gml:featureMember'
         
-        root = ET.parse(args.f)
+        root = ET.parse(options[f])
 
         # Count the features.
         count = root.xpath('count(//gml:featureMember)')
