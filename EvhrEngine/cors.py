@@ -13,7 +13,7 @@ class CorsMiddleware(object):
     #---------------------------------------------------------------------------
     # __call__
     #---------------------------------------------------------------------------
-    def __call__(self, req):
+    def __call__(self, request):
         
         response = self.get_response(request)
         
