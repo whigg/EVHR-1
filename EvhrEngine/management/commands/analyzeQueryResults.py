@@ -33,7 +33,13 @@ class Command(BaseCommand):
         
         for feature in features:
 
-            import pdb
-            pdb.set_trace()
-            pairName = feature.find('ogr:pairname', ns)
-            print pairName.text
+            pairName = feature.find('ogr:pairname', ns).text
+            filePath = feature.find('ogr:S_FILEPATH', ns).text
+            
+            if not pairName in pairs:
+                pairs[pairName] = []
+                
+            pairs[pairName].append(filePath)
+            
+        print 'Pairs: ' + str(pairs)
+            
