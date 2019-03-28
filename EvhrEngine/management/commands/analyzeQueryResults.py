@@ -19,6 +19,7 @@ class Command(BaseCommand):
 
         # Parse and get the features.
         ns = {'gml' : 'http://www.opengis.net/gml',
+              'ns1' : 'http://ogr.maptools.org/',
               'ogr' : 'http://ogr.maptools.org/',}
 
         root = ET.parse(options['f'])
@@ -34,5 +35,5 @@ class Command(BaseCommand):
 
             import pdb
             pdb.set_trace()
-            pairName = feature.findall('ogr:pairname', ns)
+            pairName = feature.findall('ns1:pairname', ns)
             print pairName
