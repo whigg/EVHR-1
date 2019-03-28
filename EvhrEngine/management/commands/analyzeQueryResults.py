@@ -86,7 +86,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     # printScenesForCatId
     #---------------------------------------------------------------------------
-    def printScenesForCatId(self, catId, scenes):
+    def printScenesForCatId(catId, scenes):
         
         for scene in scenes:
             if catId in scene:
