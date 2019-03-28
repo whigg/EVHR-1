@@ -5,6 +5,9 @@ import xml.etree.ElementTree as ET
 
 from django.core.management.base import BaseCommand
 
+#-------------------------------------------------------------------------------
+# class Command
+#-------------------------------------------------------------------------------
 class Command(BaseCommand):
 
     #---------------------------------------------------------------------------
@@ -54,8 +57,8 @@ class Command(BaseCommand):
             scenes = pairs[pairName]
             print pairName
             print '\t' + catId1
-            printScenesForCatId(catId1, scenes)
-            printScenesForCatId(catId2, scenes)
+            self.printScenesForCatId(catId1, scenes)
+            self.printScenesForCatId(catId2, scenes)
 
         # # Find pairs without scenes for both channels.
         # for pairName in pairs.iterkeys():
@@ -83,7 +86,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     # printScenesForCatId
     #---------------------------------------------------------------------------
-    def printScenesForCatId(catId, scenes):
+    def printScenesForCatId(self, catId, scenes):
         
         for scene in scenes:
             if catId in scene:
