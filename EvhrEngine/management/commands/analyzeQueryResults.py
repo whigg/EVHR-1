@@ -48,7 +48,6 @@ class Command(BaseCommand):
             
         print 'Number of pairs: ' + str(len(pairs))
         
-        
         # Print the pairs:
         for pairName in pairs.iterkeys():
         
@@ -66,7 +65,7 @@ class Command(BaseCommand):
 #---------------------------------------------------------------------------
 def printScenesForCatId(catId, scenes):
     
-    hasScenes = False
+    hasScene = False
     
     for scene in scenes:
         
@@ -74,6 +73,6 @@ def printScenesForCatId(catId, scenes):
             print '\t\t' + os.path.basename(scene)
             hasScene = True
             
-    if not hasScenes:
+    if not hasScene:
         print '\t\t** NO SCENES**'
         
