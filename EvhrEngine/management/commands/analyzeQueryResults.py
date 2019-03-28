@@ -31,6 +31,8 @@ class Command(BaseCommand):
         pairs = {}
         
         for feature in features:
-            
+
+            import pdb
+            pdb.set_trace()
             pairName = feature.find('ogr:pairname', ns)
             print pairName
