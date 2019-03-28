@@ -18,9 +18,19 @@ class Command(BaseCommand):
     def handle(*args, **options):
 
         # Parse and get the features.
+        ns = {'gml' : 'http://www.opengis.net/gml',
+              'ogr' : 'http://ogr.maptools.org',}
+
         root = ET.parse(options['f'])
-        ns = {'gml' : 'http://www.opengis.net/gml',}
         features = root.findall('gml:featureMember', ns)
 
         # Count the features.
         print 'Number of features: '  + str(len(features)) 
+        
+        # Aggregate the pairs.
+        pairs = {}
+        
+        for feature in features:
+            
+            pairName = feature.find('ogr:pairname', ns)
+            print pairName
