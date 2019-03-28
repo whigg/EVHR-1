@@ -163,7 +163,7 @@ class EvhrDemRetriever(GeoRetriever):
         #                       self.request)
                               
         # ONLY RUN ONE SCENE FOR TESTING
-        pairs = list(pairs)[:1]
+        # pairs = list(pairs)[:1]
         pairs = ['WV02_20160630_1030010058056300_1030010057266900'] # works
         print '*** ONLY RUNNING SCENE ' + str(pairs[0])
 
