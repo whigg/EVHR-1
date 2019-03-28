@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
         # Parse and get the features.
         ns = {'gml' : 'http://www.opengis.net/gml',
-              'ogr' : 'http://ogr.maptools.org',}
+              'ogr' : 'http://ogr.maptools.org/',}
 
         root = ET.parse(options['f'])
         features = root.findall('gml:featureMember', ns)
