@@ -1,4 +1,6 @@
 
+import os
+
 import xml.etree.ElementTree as ET
 
 from django.core.management.base import BaseCommand
@@ -56,14 +58,14 @@ class Command(BaseCommand):
             for scene in scenes:
                 
                 if catId1 in scene:
-                    print scene
+                    print os.path.basename(scene)
 
             print '\t' + catId2
         
             for scene in scenes:
                 
                 if catId2 in scene:
-                    print scene
+                    print os.path.basename(scene)
 
         # # Find pairs without scenes for both channels.
         # for pairName in pairs.iterkeys():
