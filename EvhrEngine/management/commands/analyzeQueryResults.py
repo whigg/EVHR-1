@@ -17,8 +17,10 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
 
+        # Parse and get the features.
         root = ET.parse(options['f'])
+        ns = {'gml' : 'http://www.opengis.net/gml',}
+        features = root.findall('gml:featureMember', ns)
 
         # Count the features.
-        features = root.findall('gml:featureMember')
         print 'Number of features: '  + str(len(features)) 
