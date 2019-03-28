@@ -23,10 +23,10 @@ class Command(BaseCommand):
               'ogr' : 'http://ogr.maptools.org/',}
 
         root = ET.parse(options['f'])
-        features = root.findall('gml:featureMember', ns)
+        features = root.findall('gml:featureMember/ogr:nga_inventory', ns)
 
         # Count the features.
-        print 'Number of features: '  + str(len(features)) 
+        print 'Number of features: ' + str(len(features)) 
         
         # Aggregate the pairs.
         pairs = {}
@@ -35,5 +35,5 @@ class Command(BaseCommand):
 
             import pdb
             pdb.set_trace()
-            pairName = feature.findall('ns1:pairname', ns)
+            pairName = feature.findall('ogr:pairname', ns)
             print pairName
