@@ -42,4 +42,27 @@ class Command(BaseCommand):
             pairs[pairName].append(filePath)
             
         print 'Number of pairs: ' + str(len(pairs))
+
+        # Find pairs without scenes for both channels.
+        for pairName in pairs.iterkeys():
+            
+            catId1 = pairName.split('_')[2]
+            catId2 = pairName.split('_')[3]
+            catId1HasScene = False
+            catId2HasScene = False
+            scenes = pairs[pairName]
+            
+            for scene in scenes:
+                
+                if catId1 in scene:
+                    catId1HasScene = True
+                    
+                if catId2 in scene:
+                    catId1HasScene = True
+                    
+            if not catId1HasScene:
+                print 'No scenes for: ' + catId1
+            
+            if not catId2HasScene:
+                print 'No scenes for: ' + catId2
             
