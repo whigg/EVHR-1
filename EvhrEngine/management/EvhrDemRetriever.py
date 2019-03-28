@@ -174,7 +174,8 @@ class EvhrDemRetriever(GeoRetriever):
         for pair in pairs:
 
             consName = os.path.join(self.demDir, pair + '.tif')
-            constituents[consName] = {pair : pairs[pair]}
+            # constituents[consName] = {pair : pairs[pair]}
+            constituents[consName] = {pair : pairs[0]}
             
         return constituents
 
