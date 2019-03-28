@@ -57,8 +57,8 @@ class Command(BaseCommand):
             scenes = pairs[pairName]
             print pairName
             print '\t' + catId1
-            Command.printScenesForCatId(catId1, scenes)
-            Command.printScenesForCatId(catId2, scenes)
+            printScenesForCatId(catId1, scenes)
+            printScenesForCatId(catId2, scenes)
 
         # # Find pairs without scenes for both channels.
         # for pairName in pairs.iterkeys():
@@ -83,12 +83,12 @@ class Command(BaseCommand):
         #     if not catId2HasScene:
         #    print 'No scenes for: ' + catId2
 
-    #---------------------------------------------------------------------------
-    # printScenesForCatId
-    #---------------------------------------------------------------------------
-    def printScenesForCatId(catId, scenes):
-        
-        for scene in scenes:
-            if catId in scene:
-                print '\t\t' + os.path.basename(scene)
+#---------------------------------------------------------------------------
+# printScenesForCatId
+#---------------------------------------------------------------------------
+def printScenesForCatId(catId, scenes):
+    
+    for scene in scenes:
+        if catId in scene:
+            print '\t\t' + os.path.basename(scene)
         
