@@ -38,7 +38,8 @@ class Command(BaseCommand):
         
         for feature in features:
 
-            pairName = feature.find('ogr:pairname', ns).text
+            # pairName = feature.find('ogr:pairname', ns).text
+            pairName = feature.find('ogr:stereopair', ns).text
             filePath = feature.find('ogr:S_FILEPATH', ns).text
             
             if not pairName in pairs:
@@ -48,11 +49,16 @@ class Command(BaseCommand):
             
         print 'Number of pairs: ' + str(len(pairs))
         
+        # ---
         # Print the pairs:
+        #
+        # Pair name: WV01_20130613_1020010023555200_1020010022CE5C00
+        #                          catalog ID       pair ID
+        # ---
         for pairName in pairs.iterkeys():
         
             catId1 = pairName.split('_')[2]
-            catId2 = pairName.split('_')[3]
+            pairId = pairName.split('_')[3]
             scenes = pairs[pairName]
             print '\n' + pairName
             print '\t' + catId1
@@ -70,9 +76,9 @@ def printScenesForCatId(catId, scenes):
     for scene in scenes:
         
         if catId in scene:
+        
             print '\t\t' + os.path.basename(scene)
             hasScene = True
             
     if not hasScene:
         print '\t\t** NO SCENES**'
-        
