@@ -57,8 +57,8 @@ class Command(BaseCommand):
             scenes = pairs[pairName]
             print pairName
             print '\t' + catId1
-            self.printScenesForCatId(catId1, scenes)
-            self.printScenesForCatId(catId2, scenes)
+            Command.printScenesForCatId(catId1, scenes)
+            Command.printScenesForCatId(catId2, scenes)
 
         # # Find pairs without scenes for both channels.
         # for pairName in pairs.iterkeys():
