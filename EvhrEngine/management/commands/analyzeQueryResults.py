@@ -66,7 +66,14 @@ class Command(BaseCommand):
 #---------------------------------------------------------------------------
 def printScenesForCatId(catId, scenes):
     
+    hasScenes = False
+    
     for scene in scenes:
+        
         if catId in scene:
             print '\t\t' + os.path.basename(scene)
+            hasScene = True
+            
+    if not hasScenes:
+        print '\t\t** NO SCENES**'
         
