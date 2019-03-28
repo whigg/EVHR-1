@@ -17,10 +17,8 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
 
-        FEATURE_TAG = 'gml:featureMember'
-        
         root = ET.parse(options['f'])
 
         # Count the features.
-        count = root.xpath('count(//gml:featureMember)')
-        print 'Number of features: '  + str(count) 
+        features = root.findall('gml:featureMember')
+        print 'Number of features: '  + str(len(features)) 
