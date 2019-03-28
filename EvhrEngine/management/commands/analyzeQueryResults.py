@@ -49,6 +49,7 @@ class Command(BaseCommand):
         
             catId1 = pairName.split('_')[2]
             catId2 = pairName.split('_')[3]
+            scenes = pairs[pairName]
             print pairName
             print '\t' + catId1
         
