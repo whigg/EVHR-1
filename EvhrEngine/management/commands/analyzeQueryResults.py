@@ -58,7 +58,7 @@ class Command(BaseCommand):
         for pairName in pairs.iterkeys():
         
             # catId = pairName.split('_')[2]
-            pairId = pairName.split('_')[3]
+            # pairId = pairName.split('_')[3]
             scenes = pairs[pairName]
             print '\n' + pairName
             print '\t' + catId1

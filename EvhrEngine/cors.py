@@ -1,4 +1,6 @@
 
+from django.conf import settings
+
 #-------------------------------------------------------------------------------
 # class CorsMiddleware
 #-------------------------------------------------------------------------------
@@ -15,10 +17,10 @@ class CorsMiddleware(object):
     #---------------------------------------------------------------------------
     def __call__(self, request):
         
+        origin = request.META.get('HTTP_ORIGIN')
         response = self.get_response(request)
         
-        response["Access-Control-Allow-Origin"] = [
-            'cad4nasa-dev.gsfc.nasa.gov',
-            'gs618-dslaybl1.ndc.nasa.gov']
+        if origin in settings.CORS_ORIGIN_WHITELIST:
+            response["Access-Control-Allow-Origin"] = origin
                                                    
         return response
