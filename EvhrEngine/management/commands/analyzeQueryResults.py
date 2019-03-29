@@ -53,18 +53,18 @@ class Command(BaseCommand):
         # Print the pairs:
         #
         # Pair name: WV01_20130613_1020010023555200_1020010022CE5C00
-        #                          catalog ID       pair ID
+        #                          catalog ID       pair ID = catalog ID 2
         # ---
         for pairName in pairs.iterkeys():
         
-            # catId = pairName.split('_')[2]
-            # pairId = pairName.split('_')[3]
+            catId1 = pairName.split('_')[2]
+            catId2 = pairName.split('_')[3]
             scenes = pairs[pairName]
             print '\n' + pairName
             print '\t' + catId1
-            printScenesForCatId(pairId, scenes)
-            # print '\t' + catId2
-            # printScenesForCatId(catId2, scenes)
+            printScenesForCatId(catId1, scenes)
+            print '\t' + catId2
+            printScenesForCatId(catId2, scenes)
 
 #---------------------------------------------------------------------------
 # printScenesForCatId
