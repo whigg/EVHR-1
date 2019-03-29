@@ -38,8 +38,8 @@ class Command(BaseCommand):
         
         for feature in features:
 
-            # pairName = feature.find('ogr:pairname', ns).text
-            pairName = feature.find('ogr:stereopair', ns).text
+            pairName = feature.find('ogr:pairname', ns).text
+            # pairName = feature.find('ogr:stereopair', ns).text
             filePath = feature.find('ogr:S_FILEPATH', ns).text
             
             if not pairName in pairs:
