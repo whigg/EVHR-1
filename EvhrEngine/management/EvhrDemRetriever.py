@@ -155,17 +155,17 @@ class EvhrDemRetriever(GeoRetriever):
         # 'WV01_20110303_1020010011628B00_1020010011756100', 
         # 'WV01_20110401_10200100113F5C00_1020010011937800'])
         #---
-        # pairs = self.getPairs(self.retrievalUlx,
-        #                       self.retrievalUly,
-        #                       self.retrievalLrx,
-        #                       self.retrievalLry,
-        #                       self.retrievalSRS,
-        #                       self.request)
+        pairs = self.getPairs(self.retrievalUlx,
+                              self.retrievalUly,
+                              self.retrievalLrx,
+                              self.retrievalLry,
+                              self.retrievalSRS,
+                              self.request)
                               
         # ONLY RUN ONE SCENE FOR TESTING
         # pairs = list(pairs)[:1]
-        pairs = ['WV02_20160630_1030010058056300_1030010057266900'] # works
-        print '*** ONLY RUNNING SCENE ' + str(pairs[0])
+        # pairs = ['WV02_20160630_1030010058056300_1030010057266900'] # works
+        # print '*** ONLY RUNNING SCENE ' + str(pairs[0])
 
         # Create the constituents, which now look like:
         # {pairName.tif: {pair name: [scene1, scene2, ...]}, ...}
@@ -174,8 +174,8 @@ class EvhrDemRetriever(GeoRetriever):
         for pair in pairs:
 
             consName = os.path.join(self.demDir, pair + '.tif')
-            # constituents[consName] = {pair : pairs[pair]}
-            constituents[consName] = {pair : pairs[0]}
+            constituents[consName] = {pair : pairs[pair]}
+            # constituents[consName] = {pair : pairs[0]}
             
         return constituents
 
