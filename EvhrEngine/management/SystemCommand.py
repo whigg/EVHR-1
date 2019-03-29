@@ -108,9 +108,9 @@ class SystemCommand(object):
             if logger:
                 logger.info('Using node ' + str(nodeToUse.name)) 
 
-            # Wrap the command in pdsh.
-            cmd = 'pdsh -w ' + nodeToUse.name + ' ' + cmd
-        
+            # Wrap the command in pdsh and inside single quotes
+            cmd = "pdsh -w {} '{}'".format(nodeToUse.name, cmd)
+
         # Run the pdsh version using runSingleProcess.
         self.runSingleProcess(cmd, inFile, logger, request, raiseException, 
                               nodeToUse)

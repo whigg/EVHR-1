@@ -265,7 +265,6 @@ class EvhrMosaicRetriever(GeoRetriever):
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
 
-            fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
             
             for scene in fpScenes:
@@ -346,10 +345,12 @@ class EvhrMosaicRetriever(GeoRetriever):
                     
                 if not tile.GetSpatialReference(). \
                        IsSame(sceneGeoms[scene].GetSpatialReference()):
-                       
-                    raise RuntimeError('Tile and scene must be in the '
-                                       'same SRS.')
-                                       
+                        
+                    if self.logger:
+                        msg = 'Scene {} SRS is different from tile SRS'.format(scene)
+                        self.logger.warning(msg)                    
+                    continue
+                   
                 if tile.Intersects(sceneGeoms[scene]):
                     
                     constituents[tileFile].append(scene)
@@ -360,12 +361,15 @@ class EvhrMosaicRetriever(GeoRetriever):
                         
                            break
                     
-            # Ensure the tile has scenes covering it.
+            # Ensure the tile has scenes covering it. If it doesn't, delete
             if not constituents[tileFile]:
                 
-                raise RuntimeError('There were no scenes covering tile ' + \
-                                   str(tile))
-             
+                if self.logger:
+                    msg = 'There were no scenes covering tile {}'.format(tile)
+                    self.logger.warning(msg)   
+
+                del constituents[tileFile]
+
         return constituents
         
     #---------------------------------------------------------------------------
@@ -558,7 +562,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         bname = '{}-ortho.tif'.format(stripName)
         
         toaFinal = os.path.join(self.toaDir, 
-                                'EVHR_{}_{}'.format(str(tileName),
+                                'EVHR_{}_{}'.format(tileName,
                                                     bname.replace ('-ortho.tif', 
                                                                    '-TOA.tif')))
 
@@ -599,7 +603,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     # Takes a list of scenes belonging to a strip and mosaics the scenes
     # together with dg_mosaic
     #---------------------------------------------------------------------------
-    def scenesToStrip(self, stripName, stripScenes):
+    def scenesToStrip(self, stripName, stripScenes, tileName):
 
         if self.logger:
             self.logger.info('Extracting bands and mosaicking to strips for' + \
@@ -610,7 +614,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         bands = ['BAND_P'] if 'P1BS' in stripName else \
                 ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
 	
-        bands =	DgFile(stripScenes[0]).bandNameList # yujie. might use later
+        #bands =	DgFile(stripScenes[0]).bandNameList # yujie. might use later
 
         for bandName in bands:
            
@@ -621,7 +625,8 @@ class EvhrMosaicRetriever(GeoRetriever):
             randomTag = random.randint(0, 1000000)
 
             stripBandFile = os.path.join(self.stripDir, 
-                                         '{}_{}_{}.r100.tif'.format(stripName, 
+                                         '{}_{}_{}_{}.r100.tif'.format(tileName, 
+                                                                    stripName, 
                                                                     bandName,
                                                                     randomTag))
 
@@ -665,16 +670,17 @@ class EvhrMosaicRetriever(GeoRetriever):
         stripNameList = list(set([DgFile(scene).getStripName() \
                                   for scene in fileList]))
 
+        tileName = \
+                os.path.splitext(os.path.basename(constituentFileName))[0]
+
         # For each strip, extract bands --> mosaic, ortho, toa each band
         for stripName in stripNameList:
 
             stripScenes = [scene for scene in fileList \
                            if DgFile(scene).getStripName() == stripName]
 
-            stripBandList = self.scenesToStrip(stripName, stripScenes)
-
-            tileName = \
-                os.path.splitext(os.path.basename(constituentFileName))[0]
+            stripBandList = self.scenesToStrip(stripName, stripScenes, 
+                                                             tileName)
             
             completedStrips.append(self.processStrip(stripName, 
                                                      stripBandList,
