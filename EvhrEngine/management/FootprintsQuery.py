@@ -113,8 +113,8 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     def _buildWhereClause(self):
         
-        # Add pairs only, the start of a where clause.    
-        whereClause = ' where '
+        # Add level-1 data only, the start of a where clause.    
+        whereClause = " where (prod_short='1B') AND "
         emptyLen = len(whereClause)
         
         # Add sensor list.
