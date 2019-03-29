@@ -20,7 +20,9 @@ class CorsMiddleware(object):
         origin = request.META.get('HTTP_ORIGIN')
         response = self.get_response(request)
         
-        if origin in settings.CORS_ORIGIN_WHITELIST:
-            response["Access-Control-Allow-Origin"] = origin
+        # if origin in settings.CORS_ORIGIN_WHITELIST:
+        #     response["Access-Control-Allow-Origin"] = origin
+
+        response["Access-Control-Allow-Origin"] = '*'
                                                    
         return response
