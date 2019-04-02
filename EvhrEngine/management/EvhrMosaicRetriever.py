@@ -285,8 +285,6 @@ class EvhrMosaicRetriever(GeoRetriever):
     def listConstituents(self):
 
         # Query for scenes.
-        import pdb
-        pdb.set_trace()
         scenes = self.getScenes(self.request,
                                 self.retrievalUlx,
                                 self.retrievalUly,
