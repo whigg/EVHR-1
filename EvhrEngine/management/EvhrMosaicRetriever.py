@@ -242,19 +242,19 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         if evhrScenes:
 
-            if request.started:
+            # if request.started:
+            #
+            #     sceneFiles = [es.sceneFile.name for es in evhrScenes]
+            #
+            # else:
                 
-                sceneFiles = [es.sceneFile.name for es in evhrScenes]
-                
-            else:
-                
-                fpScenes = None
-                fpq = FootprintsQuery(logger=self.logger)
-                fpq.addAoI(ulx, uly, lrx, lry, srs)
-                fpq.addEvhrScenes(evhrScenes)
-                fpScenes = fpq.getScenes()
-                self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
-                sceneFiles = [fps.fileName() for fps in fpScenes]
+            fpScenes = None
+            fpq = FootprintsQuery(logger=self.logger)
+            fpq.addAoI(ulx, uly, lrx, lry, srs)
+            fpq.addEvhrScenes(evhrScenes)
+            fpScenes = fpq.getScenes()
+            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
+            sceneFiles = [fps.fileName() for fps in fpScenes]
         
         else:
             
