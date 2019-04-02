@@ -128,7 +128,7 @@ class EvhrScene(models.Model):
             return tree.getroot().find('IMD').find('PRODUCTLEVEL').text
       
         except:
-            return None 
+            return ''
 
     #---------------------------------------------------------------------------
     # save
@@ -141,4 +141,4 @@ class EvhrScene(models.Model):
             super(EvhrScene, self).save(*args, **kwargs)
 
         else:
-            return
+            print 'Scene was not saved because it is not level 1B.'
