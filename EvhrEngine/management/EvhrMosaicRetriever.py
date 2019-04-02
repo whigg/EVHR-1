@@ -291,7 +291,9 @@ class EvhrMosaicRetriever(GeoRetriever):
                                 self.retrievalLrx,
                                 self.retrievalLry,
                                 self.retrievalSRS)
-            
+        
+        import pdb
+        pdb.set_trace()
         if not scenes:
             if self.logger:
                 self.logger.error('There were no level 1B scenes.')
