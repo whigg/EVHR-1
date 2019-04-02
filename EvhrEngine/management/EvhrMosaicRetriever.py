@@ -292,6 +292,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                                 self.retrievalLry,
                                 self.retrievalSRS)
             
+        if not scenes:
+            if self.logger:
+                self.logger.error('There were no level 1B scenes.')
+                
         #---
         # Create a polygon for each scene.  They are used to test for
         # intersection below.
