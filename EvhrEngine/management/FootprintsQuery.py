@@ -207,9 +207,9 @@ class FootprintsQuery(object):
 
         if len(where):
             
-            cmd += ' -sql "select * from nga_inventory ' + \
+            cmd += unicode(' -sql "select * from nga_inventory ') + \
                    where + \
-                   ' order by S_FILEPATH"'
+                   unicode(' order by S_FILEPATH"')
         
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
