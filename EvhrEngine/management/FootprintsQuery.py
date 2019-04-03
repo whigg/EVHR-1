@@ -207,7 +207,7 @@ class FootprintsQuery(object):
 
         if len(where):
             
-            cmd += unicode(' -sql "select * from nga_inventory ') + \
+            cmd += unicode(' -sql "select * from nga_inventory_canon ') + \
                    where + \
                    unicode(' order by S_FILEPATH"')
         
