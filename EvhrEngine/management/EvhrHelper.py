@@ -120,7 +120,7 @@ class EvhrHelper(object):
 
             xform = CoordinateTransformation(srs, GeoRetriever.GEOG_4326)
             xPt = xform.TransformPoint(center.GetX(), center.GetY())
-            xValue = float(xPt.GetX())
+            xValue = float(xPt[0])
 
         else:
             xValue = float(center.GetX())
