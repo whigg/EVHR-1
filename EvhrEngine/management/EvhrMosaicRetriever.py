@@ -242,12 +242,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         
         if evhrScenes:
 
-            # if request.started:
-            #
-            #     sceneFiles = [es.sceneFile.name for es in evhrScenes]
-            #
-            # else:
-                
             fpScenes = None
             fpq = FootprintsQuery(logger=self.logger)
             fpq.addAoI(ulx, uly, lrx, lry, srs)
