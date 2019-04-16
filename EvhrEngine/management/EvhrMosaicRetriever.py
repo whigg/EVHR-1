@@ -21,6 +21,7 @@ from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.management.TilerHalfDegree import TilerHalfDegree
+from EvhrEngine.management.UTM import UTM
 from EvhrEngine.management.commands.TOA import TOA
 from EvhrEngine.models import EvhrError
 from EvhrEngine.models import EvhrScene
@@ -66,7 +67,17 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.evhrHelper = EvhrHelper(logger)
 
         # The output SRS must be UTM, regardless of what the user chooses.
-        request.outSRS = self.evhrHelper.getUtmSrs(request)
+
+        # Get UTM proj4 string and set outSRS        
+        self.proj4 = UTM.proj4(request.ulx,
+                               request.uly,
+                               request.lrx,
+                               request.lry,
+                               request.srs)
+
+        sr = SpatialReference()
+        sr.ImportFromProj4(self.proj4)
+        request.outSRS = sr.ExportToWkt()
         request.save(update_fields = ['outSRS'])
 
         # Initialize the base class.
@@ -239,7 +250,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
         sceneFiles = []
-        
+#        import pdb; pdb.set_trace()        
         if evhrScenes:
 
             if request.started:
@@ -513,10 +524,13 @@ class EvhrMosaicRetriever(GeoRetriever):
             # Orthorectify.
             orthoFileTemp = orthoFile.replace('.tif', '-temp.tif')
             bandName = DgFile(bandFile).getBandName()
+            outRes = 2
+            if origDgFile.isPanchromatic(): outRes = 1            
 
-            # to project, add: --t_srs "+proj=utm +zone=? +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
             cmd = '/opt/StereoPipeline/bin/mapproject --nodata-value 0' + \
-                  ' --threads=2 -t rpc --mpp=2'                         + \
+                  ' --threads=2 -t rpc'                                 + \
+                  ' --mpp={}'.format(outRes)                            + \
+                  ' --t_srs "{}"'.format(self.proj4)                    + \
                   ' ' + clippedDEM                                      + \
                   ' ' + bandFile                                        + \
                   ' ' + origDgFile.xmlFileName                          + \
@@ -658,7 +672,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     # intersect it.  The NITF files have not been clipped.
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
-
+        
         #---
         # Mosaic scenes into strips, orthorectify the full strip, clip to the 
         # half-degree-square tile, and covert to Geotiff.

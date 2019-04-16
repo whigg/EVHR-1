@@ -23,7 +23,7 @@ class FootprintsQuery(object):
     # __init__
     #---------------------------------------------------------------------------
     def __init__(self, footprintsFile=settings.FOOTPRINTS_FILE, logger=None):
-        
+       
         # Verify the existence of Footprints.  You never know.
         if not os.path.exists(footprintsFile):
             
@@ -114,8 +114,7 @@ class FootprintsQuery(object):
     def _buildWhereClause(self):
         
         # Add level-1 data only, the start of a where clause.    
-        whereClause = " where (prod_short='1B') AND "
-        emptyLen = len(whereClause)
+        whereClause = "where (prod_short='1B')"
         
         # Add sensor list.
         first = True
@@ -125,7 +124,7 @@ class FootprintsQuery(object):
             if first:
 
                 first = False
-                whereClause += '('
+                whereClause += ' AND ('
 
             else:
                 whereClause += ' OR '
@@ -144,8 +143,7 @@ class FootprintsQuery(object):
 
                 first = False
 
-                if len(whereClause) != emptyLen:
-                    whereClause += ' AND ('
+                whereClause += ' AND ('
                 
             else:
                 whereClause += ' OR '
@@ -161,15 +159,8 @@ class FootprintsQuery(object):
 
         # Add the catalog ID.
         if self.catalogID:
-            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'
-        
-        # Finish the clause.
-        if len(whereClause) == emptyLen:
-            whereClause = None
-            
-        # else:
-        #     whereClause += '"'
-            
+            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'     
+          
         return unicode(whereClause)
         
     #---------------------------------------------------------------------------
@@ -271,9 +262,9 @@ class FootprintsQuery(object):
 
         if len(where):
             
-            cmd += ' -sql "select * from nga_inventory ' + \
+            cmd += unicode(' -sql "select * from nga_inventory_canon ') + \
                    where + \
-                   ' order by S_FILEPATH"'
+                   unicode(' order by S_FILEPATH"')
         
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
