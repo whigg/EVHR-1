@@ -27,8 +27,8 @@ class UTM():
         
         if not srs.IsSame(targetSRS):
             coordTransform = CoordinateTransformation(srs, targetSRS)
-            ulx, uly = coordTransform.TransformPoint(ulx, uly)[0:2]
-            lrx, lry = coordTransform.TransformPoint(lrx, lry)[0:2]
+            ulx, uly = coordTransform.TransformPoint(float(ulx), float(uly))[0:2]
+            lrx, lry = coordTransform.TransformPoint(float(lrx), float(lry))[0:2]
 
         # Check if AOI is within UTM boundary
         if uly >= 84.0 or lry <= -80.0:
