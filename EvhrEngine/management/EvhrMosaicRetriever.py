@@ -250,7 +250,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
         sceneFiles = []
-#        import pdb; pdb.set_trace()        
+
         if evhrScenes:
 
             fpScenes = None

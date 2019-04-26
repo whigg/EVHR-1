@@ -83,6 +83,13 @@ class EvhrDemRetriever(GeoRetriever):
             
             fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
+
+            for scene in fpScenes:
+
+                evhrScene = EvhrScene()
+                evhrScene.request = request
+                evhrScene.sceneFile = scene.fileName()
+                evhrScene.save()
             
         # ---
         # Now that dg_stereo.sh does not query redundantly, EDR must copy each
