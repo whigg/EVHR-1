@@ -58,8 +58,14 @@ class DgFile(GdalFile):
             self.srs = SpatialReference()
             self.srs.ImportFromEPSG(4326)
               
-            bandTag = [n for n in self.imdTag.getchildren() if \
-                n.tag.startswith('BAND_')][0] # all bands will have same extent
+            # temporary until we can get ASP to fix bug
+            try:
+                bandTag = [n for n in self.imdTag.getchildren() if \
+                    n.tag.startswith('BAND_')][1] # all bands will have same extent - bug with ASP does not ensure this is true; for 8-bands the first band (C) is not updated in output 
+                                                                   # xml, so we have to use second band (Blue). For 4-bands, all bands are updated so band 2 also works for this purpose
+            except IndexError: # Pan will give index error because there is just one band
+                bandTag = [n for n in self.imdTag.getchildren() if \
+                    n.tag.startswith('BAND_')][0]
 
             self.ulx = min(float(bandTag.find('LLLON').text), \
                                           float(bandTag.find('ULLON').text))
