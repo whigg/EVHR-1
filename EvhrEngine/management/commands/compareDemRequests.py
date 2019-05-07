@@ -9,7 +9,7 @@ from ProcessingEngine.models import Request
 #-------------------------------------------------------------------------------
 # compareDemRequests
 #
-# ./manage.py compareDemRequests 634 635
+# ./manage.py compareDemRequests 632 633
 # 
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
@@ -27,20 +27,19 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
         
-        print 'r1 = ' + str(options['request1'])
         req1 = Request.objects.get(id=options['request1'])
         req2 = Request.objects.get(id=options['request2'])
         
-        if not os.path.exists(req1.destination):
+        if not os.path.exists(str(req1.destination)):
 
             raise RuntimeError('Request directory, ' + 
-                               req1.destination + 
+                               str(req1.destination) + 
                                ' does not exist.')
         
-        if not os.path.exists(req2.destination):
+        if not os.path.exists(str(req2.destination)):
 
             raise RuntimeError('Request directory, ' + 
-                               req2.destination + 
+                               str(req2.destination) + 
                                ' does not exist.')
         
         reqDir1 = os.path.join(req1.destination, 'dems')
