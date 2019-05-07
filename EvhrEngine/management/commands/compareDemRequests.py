@@ -4,10 +4,12 @@ import os
 
 from django.core.management.base import BaseCommand
 
+from ProcessingEngine.models import Request
+
 #-------------------------------------------------------------------------------
 # compareDemRequests
 #
-# ./manage.py compareDemRequests /att/nobackup/rlgill/evhrDevelopmentOutput/requests/Myanmar_DEM_Roger-bdA0xCH1pfPdvKjkPOdkiP4asDnVAOp1G-vQx_MC /att/nobackup/rlgill/evhrDevelopmentOutput/requests/Myanmar_DEM_Roger-jQK9GA_uur3VfnhxtliITR-oMpGWEn1nwAlJPh1-
+# ./manage.py compareDemRequests 634 635
 # 
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
@@ -17,31 +19,31 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
 
-        parser.add_argument('requestDir1')
-        parser.add_argument('requestDir2')
+        parser.add_argument('request1')
+        parser.add_argument('request2')
 
     #---------------------------------------------------------------------------
     # handle
     #---------------------------------------------------------------------------
     def handle(*args, **options):
-
-        reqDir1 = options['requestDir1']
-        reqDir2 = options['requestDir2']
         
-        if not os.path.exists(reqDir1):
-
-            raise RuntimeError('Request directory, ' + 
-                               reqDir1 + 
-                               ' does not exist.')
+        req1 = Request.object.get(id=option['request1'])
+        req2 = Request.object.get(id=option['request2'])
         
-        if not os.path.exists(reqDir2):
+        if not os.path.exists(req1.destination):
 
             raise RuntimeError('Request directory, ' + 
-                               reqDir2 + 
+                               req1.destination + 
                                ' does not exist.')
         
-        reqDir1 = os.path.join(reqDir1, 'dems')
-        reqDir2 = os.path.join(reqDir2, 'dems')
+        if not os.path.exists(req2.destination):
+
+            raise RuntimeError('Request directory, ' + 
+                               req2.destination + 
+                               ' does not exist.')
+        
+        reqDir1 = os.path.join(req1.destination, 'dems')
+        reqDir2 = os.path.join(req2.destination, 'dems')
 
         # Check for the same pairs.
         req1PairDirs = [f for f in glob(reqDir1 + '/W*') if os.path.isdir(f)]
