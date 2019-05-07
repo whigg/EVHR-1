@@ -70,6 +70,6 @@ class Command(BaseCommand):
         
         for i in range(len(req1Dems)):
             
-            cmd = 'gdalcompare ' + req1Dems[i] + ' ' + req2Dems[i]
+            cmd = 'gdalcompare.py ' + req1Dems[i] + ' ' + req2Dems[i]
             os.system(cmd)  
         
