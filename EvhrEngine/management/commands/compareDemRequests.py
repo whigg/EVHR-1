@@ -46,8 +46,11 @@ class Command(BaseCommand):
         reqDir2 = os.path.join(str(req2.destination), 'dems')
 
         # Check for the same pairs.
-        req1PairDirs = [f for f in glob(reqDir1 + '/W*') if os.path.isdir(f)]
-        req2PairDirs = [f for f in glob(reqDir2 + '/W*') if os.path.isdir(f)]
+        req1PairDirs = [os.path.basename(f) for f in glob(reqDir1 + '/W*') \
+                        if os.path.isdir(f)]
+                        
+        req2PairDirs = [os.path.basename(f) for f in glob(reqDir2 + '/W*') \
+                        if os.path.isdir(f)]
         
         req1PairDirs.sort()
         req2PairDirs.sort()
