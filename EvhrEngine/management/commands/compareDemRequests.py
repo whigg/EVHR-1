@@ -27,8 +27,8 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
         
-        req1 = Request.objects.get(id=args.request1)
-        req2 = Request.objects.get(id=args.request2)
+        req1 = Request.objects.get(id=options['request1')
+        req2 = Request.objects.get(id=options['request2')
         
         if not os.path.exists(req1.destination):
 
