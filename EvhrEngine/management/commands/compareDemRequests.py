@@ -1,7 +1,6 @@
 
 from glob import glob
 import os
-import system
 
 from django.core.management.base import BaseCommand
 
@@ -72,5 +71,5 @@ class Command(BaseCommand):
         for i in range(len(req1Dems)):
             
             cmd = 'gdalcompare ' + req1Dems[i] + ' ' + req2Dems[i]
-            os.path.system(cmd)  
+            os.system(cmd)  
         
