@@ -42,8 +42,8 @@ class Command(BaseCommand):
                                str(req2.destination) + 
                                ' does not exist.')
         
-        reqDir1 = os.path.join(req1.destination, 'dems')
-        reqDir2 = os.path.join(req2.destination, 'dems')
+        reqDir1 = os.path.join(str(req1.destination), 'dems')
+        reqDir2 = os.path.join(str(req2.destination), 'dems')
 
         # Check for the same pairs.
         req1PairDirs = [f for f in glob(reqDir1 + '/W*') if os.path.isdir(f)]
