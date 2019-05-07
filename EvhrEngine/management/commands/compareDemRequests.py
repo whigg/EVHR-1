@@ -62,5 +62,14 @@ class Command(BaseCommand):
         else:
             print 'The requests do not have the same pairs.'
             print 'Request 1 pairs: ' + str(req1PairDirs)
-            print 'Request 2 pairs: ' + str(req2PairDirs)            
+            print 'Request 2 pairs: ' + str(req2PairDirs)      
+            
+        # Check the corresponding DEMs pixel by pixel.
+        req1Dems = [f for f in glob(reqDir1 + '/W*.tif')]      
+        req2Dems = [f for f in glob(reqDir2 + '/W*.tif')]
+        
+        for i in range(len(req1Dems)):
+            
+            cmd = 'gdalcompare ' + req1Dems[i] + ' ' + req2Dems[i]
+            os.path.system(cmd)  
         
