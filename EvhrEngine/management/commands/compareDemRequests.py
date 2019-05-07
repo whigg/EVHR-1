@@ -58,4 +58,6 @@ class Command(BaseCommand):
 
         else:
             print 'The requests do not have the same pairs.'
+            print 'Request 1 pairs: ' + str(req1PairDirs)
+            print 'Request 2 pairs: ' + str(req2PairDirs)            
         
