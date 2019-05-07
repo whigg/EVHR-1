@@ -27,6 +27,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
         
+        print 'r1 = ' + str(options['request1'])
         req1 = Request.objects.get(id=options['request1'])
         req2 = Request.objects.get(id=options['request2'])
         
