@@ -5,6 +5,7 @@ import os
 from django.core.management.base import BaseCommand
 
 from ProcessingEngine.models import Request
+from EvhrEngine.management.GdalFile import GdalFile
 
 #-------------------------------------------------------------------------------
 # compareDemRequests
@@ -75,5 +76,14 @@ class Command(BaseCommand):
             cmd = 'gdalcompare.py ' + req1Dems[i] + ' ' + req2Dems[i]
             result = os.system(cmd)  
             
-        # Perform a pixel-by-pixel comparison, forming a total difference.
-        
+            if result != 0:
+                
+                dem1 = GdalFile(req1Dems[i])
+                dem2 = GdalFile(req2Dems[i])
+                
+                # xform1 = dem1.GetGeoTransform()
+                # width1 = dem1.RasterXSize
+                # height1 = dem1.RasterYSize
+                raster1 = dem1.ReadRaster(0, 0)
+                raster2 = dem2.ReadRaster(0, 0)
+                        
