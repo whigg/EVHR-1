@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 
                 raster1 = dem1.dataset.ReadRaster(0, 
                                                   0, 
-                                                  RasterXSize, 
+                                                  Dataset.RasterXSize, 
                                                   RasterYSize,
                                                   None,
                                                   None,
