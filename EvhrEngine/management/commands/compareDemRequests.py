@@ -79,12 +79,23 @@ class Command(BaseCommand):
                 print 'DEMs ' + req1Dems[i] + ' and ' + req2Dems[i] + ' differ'
                 dem1 = GdalFile(req1Dems[i])
                 dem2 = GdalFile(req2Dems[i])
-                # raster1 = dem1.dataset.ReadRaster(0, 0)
-                # raster2 = dem2.dataset.ReadRaster(0, 0)
-                raster1 = dem1.dataset.GetRasterBand(1)
-                import pdb
-                pdb.set_trace()
-                raster2 = dem2.dataset.GetRasterBand(1)
+                
+                raster1 = dem1.dataset.ReadRaster(0, 
+                                                  0, 
+                                                  RasterXSize, 
+                                                  RasterYSize,
+                                                  None,
+                                                  None,
+                                                  gdal.GDT_Float32)
+                
+                raster2 = dem2.dataset.ReadRaster(0, 
+                                                  0, 
+                                                  RasterXSize, 
+                                                  RasterYSize,
+                                                  None,
+                                                  None,
+                                                  gdal.GDT_Float32)
+                
                 size1 = len(raster1)
                 
                 if size1 != len(raster2):
