@@ -78,10 +78,8 @@ class Command(BaseCommand):
                 
                 dem1 = GdalFile(req1Dems[i])
                 dem2 = GdalFile(req2Dems[i])
-                
-                # xform1 = dem1.GetGeoTransform()
-                # width1 = dem1.RasterXSize
-                # height1 = dem1.RasterYSize
+                import pdb
+                pdb.set_trace()
                 raster1 = dem1.dataset.ReadRaster(0, 0)
                 raster2 = dem2.dataset.ReadRaster(0, 0)
                         
