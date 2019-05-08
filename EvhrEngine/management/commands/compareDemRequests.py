@@ -82,6 +82,8 @@ class Command(BaseCommand):
                 # raster1 = dem1.dataset.ReadRaster(0, 0)
                 # raster2 = dem2.dataset.ReadRaster(0, 0)
                 raster1 = dem1.dataset.GetRasterBand(1)
+                import pdb
+                pdb.set_trace()
                 raster2 = dem2.dataset.GetRasterBand(1)
                 size1 = len(raster1)
                 
