@@ -2,6 +2,8 @@
 from glob import glob
 import os
 
+from osgeo import gdal
+
 from django.core.management.base import BaseCommand
 
 from ProcessingEngine.models import Request
@@ -82,7 +84,7 @@ class Command(BaseCommand):
                 
                 raster1 = dem1.dataset.ReadRaster(0, 
                                                   0, 
-                                                  Dataset.RasterXSize, 
+                                                  gdal.Dataset.RasterXSize, 
                                                   RasterYSize,
                                                   None,
                                                   None,
