@@ -73,7 +73,7 @@ class Command(BaseCommand):
         for i in range(len(req1Dems)):
             
             cmd = 'gdalcompare.py ' + req1Dems[i] + ' ' + req2Dems[i]
-            os.system(cmd)  
+            result = os.system(cmd)  
             
         # Perform a pixel-by-pixel comparison, forming a total difference.
         
