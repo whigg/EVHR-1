@@ -85,15 +85,15 @@ class Command(BaseCommand):
                 raster1 = dem1.dataset.ReadRaster(0, 
                                                   0, 
                                                   gdal.Dataset.RasterXSize, 
-                                                  RasterYSize,
+                                                  gdal.Dataset.RasterYSize,
                                                   None,
                                                   None,
                                                   gdal.GDT_Float32)
                 
                 raster2 = dem2.dataset.ReadRaster(0, 
                                                   0, 
-                                                  RasterXSize, 
-                                                  RasterYSize,
+                                                  gdal.Dataset.RasterXSize, 
+                                                  gdal.Dataset.RasterYSize,
                                                   None,
                                                   None,
                                                   gdal.GDT_Float32)
