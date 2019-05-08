@@ -65,6 +65,8 @@ class Command(BaseCommand):
             print 'Request 2 pairs: ' + str(req2PairDirs)      
             
         # Check the corresponding DEMs pixel by pixel.
+        import pdb
+        pdb.set_trace()
         req1Dems = [f for f in glob(reqDir1 + '/W*.tif')]      
         req2Dems = [f for f in glob(reqDir2 + '/W*.tif')]
         
@@ -72,4 +74,6 @@ class Command(BaseCommand):
             
             cmd = 'gdalcompare.py ' + req1Dems[i] + ' ' + req2Dems[i]
             os.system(cmd)  
+            
+        # Perform a pixel-by-pixel comparison, forming a total difference.
         
