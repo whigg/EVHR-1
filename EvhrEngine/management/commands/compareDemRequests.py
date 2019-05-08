@@ -92,7 +92,7 @@ class Command(BaseCommand):
                     difference = 0
                     
                     for i in range(size1):
-                        difference += abs(raster1[i] - raster2[i])
+                        difference += abs(float(raster1[i]) - float(raster2[i]))
                         
                     print 'The cumulative difference in pixel values is ' + \
                           str(difference)
