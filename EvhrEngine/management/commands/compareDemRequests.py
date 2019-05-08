@@ -1,5 +1,6 @@
 
 from glob import glob
+import math
 import os
 
 from django.core.management.base import BaseCommand
@@ -76,10 +77,24 @@ class Command(BaseCommand):
             
             if result != 0:
                 
+                print 'DEMs ' + req1Dems[i] + ' and ' + req2Dems[i] + ' differ'
                 dem1 = GdalFile(req1Dems[i])
                 dem2 = GdalFile(req2Dems[i])
-                import pdb
-                pdb.set_trace()
                 raster1 = dem1.dataset.ReadRaster(0, 0)
                 raster2 = dem2.dataset.ReadRaster(0, 0)
+                size1 = len(raster1)
+                
+                if size1 != len(raster2):
+                    
+                    print 'The rasters are different sizes.'
+                    
+                else:
+                    
+                    difference = 0
+                    
+                    for i in range(size1):
+                        difference += math.abs(raster1[i] - raster2[i])
+                        
+                    print 'The cumulative difference in pixel values is ' + \
+                          str(difference)
                         
