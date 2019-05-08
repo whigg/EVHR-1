@@ -66,8 +66,6 @@ class Command(BaseCommand):
             print 'Request 2 pairs: ' + str(req2PairDirs)      
             
         # Check the corresponding DEMs pixel by pixel.
-        import pdb
-        pdb.set_trace()
         req1Dems = [f for f in glob(reqDir1 + '/W*.tif')]      
         req2Dems = [f for f in glob(reqDir2 + '/W*.tif')]
         
@@ -84,6 +82,6 @@ class Command(BaseCommand):
                 # xform1 = dem1.GetGeoTransform()
                 # width1 = dem1.RasterXSize
                 # height1 = dem1.RasterYSize
-                raster1 = dem1.ReadRaster(0, 0)
-                raster2 = dem2.ReadRaster(0, 0)
+                raster1 = dem1.dataset.ReadRaster(0, 0)
+                raster2 = dem2.dataset.ReadRaster(0, 0)
                         
