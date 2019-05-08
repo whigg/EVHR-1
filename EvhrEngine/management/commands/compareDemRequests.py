@@ -1,6 +1,5 @@
 
 from glob import glob
-import math
 import os
 
 from django.core.management.base import BaseCommand
@@ -93,7 +92,7 @@ class Command(BaseCommand):
                     difference = 0
                     
                     for i in range(size1):
-                        difference += math.abs(raster1[i] - raster2[i])
+                        difference += abs(raster1[i] - raster2[i])
                         
                     print 'The cumulative difference in pixel values is ' + \
                           str(difference)
