@@ -104,9 +104,6 @@ class Command(BaseCommand):
                     
                     difference = 0
                     
-                    import pdb
-                    pdb.set_trace()
-                    
                     for r in range(rows):
                         for c in range(cols):
                             
