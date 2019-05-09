@@ -86,11 +86,16 @@ class Command(BaseCommand):
                 
                 raster1 = dem1.dataset.ReadAsArray(0, 0)
                 raster2 = dem2.dataset.ReadAsArray(0, 0)
-                size1 = len(raster1)
+                rows = len(raster1)
+                cols = len(raster1[0])
                 
-                if size1 != len(raster2):
+                if rows != len(raster2):
                     
-                    print 'The rasters are different sizes.'
+                    print 'Rasters have different numbers of rows.'
+                    
+                elif cols != len(raster2[0]):
+                    
+                    print 'Rasters have different numbers of columns.'
                     
                 else:
                     
@@ -98,8 +103,12 @@ class Command(BaseCommand):
                     
                     import pdb
                     pdb.set_trace()
-                    for i in range(size1):
-                        difference += abs(float(raster1[i]) - float(raster2[i]))
+                    
+                    for r in range(rows):
+                        for c in range(cols):
+                            
+                            difference += abs(float(raster1[r][c]) - \
+                                              float(raster2[r][c]))
                         
                     print 'The cumulative difference in pixel values is ' + \
                           str(difference)
