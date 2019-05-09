@@ -73,30 +73,41 @@ class Command(BaseCommand):
         
         for i in range(len(req1Dems)):
             
+            print 'Comparing ' + req1Dems[i] + ' and ' + req2Dems[i]
+            
             cmd = 'gdalcompare.py ' + req1Dems[i] + ' ' + req2Dems[i]
             result = os.system(cmd)  
             
             if result != 0:
                 
-                print 'DEMs ' + req1Dems[i] + ' and ' + req2Dems[i] + ' differ'
+                print 'DEMs differ.'
                 dem1 = GdalFile(req1Dems[i])
                 dem2 = GdalFile(req2Dems[i])
                 
-                raster1 = dem1.dataset.ReadRaster(0, 
-                                                  0, 
-                                                  gdal.Dataset.RasterXSize, 
-                                                  gdal.Dataset.RasterYSize,
-                                                  None,
-                                                  None,
-                                                  gdal.GDT_Float32)
+                # raster1 = dem1.dataset.ReadRaster(0,
+                #                                   0,
+                #                                   gdal.Dataset.RasterXSize,
+                #                                   gdal.Dataset.RasterYSize,
+                #                                   None,
+                #                                   None,
+                #                                   gdal.GDT_Float32)
+                #
+                # raster2 = dem2.dataset.ReadRaster(0,
+                #                                   0,
+                #                                   gdal.Dataset.RasterXSize,
+                #                                   gdal.Dataset.RasterYSize,
+                #                                   None,
+                #                                   None,
+                #                                   gdal.GDT_Float32)
+
+                raster1 = dem1.dataset.ReadAsArray(0,
+                                                   0,
+                                                   gdal.Dataset.RasterXSize,
+                                                   gdal.Dataset.RasterYSize,
+                                                   gdal.GDT_Float32)
                 
-                raster2 = dem2.dataset.ReadRaster(0, 
-                                                  0, 
-                                                  gdal.Dataset.RasterXSize, 
-                                                  gdal.Dataset.RasterYSize,
-                                                  None,
-                                                  None,
-                                                  gdal.GDT_Float32)
+                import pdb
+                pdb.set_trace()
                 
                 size1 = len(raster1)
                 
