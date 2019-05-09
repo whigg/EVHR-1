@@ -96,6 +96,8 @@ class Command(BaseCommand):
                     
                     difference = 0
                     
+                    import pdb
+                    pdb.set_trace()
                     for i in range(size1):
                         difference += abs(float(raster1[i]) - float(raster2[i]))
                         
