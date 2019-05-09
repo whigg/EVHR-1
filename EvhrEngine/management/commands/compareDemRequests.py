@@ -88,6 +88,9 @@ class Command(BaseCommand):
                 raster2 = dem2.dataset.ReadAsArray(0, 0)
                 rows = len(raster1)
                 cols = len(raster1[0])
+                numPixels = rows * cols
+                
+                print 'There are ' + str(numPixels) + ' pixels.'
                 
                 if rows != len(raster2):
                     
