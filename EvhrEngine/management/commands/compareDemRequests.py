@@ -100,12 +100,13 @@ class Command(BaseCommand):
                 #                                   None,
                 #                                   gdal.GDT_Float32)
 
-                raster1 = dem1.dataset.ReadAsArray(0,
-                                                   0,
-                                                   gdal.Dataset.RasterXSize,
-                                                   gdal.Dataset.RasterYSize,
-                                                   gdal.GDT_Float32)
+                # raster1 = dem1.dataset.ReadAsArray(0,
+                #                                    0,
+                #                                    gdal.Dataset.RasterXSize,
+                #                                    gdal.Dataset.RasterYSize,
+                #                                    gdal.GDT_Float32)
                 
+                raster1 = dem1.dataset.ReadAsArray(0, 0)
                 import pdb
                 pdb.set_trace()
                 
