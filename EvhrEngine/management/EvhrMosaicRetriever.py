@@ -589,12 +589,12 @@ class EvhrMosaicRetriever(GeoRetriever):
                 
                 for stripBand in stripBands:
 
-                    dgStrip = DgFile(stripBand)
-                    orthoBand = self.orthoOne(stripBand, dgStrip)
-                    
-                    if 'tile2_WV02_20130629_M1BS_10300100252A8800_BAND_R_19903' in orthoBand:
+                    if 'tile2_WV02_20130629_M1BS_10300100252A8800_BAND_R_19903' in stripBand:
                         import pdb
                         pdb.set_trace()
+
+                    dgStrip = DgFile(stripBand)
+                    orthoBand = self.orthoOne(stripBand, dgStrip)
                     #orthoBands.append(orthoBand) # yujie
 
                     toaBands.append(TOA.run(orthoBand,
