@@ -587,11 +587,13 @@ class EvhrMosaicRetriever(GeoRetriever):
                 toaBands = []
                 #orthoBands = [] # temp-yujie
                 
+                import pdb
+                pdb.set_trace()
                 for stripBand in stripBands:
 
                     # if 'tile2_WV02_20130629_M1BS_10300100252A8800_BAND_R_19903' in stripBand:
-                    import pdb
-                    pdb.set_trace()
+                    # import pdb
+                    # pdb.set_trace()
 
                     dgStrip = DgFile(stripBand)
                     orthoBand = self.orthoOne(stripBand, dgStrip)
