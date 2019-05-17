@@ -379,6 +379,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
                 del constituents[tileFile]
 
+        import pdb
+        pdb.set_trace()
         return constituents
         
     #---------------------------------------------------------------------------
