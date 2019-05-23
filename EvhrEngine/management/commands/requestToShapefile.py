@@ -41,6 +41,100 @@ class Command(BaseCommand):
                            action = 'store_true')
                             
     #---------------------------------------------------------------------------
+    # handle
+    #---------------------------------------------------------------------------
+    def handle(*args, **options):
+
+        #---
+        # Get the request.
+        #---
+        request = GeoRequest.objects.get(id = options['id'])
+        
+        #---
+        # Create the output Shapefile.
+        #---
+        gridDir = os.path.join(str(request.destination.name), 'grids')
+        
+        if not os.path.isdir(gridDir):
+            os.mkdir(gridDir)
+            
+        gridFile = os.path.join(gridDir, 'aoi.shp')
+        outDriver = ogr.GetDriverByName('ESRI Shapefile')
+        dataSource = outDriver.CreateDataSource(gridFile)
+        srs = SpatialReference(str(request.srs))  # str() in case it's unicode
+
+        #---
+        # Add the request's corners as a layer with a polygon feature. 
+        #---
+        polygon = Command.cornersToPolygon(request.ulx, 
+                                           request.uly, 
+                                           request.lrx,
+                                           request.lry,
+                                           srs)
+
+        layer = dataSource.CreateLayer('AoI', srs, geom_type = ogr.wkbPolygon)
+        layer.CreateField(Command.fieldDef)
+        
+        ShapefileHelper.createFeature(request.ulx,
+                                      request.uly,
+                                      request.lrx,
+                                      request.lry,
+                                      srs,
+                                      'AoI',
+                                      layer)
+                              
+        #---
+        # Create features for each scene.
+        #---
+        scenes = EvhrScene.objects.values_list('sceneFile', flat = True) \
+                                  .filter(request = request.id)
+
+        ShapefileHelper.filesToFeatures('scenes', scenes, srs, dataSource)
+
+        # Also, write the scene file names to a text file.
+        sceneFile = os.path.join(gridDir, 'scenes.txt')
+
+        with open(sceneFile, 'w') as f: 
+            for scene in scenes:
+                f.write(scene + '\n')
+                
+        f.close()
+        
+        #---
+        # Create features for each tile.
+        #---
+        if not options['noTiles']:
+        
+            tileDir = os.path.join(str(request.destination.name), '1-tiles')
+            tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
+            ShapefileHelper.filesToFeatures('tiles', tiles, srs, dataSource)
+
+        #---
+        # Create features for each band file.
+        #---
+        bands = []
+        
+        if options['b']:
+            
+            bands = [options['b']]
+            
+        elif not options['noBands']:
+            
+            bandDir = os.path.join(str(request.destination.name), '2-bands')
+            bands = glob.glob(os.path.join(bandDir, '*.tif'))
+        
+        ShapefileHelper.filesToFeatures('bands', bands, srs, dataSource)
+        
+        #---
+        # Add the UTM zones.
+        #---
+        
+#-------------------------------------------------------------------------------
+# class ShapefileHelper
+#-------------------------------------------------------------------------------
+class ShapefileHelper(object):
+    
+    #---------------------------------------------------------------------------
     # cornersToPolygon
     #---------------------------------------------------------------------------
     @staticmethod
@@ -76,95 +170,6 @@ class Command(BaseCommand):
         feature.SetGeometry(polygon)
         layer.CreateFeature(feature)
 
-    #---------------------------------------------------------------------------
-    # handle
-    #---------------------------------------------------------------------------
-    def handle(*args, **options):
-
-        #---
-        # Get the request.
-        #---
-        request = GeoRequest.objects.get(id = options['id'])
-        
-        #---
-        # Create the output Shapefile.
-        #---
-        gridDir = os.path.join(str(request.destination.name), 'grids')
-        
-        if not os.path.isdir(gridDir):
-            os.mkdir(gridDir)
-            
-        gridFile = os.path.join(gridDir, 'aoi.shp')
-        outDriver = ogr.GetDriverByName('ESRI Shapefile')
-        dataSource = outDriver.CreateDataSource(gridFile)
-        srs = SpatialReference(str(request.srs))  # str() in case it's unicode
-
-        #---
-        # Add the request's corners as a layer with a polygon feature. 
-        #---
-        polygon = Command.cornersToPolygon(request.ulx, 
-                                           request.uly, 
-                                           request.lrx,
-                                           request.lry,
-                                           srs)
-
-        layer = dataSource.CreateLayer('AoI', srs, geom_type = ogr.wkbPolygon)
-        layer.CreateField(Command.fieldDef)
-        
-        Command.createFeature(request.ulx,
-                              request.uly,
-                              request.lrx,
-                              request.lry,
-                              srs,
-                              'AoI',
-                              layer)
-        
-        #---
-        # Create features for each scene.
-        #---
-        scenes = EvhrScene.objects.values_list('sceneFile', flat = True) \
-                                  .filter(request = request.id)
-
-        Command.filesToFeatures('scenes', scenes, srs, dataSource)
-
-        # Also, write the scene file names to a text file.
-        sceneFile = os.path.join(gridDir, 'scenes.txt')
-
-        with open(sceneFile, 'w') as f: 
-            for scene in scenes:
-                f.write(scene + '\n')
-                
-        f.close()
-        
-        #---
-        # Create features for each tile.
-        #---
-        if not options['noTiles']:
-        
-            tileDir = os.path.join(str(request.destination.name), '1-tiles')
-            tiles = glob.glob(os.path.join(tileDir, 'tile*.tif'))
-            Command.filesToFeatures('tiles', tiles, srs, dataSource)
-
-        #---
-        # Create features for each band file.
-        #---
-        bands = []
-        
-        if options['b']:
-            
-            bands = [options['b']]
-            
-        elif not options['noBands']:
-            
-            bandDir = os.path.join(str(request.destination.name), '2-bands')
-            bands = glob.glob(os.path.join(bandDir, '*.tif'))
-        
-        Command.filesToFeatures('bands', bands, srs, dataSource)
-        
-        #---
-        # Add the UTM zones.
-        #---
-        
     #---------------------------------------------------------------------------
     # filesToFeatures
     #---------------------------------------------------------------------------
