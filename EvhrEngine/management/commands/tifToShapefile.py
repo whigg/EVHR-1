@@ -26,19 +26,20 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def handle(*args, **options):
         
-        gdalFile = GdalFile(options['f'])
+        gf = GdalFile(options['f'])
         outDir = tempfile.mkdtemp()
-        
-        shapeFile = os.path.join(outDir,
-                                 os.path.basename(gdalFile.fileName) + '.shp')
-        
+        shapeFile = os.path.join(outDir, os.path.basename(gf.fileName) +'.shp')        
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(shapeFile)
         
-        ShapefileHelper.filesToFeatures('tif',
-                                        [gdalFile.fileName],
-                                        gdalFile.srs,
-                                        dataSource)
+        ShapefileHelper.createFeature(gf.ulx,
+                                      gf.uly,
+                                      gf.lrx,
+                                      gf.lry,
+                                      gf.srs,
+                                      gf.fileName,
+                                      layer)
+        
         
         print 'Created: ' + shapeFile
          
