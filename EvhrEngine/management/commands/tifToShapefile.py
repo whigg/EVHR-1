@@ -18,27 +18,27 @@ class Command(BaseCommand):
     # add_arguments
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
-        
+     
      parser.add_argument('-f', help = 'Full path to file.'
-         
+    
     #---------------------------------------------------------------------------
     # handle
     #---------------------------------------------------------------------------
     def handle(*args, **options):
-     
+        
         gdalFile = GdalFile(options['f'])
         outDir = tempfile.mkdtemp()
-         
-        shapeFile = os.path.join(outDir, 
+        
+        shapeFile = os.path.join(outDir,
                                  os.path.basename(gdalFile.fileName) + '.shp')
-         
+        
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(shapeFile)
-         
-        rts.filesToFeatures('tif', 
-                            [gdalFile.fileName], 
-                            gdalFile.srs, 
+        
+        rts.filesToFeatures('tif',
+                            [gdalFile.fileName],
+                            gdalFile.srs,
                             dataSource)
-                             
-        print 'Created: ' + shapeFile        
+        
+        print 'Created: ' + shapeFile
          
