@@ -10,7 +10,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from ProcessingEngine.models import Constituent
-from GeoProcessingEngine.models import GeoRequest # Part of the kludge below.
+from ProcessingEngine.models import Request # Part of the kludge below.
 
 #-------------------------------------------------------------------------------
 # downloadRequest
