@@ -38,7 +38,8 @@ def downloadRequest(requestId):
         if request.endPoint.name == 'EVHR Mosaic':
             
             toaPath = os.path.join(request.destination.name, '6-toas')
-            toas = glob.glob(toaPath + '*-TOA.tif')
+            toaExpression = os.path.join(toaPath, '*-TOA.tif')
+            toas = glob.glob(toaExpression)
             
             if len(toas):
                 atLeastOneFileZipped = True
