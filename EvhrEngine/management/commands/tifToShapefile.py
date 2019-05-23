@@ -31,7 +31,7 @@ class Command(BaseCommand):
         shapeFile = os.path.join(outDir, os.path.basename(gf.fileName) +'.shp')        
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(shapeFile)
-        layer = dataSource.CreateLayer('tif', masterSRS,geom_type=ogr.wkbPolygon)
+        layer = dataSource.CreateLayer('tif', gf.srs ,geom_type=ogr.wkbPolygon)
         layer.CreateField(ShapefileHelper.fieldDef)
         
         ShapefileHelper.createFeature(gf.ulx,
