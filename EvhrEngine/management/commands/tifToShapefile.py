@@ -26,7 +26,7 @@ class Command(BaseCommand):
      
          gdalFile = GdalFile(options['f'])
          outDir = tempfile.mkdtemp()
-         shapeFile = os.path.join(gridDir, os.path.basename(fileName) + '.shp')
+         shapeFile = os.path.join(outDir, os.path.basename(fileName) + '.shp')
          outDriver = ogr.GetDriverByName('ESRI Shapefile')
          dataSource = outDriver.CreateDataSource(shapeFile)
          rts.filesToFeatures('tif', [fileName], gdalFile.srs, dataSource)
