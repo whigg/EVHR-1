@@ -46,7 +46,7 @@ def downloadRequest(requestId):
 
             for toa in toas:
                 
-                dirName, fileName = os.path.split(con.destination.name)
+                dirName, fileName = os.path.split(toa)
                 os.chdir(dirName)
                 zf.write(fileName)
 
