@@ -2,6 +2,8 @@
 import os
 import tempfile
 
+from osgeo import ogr
+
 from django.core.management.base import BaseCommand
 
 from EvhrEngine.management.commands.requestToShapefile import Command as rts
