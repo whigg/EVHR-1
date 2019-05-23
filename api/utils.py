@@ -1,5 +1,4 @@
 
-import glob # Part of the kludge below.
 import os
 import time
 import zipfile
@@ -10,7 +9,6 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from ProcessingEngine.models import Constituent
-from ProcessingEngine.models import Request # Part of the kludge below.
 
 #-------------------------------------------------------------------------------
 # downloadRequest
@@ -29,43 +27,15 @@ def downloadRequest(requestId):
         zf = zipfile.ZipFile(archiveFile, 'w', zipfile.ZIP_DEFLATED)
         atLeastOneFileZipped = False
 
-        # ---
-        # The following is a kludge used until the mosaic process is complete.
-        # This first part of the "if" statement is the kludge to be removed.
-        # ---
-        request = Request.objects.get(id = requestId)
-        
-        if request.endPoint.name == 'EVHR Mosaic':
-            
-            toaPath = os.path.join(request.destination.name, '6-toas')
-            toaExpression = os.path.join(toaPath, '*-TOA.tif')
-            toas = glob.glob(toaExpression)
-            
-            if len(toas):
-                atLeastOneFileZipped = True
+        # Zip the file for each COMPLETE and enabled constituent.
+        for con in cons:
 
-            for toa in toas:
-                
-                dirName, fileName = os.path.split(toa)
+            if con.state() == 'CPT':
+
+                atLeastOneFileZipped = True
+                dirName, fileName = os.path.split(con.destination.name)
                 os.chdir(dirName)
                 zf.write(fileName)
-
-        else:
-            
-            # ---
-            # This is the permanent part that remains after the kludge is
-            # unnecessary.
-            # ---
-            
-            # Zip the file for each COMPLETE and enabled constituent.
-            for con in cons:
-
-                if con.state() == 'CPT':
-
-                    atLeastOneFileZipped = True
-                    dirName, fileName = os.path.split(con.destination.name)
-                    os.chdir(dirName)
-                    zf.write(fileName)
                 
         zf.close()
 
