@@ -14,6 +14,9 @@ from EvhrEngine.management.GdalFile import GdalFile
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
+    fieldDef = ogr.FieldDefn('Name', ogr.OFTString )
+    fieldDef.SetWidth(160)
+
     #---------------------------------------------------------------------------
     # add_arguments
     #---------------------------------------------------------------------------
@@ -32,7 +35,7 @@ class Command(BaseCommand):
         outDriver = ogr.GetDriverByName('ESRI Shapefile')
         dataSource = outDriver.CreateDataSource(shapeFile)
         layer = dataSource.CreateLayer('tif', gf.srs ,geom_type=ogr.wkbPolygon)
-        layer.CreateField(ShapefileHelper.fieldDef)
+        layer.CreateField(Command.fieldDef)
         
         ShapefileHelper.createFeature(gf.ulx,
                                       gf.uly,
