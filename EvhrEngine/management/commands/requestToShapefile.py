@@ -164,7 +164,7 @@ class ShapefileHelper(object):
     @staticmethod
     def createFeature(ulx, uly, lrx, lry, srs, name, layer):
         
-        polygon = Command.cornersToPolygon(ulx, uly, lrx, lry, srs)
+        polygon = ShapefileHelper.cornersToPolygon(ulx, uly, lrx, lry, srs)
         feature = ogr.Feature(layer.GetLayerDefn())
         feature.SetField('Name', name)      
         feature.SetGeometry(polygon)
@@ -189,10 +189,10 @@ class ShapefileHelper(object):
             if not gf.srs.IsSame(masterSRS):
                 raise RuntimeError('SRS is different from the master SRS.')
             
-            Command.createFeature(gf.ulx,
-                                  gf.uly,
-                                  gf.lrx,
-                                  gf.lry,
-                                  gf.srs,
-                                  gf.fileName,
-                                  layer)
+            ShapefileHelper.createFeature(gf.ulx,
+                                          gf.uly,
+                                          gf.lrx,
+                                          gf.lry,
+                                          gf.srs,
+                                          gf.fileName,
+                                          layer)
