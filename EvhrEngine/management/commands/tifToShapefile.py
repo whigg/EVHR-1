@@ -34,5 +34,9 @@ class Command(BaseCommand):
          
          outDriver = ogr.GetDriverByName('ESRI Shapefile')
          dataSource = outDriver.CreateDataSource(shapeFile)
-         rts.filesToFeatures('tif', [fileName], gdalFile.srs, dataSource)
+         
+         rts.filesToFeatures('tif', 
+                             [gdalFile.fileName], 
+                             gdalFile.srs, 
+                             dataSource)
          
