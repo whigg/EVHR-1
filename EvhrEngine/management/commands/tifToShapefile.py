@@ -4,7 +4,7 @@ import tempfile
 
 from django.core.management.base import BaseCommand
 
-import EvhrEngine.management.commands.requestToShapeFile
+import EvhrEngine.management.commands.requestToShapeFile import Command as rts
 from EvhrEngine.management.GdalFile import GdalFile
 
 #-------------------------------------------------------------------------------
