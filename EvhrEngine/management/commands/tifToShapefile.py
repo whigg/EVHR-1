@@ -19,7 +19,7 @@ class Command(BaseCommand):
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
      
-        parser.add_argument('-f', help = 'Full path to file.'
+        parser.add_argument('-f', help = 'Full path to file.')
     
     #---------------------------------------------------------------------------
     # handle
