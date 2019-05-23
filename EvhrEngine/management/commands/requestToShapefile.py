@@ -66,11 +66,11 @@ class Command(BaseCommand):
         #---
         # Add the request's corners as a layer with a polygon feature. 
         #---
-        polygon = Command.cornersToPolygon(request.ulx, 
-                                           request.uly, 
-                                           request.lrx,
-                                           request.lry,
-                                           srs)
+        polygon = ShapefileHelper.cornersToPolygon(request.ulx, 
+                                                   request.uly, 
+                                                   request.lrx,
+                                                   request.lry,
+                                                   srs)
 
         layer = dataSource.CreateLayer('AoI', srs, geom_type = ogr.wkbPolygon)
         layer.CreateField(Command.fieldDef)
