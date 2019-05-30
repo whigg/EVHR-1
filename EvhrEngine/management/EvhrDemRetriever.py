@@ -146,7 +146,7 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # _ingestScene
     #---------------------------------------------------------------------------
-    def _ingestScene(self, fpScene, pairsDict):
+    def _ingestScene(self, fpScene, pairsDict, request):
         
         # Add an EvhrScene, if it does not exist.
         try:
@@ -206,12 +206,12 @@ class EvhrDemRetriever(GeoRetriever):
             cat1Query = FootprintsQuery(logger=self.logger)
             cat1Query.addCatalogID(catId1)
             cat1Scenes = cat1Query.getScenes()
-            for scene in cat1Scenes: self._aggregateScene(scene)
+            for scene in cat1Scenes: self._ingestScene(scene, pairs, request)
 
             cat2Query = FootprintsQuery(logger=self.logger)
             cat2Query.addCatalogID(catId2)
             cat2Scenes = cat2Query.getScenes()
-            for scene in cat2Scenes: self._aggregateScene(scene)
+            for scene in cat2Scenes: self._ingestScene(scene, pairs, request)
                 
         return pairs
         
