@@ -19,6 +19,16 @@ class FootprintsScene(object):
         return self._getValue('ogr:S_FILEPATH')
         
     #---------------------------------------------------------------------------
+    # getCatalogIDs
+    #---------------------------------------------------------------------------
+    def getCatalogIDs(self):
+        
+        pairName = self.pairName()
+        catId1 = pairName.split('_')[2]
+        catId2 = pairName.split('_')[3]
+        return catId1, catId2
+        
+    #---------------------------------------------------------------------------
     # getValue
     #---------------------------------------------------------------------------
     def _getValue(self, tagName):
