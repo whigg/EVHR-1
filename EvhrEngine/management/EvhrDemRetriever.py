@@ -200,7 +200,7 @@ class EvhrDemRetriever(GeoRetriever):
         # ---
         for fpScene in fpScenes:
             
-            self._ingestScene(fpScene, pairs)
+            self._ingestScene(fpScene, pairs, request)
             catId1, catId2 = fpScene.getCatalogIds()
 
             cat1Query = FootprintsQuery(logger=self.logger)
