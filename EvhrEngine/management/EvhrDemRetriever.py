@@ -156,7 +156,7 @@ class EvhrDemRetriever(GeoRetriever):
             
             evhrScene = EvhrScene()
             evhrScene.request = request
-            evhrScene.sceneFile = scene.fileName()
+            evhrScene.sceneFile = fpScene.fileName()
             evhrScene.save()
 
         # Aggregate the scene into the pairs.
