@@ -35,6 +35,7 @@ class FootprintsQuery(object):
         self.logger = logger
         self.catalogID = None
         self.maxScenes = None
+        self.minOverlapInDegrees = 0.0
         self.pairsOnly = False
         self.scenes = []
         self.sensors = []
@@ -180,11 +181,16 @@ class FootprintsQuery(object):
             # To filter scenes that only overlap the AoI slightly, decrease both
             # corners of the query AoI.
             #---
-            MIN_OVERLAP_IN_DEGREES = 0.02
-            ulx = float(self.ulx) + MIN_OVERLAP_IN_DEGREES
-            uly = float(self.uly) - MIN_OVERLAP_IN_DEGREES
-            lrx = float(self.lrx) - MIN_OVERLAP_IN_DEGREES
-            lry = float(self.lry) + MIN_OVERLAP_IN_DEGREES
+            # MIN_OVERLAP_IN_DEGREES = 0.02
+            # ulx = float(self.ulx) + MIN_OVERLAP_IN_DEGREES
+            # uly = float(self.uly) - MIN_OVERLAP_IN_DEGREES
+            # lrx = float(self.lrx) - MIN_OVERLAP_IN_DEGREES
+            # lry = float(self.lry) + MIN_OVERLAP_IN_DEGREES
+
+            ulx = float(self.ulx) + self.minOverlapInDegrees
+            uly = float(self.uly) - self.minOverlapInDegrees
+            lrx = float(self.lrx) - self.minOverlapInDegrees
+            lry = float(self.lry) + self.minOverlapInDegrees
         
             cmd += ' -spat'                         + \
                    ' ' + str(ulx)                   + \
@@ -223,6 +229,13 @@ class FootprintsQuery(object):
     def setMaximumScenes(self, maximum):
         
         self.maxScenes = maximum
+        
+    #---------------------------------------------------------------------------
+    # setMinimumOverlapInDegrees
+    #---------------------------------------------------------------------------
+    def setMinimumOverlapInDegrees(self, minimum=0.02):
+        
+        self.minOverlapInDegrees = minimum
         
     #---------------------------------------------------------------------------
     # setPairsOnly
