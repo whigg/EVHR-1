@@ -266,6 +266,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             fpScenes = None
             fpq = FootprintsQuery(logger=self.logger)
             fpq.addAoI(ulx, uly, lrx, lry, srs)
+            fpq.setMinimumOverlapInDegrees()
 
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
