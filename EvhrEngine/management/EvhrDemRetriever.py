@@ -152,7 +152,7 @@ class EvhrDemRetriever(GeoRetriever):
         try:
             EvhrScene.objects.get(sceneFile=scene.fileName)
             
-        except DoesNotExist:
+        except EvhrScene.DoesNotExist:
             
             evhrScene = EvhrScene()
             evhrScene.request = request
