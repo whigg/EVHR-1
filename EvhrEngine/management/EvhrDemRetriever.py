@@ -150,7 +150,7 @@ class EvhrDemRetriever(GeoRetriever):
         
         # Add an EvhrScene, if it does not exist.
         try:
-            EvhrScene.objects.get(sceneFile=scene.fileName):
+            EvhrScene.objects.get(sceneFile=scene.fileName)
             
         except DoesNotExist:
             
