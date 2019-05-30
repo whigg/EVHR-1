@@ -162,10 +162,10 @@ class EvhrDemRetriever(GeoRetriever):
         # Aggregate the scene into the pairs.
         pairName = fpScene.pairName()
         
-        if not pairs.has_key(pairName):
-            pairs[pairName] = set
+        if not pairsDict.has_key(pairName):
+            pairsDict[pairName] = set
             
-        pairs[pairName].add(fpScene.fileName())
+        pairsDict[pairName].add(fpScene.fileName())
         
     #---------------------------------------------------------------------------
     # getPairs
