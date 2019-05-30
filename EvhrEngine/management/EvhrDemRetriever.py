@@ -144,28 +144,28 @@ class EvhrDemRetriever(GeoRetriever):
     #     return pairs
 
     #---------------------------------------------------------------------------
-    # _aggregateScene
+    # _ingestScene
     #---------------------------------------------------------------------------
-    def _aggregateScene(self, fpScene, pairsDict):
+    def _ingestScene(self, fpScene, pairsDict):
         
+        # Add an EvhrScene, if it does not exist.
+        try:
+            EvhrScene.objects.get(sceneFile=scene.fileName):
+            
+        except DoesNotExist:
+            
+            evhrScene = EvhrScene()
+            evhrScene.request = request
+            evhrScene.sceneFile = scene.fileName()
+            evhrScene.save()
+
+        # Aggregate the scene into the pairs.
         pairName = fpScene.pairName()
         
         if not pairs.has_key(pairName):
             pairs[pairName] = set
             
         pairs[pairName].add(fpScene.fileName())
-        
-    #---------------------------------------------------------------------------
-    # _ingestScene
-    #---------------------------------------------------------------------------
-    def _ingestScene(self, fpScene, pairsDict):
-        
-        self._aggregateScene(fpScene, pairsDict)
-
-        evhrScene = EvhrScene()
-        evhrScene.request = request
-        evhrScene.sceneFile = scene.fileName()
-        evhrScene.save()
         
     #---------------------------------------------------------------------------
     # getPairs
@@ -182,7 +182,6 @@ class EvhrDemRetriever(GeoRetriever):
             fpq.addEvhrScenes(evhrScenes)
             fpScenes = fpq.getScenes()
             self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
-            for scene in fpScenes: self._aggregateScene(scene, pairs)
         
         else:
             
@@ -195,24 +194,24 @@ class EvhrDemRetriever(GeoRetriever):
             
             fpScenes = fpq.getScenes()
             
-            # ---
-            # Dg_stereo requires every scene for every strip associated with
-            # every pair.
-            # ---
-            for fpScene in fpScenes:
-                
-                self._ingestScene(fpScene, pairs)
-                catId1, catId2 = fpScene.getCatalogIds()
+        # ---
+        # Dg_stereo requires every scene for every strip associated with
+        # every pair.
+        # ---
+        for fpScene in fpScenes:
+            
+            self._ingestScene(fpScene, pairs)
+            catId1, catId2 = fpScene.getCatalogIds()
 
-                cat1Query = FootprintsQuery(logger=self.logger)
-                cat1Query.addCatalogID(catId1)
-                cat1Scenes = cat1Query.getScenes()
-                for scene in cat1Scenes: self._aggregateScene(scene)
+            cat1Query = FootprintsQuery(logger=self.logger)
+            cat1Query.addCatalogID(catId1)
+            cat1Scenes = cat1Query.getScenes()
+            for scene in cat1Scenes: self._aggregateScene(scene)
 
-                cat2Query = FootprintsQuery(logger=self.logger)
-                cat2Query.addCatalogID(catId2)
-                cat2Scenes = cat2Query.getScenes()
-                for scene in cat2Scenes: self._aggregateScene(scene)
+            cat2Query = FootprintsQuery(logger=self.logger)
+            cat2Query.addCatalogID(catId2)
+            cat2Scenes = cat2Query.getScenes()
+            for scene in cat2Scenes: self._aggregateScene(scene)
                 
         return pairs
         
