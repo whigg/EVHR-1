@@ -198,21 +198,19 @@ class EvhrDemRetriever(GeoRetriever):
         # Dg_stereo requires every scene for every strip associated with
         # every pair.
         # ---
+        import pdb
+        pdb.set_trace()
         for fpScene in fpScenes:
             
             self._ingestScene(fpScene, pairs, request)
             catId1, catId2 = fpScene.getCatalogIDs()
 
-            cat1Query = FootprintsQuery(logger=self.logger)
-            cat1Query.addCatalogID(catId1)
-            cat1Scenes = cat1Query.getScenes()
-            for scene in cat1Scenes: self._ingestScene(scene, pairs, request)
+            catQuery = FootprintsQuery(logger=self.logger)
+            catQuery.addCatalogID(catId1)
+            catQuery.addCatalogID(catId2)
+            catScenes = catQuery.getScenes()
+            for scene in catScenes: self._ingestScene(scene, pairs, request)
 
-            cat2Query = FootprintsQuery(logger=self.logger)
-            cat2Query.addCatalogID(catId2)
-            cat2Scenes = cat2Query.getScenes()
-            for scene in cat2Scenes: self._ingestScene(scene, pairs, request)
-                
         return pairs
         
     #---------------------------------------------------------------------------
