@@ -198,18 +198,34 @@ class EvhrDemRetriever(GeoRetriever):
         # Dg_stereo requires every scene for every strip associated with
         # every pair.
         # ---
-        import pdb
-        pdb.set_trace()
+        # for fpScene in fpScenes:
+        #
+        #     self._ingestScene(fpScene, pairs, request)
+        #     catId1, catId2 = fpScene.getCatalogIDs()
+        #
+        #     catQuery = FootprintsQuery(logger=self.logger)
+        #     catQuery.addCatalogID(catId1)
+        #     catQuery.addCatalogID(catId2)
+        #     catScenes = catQuery.getScenes()
+        #     for scene in catScenes: self._ingestScene(scene, pairs, request)
+
+        # ---
+        # Collect all the catalog IDs, then perform one big query, with the
+        # expectation that one big query is faster than many small ones.
+        # ---
+        catIDs = []
+        
         for fpScene in fpScenes:
             
             self._ingestScene(fpScene, pairs, request)
-            catId1, catId2 = fpScene.getCatalogIDs()
-
-            catQuery = FootprintsQuery(logger=self.logger)
-            catQuery.addCatalogID(catId1)
-            catQuery.addCatalogID(catId2)
-            catScenes = catQuery.getScenes()
-            for scene in catScenes: self._ingestScene(scene, pairs, request)
+            catID1, catID2 = fpScene.getCatalogIDs()
+            catIDs.append(catID1)
+            catIDs.append(catID2)
+            
+        catQuery = FootprintsQuery(logger=self.logger)
+        for catID in catIDs: catQuery.addCatalogID(catID)
+        catScenes = catQuery.getScenes()
+        for scene in catScenes: self._ingestScene(scene, pairs, request)
 
         return pairs
         
