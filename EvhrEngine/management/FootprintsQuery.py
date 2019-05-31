@@ -33,7 +33,7 @@ class FootprintsQuery(object):
                                
         self.footprintsFile = footprintsFile
         self.logger = logger
-        self.catalogID = None
+        self.catalogIDs = []
         self.maxScenes = None
         self.minOverlapInDegrees = 0.0
         self.pairsOnly = False
@@ -81,7 +81,7 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     def addCatalogID(self, catalogID):
         
-        self.catalogID = catalogID
+        self.catalogIDs.append(catalogID)
         
     #---------------------------------------------------------------------------
     # addEvhrScenes
@@ -143,7 +143,6 @@ class FootprintsQuery(object):
             if first:
 
                 first = False
-
                 whereClause += ' AND ('
                 
             else:
@@ -159,9 +158,26 @@ class FootprintsQuery(object):
             whereClause += ' AND (pairname IS NOT NULL)'
 
         # Add the catalog ID.
-        if self.catalogID:
-            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'     
+        # if self.catalogID:
+        #     whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'
+
+        first = True
+        
+        for catID in self.catalogIDs:
+            
+            if first:
+                
+                first = False
+                whereClause += ' AND ('
+            
+            else:
+                whereClause += ' OR '
+            
+            whereClause += 'CATALOG_ID=' "'" + catID + "'"
           
+        if not first:
+            whereClause += ')'
+
         return unicode(whereClause)
         
     #---------------------------------------------------------------------------
