@@ -165,6 +165,8 @@ class EvhrDemRetriever(GeoRetriever):
         if not pairsDict.has_key(pairName):
             pairsDict[pairName] = set
             
+        import pdb
+        pdb.set_trace()
         pairsDict[pairName].add(str(fpScene.fileName()))
         
     #---------------------------------------------------------------------------
