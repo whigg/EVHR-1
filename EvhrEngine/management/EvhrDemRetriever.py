@@ -59,97 +59,13 @@ class EvhrDemRetriever(GeoRetriever):
     def getEndPointSRSs(self, endPoint):
         return [GeoRetriever.GEOG_4326]
 
-    # #---------------------------------------------------------------------------
-    # # getPairs
-    # #---------------------------------------------------------------------------
-    # def getPairs(self, ulx, uly, lrx, lry, srs, request):
-    #
-    #     # Check if there are already scenes associated with this request.
-    #     evhrScenes = EvhrScene.objects.filter(request = request)
-    #     features = None
-    #     fpq = FootprintsQuery(logger=self.logger)
-    #     fpq.addAoI(ulx, uly, lrx, lry, srs)
-    #
-    #     if evhrScenes:
-    #
-    #         fpq.addEvhrScenes(evhrScenes)
-    #         fpScenes = fpq.getScenes()
-    #         self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
-    #
-    #     else:
-    #
-    #         if hasattr(settings, 'MAXIMUM_SCENES'):
-    #             fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
-    #
-    #         fpq.setPairsOnly()
-    #         fpScenes = fpq.getScenes()
-    #
-    #         for scene in fpScenes:
-    #
-    #             evhrScene = EvhrScene()
-    #             evhrScene.request = request
-    #             evhrScene.sceneFile = scene.fileName()
-    #             evhrScene.save()
-    #
-    #     # ---
-    #     # Now that dg_stereo.sh does not query redundantly, EDR must copy each
-    #     # pairs' files to the request directory for dg_stereo.sh to find them.
-    #     # The first step is to associate the pair name with its files.
-    #     # ---
-    #     pairs = {}
-    #
-    #     for fps in fpScenes:
-    #
-    #         pairName = fps.pairName()
-    #
-    #         if not pairs.has_key(pairName):
-    #             pairs[pairName] = []
-    #
-    #         pairs[pairName].append(fps.fileName())
-    #
-    #     # Ensure that each pair has its mates.
-    #     pairsWithMissingScenes = []
-    #
-    #     for pairName in pairs.iterkeys():
-    #
-    #         mates = pairName.split('_')[2:]
-    #
-    #         for mate in mates:
-    #
-    #             r = re.compile('.*' + mate + '.*')
-    #
-    #             if not (filter(r.match, pairs[pairName])):
-    #
-    #                 if self.logger:
-    #
-    #                     self.logger.warning('Pair ' +
-    #                                         pairName +
-    #                                         ' does not contain any scenes' +
-    #                                         ' for ' +
-    #                                         mate)
-    #
-    #                 pairsWithMissingScenes.append(pairName)
-    #                 continue
-    #
-    #     # Remove pairs without scenes for both mates.
-    #     for pair in pairsWithMissingScenes:
-    #         del pairs[pair]
-    #
-    #     if self.logger:
-    #
-    #         self.logger.info('There are ' + \
-    #                          str(len(pairs)) + \
-    #                          ' pairs amongst the input scenes.')
-    #
-    #     return pairs
-
     #---------------------------------------------------------------------------
     # _ingestScene
     #---------------------------------------------------------------------------
     def _ingestScene(self, fpScene, pairsDict, request):
         
         # Verify the scene exists on disk.
-        sceneOnDisk = os.path.exists(fpScene)
+        sceneOnDisk = os.path.exists(fpScene.fileName)
         
         # Add an EvhrScene, if it does not exist.
         try:
