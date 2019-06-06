@@ -96,9 +96,6 @@ class EvhrDemRetriever(GeoRetriever):
         if not pairsDict.has_key(pairName):
             pairsDict[pairName] = set()
             
-        import pdb
-        pdb.set_trace()
-            
         pairsDict[pairName].add(str(fpScene.fileName()))
         
     #---------------------------------------------------------------------------
@@ -198,13 +195,9 @@ class EvhrDemRetriever(GeoRetriever):
         # Copy the scenes to the working directory.
         for scene in fileList.items()[0][1]:
                 
-            try:
-                shutil.copy(scene, workDir)
-            except:
-                import pdb
-                pdb.set_trace()
-                print 'here'
-                
+            import pdb
+            pdb.set_trace()
+            shutil.copy(scene, workDir)
             xmlName = scene.replace('.ntf', '.xml')
             shutil.copy(xmlName, workDir)
         
