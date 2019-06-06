@@ -83,9 +83,6 @@ class EvhrDemRetriever(GeoRetriever):
 
         if not sceneOnDisk:
             
-            import pdb
-            pdb.set_trace()
-            
             if self.logger:
                 
                 self.logger.warning('Scene, ' + \
@@ -98,6 +95,9 @@ class EvhrDemRetriever(GeoRetriever):
         
         if not pairsDict.has_key(pairName):
             pairsDict[pairName] = set()
+            
+        import pdb
+        pdb.set_trace()
             
         pairsDict[pairName].add(str(fpScene.fileName()))
         
