@@ -148,9 +148,15 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def _ingestScene(self, fpScene, pairsDict, request):
         
+        # Verify the scene exists on disk.
+        sceneOnDisk = os.path.exists(scene)
+        
         # Add an EvhrScene, if it does not exist.
         try:
-            EvhrScene.objects.get(sceneFile=fpScene.fileName)
+            evhrScene = EvhrScene.objects.get(sceneFile=fpScene.fileName)
+            
+            if not sceneOnDisk:
+                evhrScene.delete()
             
         except EvhrScene.DoesNotExist:
             
@@ -159,6 +165,18 @@ class EvhrDemRetriever(GeoRetriever):
             evhrScene.sceneFile = fpScene.fileName()
             evhrScene.save()
 
+        if not sceneOnDisk:
+            
+            import pdb
+            pdb.set_trace()
+            
+            if self.logger:
+                
+                self.logger.warning('Scene, ' + \
+                                    str(fpScene) + \
+                                    ' is not on disk.')
+            return
+            
         # Aggregate the scene into the pairs.
         pairName = fpScene.pairName()
         
@@ -194,21 +212,6 @@ class EvhrDemRetriever(GeoRetriever):
             
             fpScenes = fpq.getScenes()
             
-        # ---
-        # Dg_stereo requires every scene for every strip associated with
-        # every pair.
-        # ---
-        # for fpScene in fpScenes:
-        #
-        #     self._ingestScene(fpScene, pairs, request)
-        #     catId1, catId2 = fpScene.getCatalogIDs()
-        #
-        #     catQuery = FootprintsQuery(logger=self.logger)
-        #     catQuery.addCatalogID(catId1)
-        #     catQuery.addCatalogID(catId2)
-        #     catScenes = catQuery.getScenes()
-        #     for scene in catScenes: self._ingestScene(scene, pairs, request)
-
         # ---
         # Collect all the catalog IDs, then perform one big query, with the
         # expectation that one big query is faster than many small ones.
@@ -279,12 +282,7 @@ class EvhrDemRetriever(GeoRetriever):
         # Copy the scenes to the working directory.
         for scene in fileList.items()[0][1]:
             
-            try:
-                shutil.copy(scene, workDir)
-            except:
-                import pdb
-                pdb.set_trace()
-                
+            shutil.copy(scene, workDir)
             xmlName = scene.replace('.ntf', '.xml')
             shutil.copy(xmlName, workDir)
         
