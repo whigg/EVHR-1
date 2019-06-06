@@ -197,12 +197,14 @@ class EvhrDemRetriever(GeoRetriever):
         
         # Copy the scenes to the working directory.
         for scene in fileList.items()[0][1]:
-            
-            if scene == '/att/pubrepo/NGA/WV01/1B/2015/050/WV01_102001003B709900_X1BS_500148818010_04/WV01_20150219051029_102001003B709900_15FEB19051029-P1BS_R4C1-500148818010_04_P001.ntf':
+                
+            try:
+                shutil.copy(scene, workDir)
+            except:
                 import pdb
                 pdb.set_trace()
+                print 'here'
                 
-            shutil.copy(scene, workDir)
             xmlName = scene.replace('.ntf', '.xml')
             shutil.copy(xmlName, workDir)
         
