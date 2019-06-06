@@ -252,14 +252,15 @@ class EvhrMosaicRetriever(GeoRetriever):
         sceneFiles = []
 
         if evhrScenes:
-
-            fpScenes = None
-            fpq = FootprintsQuery(logger=self.logger)
-            fpq.addAoI(ulx, uly, lrx, lry, srs)
-            fpq.addEvhrScenes(evhrScenes)
-            fpScenes = fpq.getScenes()
-            self.evhrHelper.checkForMissingScenes(fpScenes, evhrScenes)
-            sceneFiles = [fps.fileName() for fps in fpScenes]
+            for evhrScene in evhrScenes:
+                scenePath = evhrScene.sceneFile.name
+                if not os.path.isfile(scenePath):
+                    evhrScene.delete()
+                    if self.logger:
+                        msg = '{} does not exist in the filesystem'.format(scenePath)
+                        self.logger.warning(msg)
+                else:
+                    sceneFiles.append(scenePath)            
         
         else:
             
