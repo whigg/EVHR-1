@@ -149,7 +149,7 @@ class EvhrDemRetriever(GeoRetriever):
     def _ingestScene(self, fpScene, pairsDict, request):
         
         # Verify the scene exists on disk.
-        sceneOnDisk = os.path.exists(scene)
+        sceneOnDisk = os.path.exists(fpScene)
         
         # Add an EvhrScene, if it does not exist.
         try:
