@@ -195,8 +195,6 @@ class EvhrDemRetriever(GeoRetriever):
         # Copy the scenes to the working directory.
         for scene in fileList.items()[0][1]:
                 
-            import pdb
-            pdb.set_trace()
             shutil.copy(scene, workDir)
             xmlName = scene.replace('.ntf', '.xml')
             shutil.copy(xmlName, workDir)
