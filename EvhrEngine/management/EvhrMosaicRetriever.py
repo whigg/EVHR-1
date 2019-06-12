@@ -91,7 +91,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             raise RuntimeError('Retrieval SRS must be geographic.')
 
         # Ensure the ortho and toa directories exist.
-        self.stripDir = os.path.join(self.request.destination.name, '1-bands')
+        self.bandDir  = os.path.join(self.request.destination.name, '1-bands')
         self.stripDir = os.path.join(self.request.destination.name, '2-strips')
         self.demDir   = os.path.join(self.request.destination.name, '3-dems')
         self.orthoDir = os.path.join(self.request.destination.name, '4-orthos')
