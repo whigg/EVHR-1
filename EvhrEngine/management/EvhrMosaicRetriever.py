@@ -583,7 +583,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     def processStrip(self, stripBands, toaFinal):
 
         if self.logger:
-            self.logger.info('Processing strip {}'.format(stripName))
+            self.logger.info('Processing strip {}'.format(toaFinal))
 
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
