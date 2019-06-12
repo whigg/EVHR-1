@@ -96,9 +96,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         self.orthoDir = os.path.join(self.request.destination.name, '3-orthos')
         self.toaDir   = os.path.join(self.request.destination.name, '4-toas')
 
-        for d in [self.tileDir, self.bandDir, self.stripDir, self.demDir, \
-                                                   self.orthoDir, self.toaDir]:
-
+        for d in [self.stripDir, self.demDir, self.orthoDir, self.toaDir]:
             if not os.path.exists(d): os.mkdir(d)
             
     #---------------------------------------------------------------------------
