@@ -527,7 +527,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
 
-        # Return the list of band strips
+        # Return the list of band strips.
         return stripBandList
 
     #---------------------------------------------------------------------------
