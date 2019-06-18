@@ -521,9 +521,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                   ' --ignore-inconsistencies --output-prefix {} {}'. \
                   format(stripBandFile.replace('.r100.tif', ''), bandScenesStr)
 
-            sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-                                 True, self.maxProcesses != 1)
-                
+            # sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
+            #                      True, self.maxProcesses != 1)
+            os.system(cmd)
+            
             DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
 
