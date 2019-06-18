@@ -258,10 +258,10 @@ class EvhrMosaicRetriever(GeoRetriever):
             stripID = dgf.getStripName()
             constituentFileName = os.path.join(self.toaDir, stripID + '-toa.tif')
             
-            if not constituents.has_key(stripID):
+            if not constituents.has_key(constituentFileName):
                 constituents[stripID] = []
                 
-            constituents[stripID].append(scene)
+            constituents[stripID].append(constituentFileName)
             
         return constituents
     
