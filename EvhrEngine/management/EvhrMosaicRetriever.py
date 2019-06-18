@@ -280,7 +280,9 @@ class EvhrMosaicRetriever(GeoRetriever):
                        outFileName, \
                        ' '.join(bandFiles))
 
-        sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, True)
+        sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, 
+                             True, self.maxProcesses != 1)
+                             
         # for bandFile in bandFiles: os.remove(bandFile)
 
     #---------------------------------------------------------------------------
@@ -369,10 +371,10 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' --reverse-adjustment'
 
         sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True,
-                             True)
+                             self.maxProcesses != 1)
         
-        for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
-                                 os.remove(log) # remove dem_geoid log file
+        for log in glob.glob(os.path.join(self.demDir, '*log*.txt')):
+            os.remove(log) # remove dem_geoid log file
     
     #---------------------------------------------------------------------------
     # orthoOne
@@ -423,19 +425,19 @@ class EvhrMosaicRetriever(GeoRetriever):
                                  self.logger, 
                                  self.request, 
                                  True,
-                                 True)
+                                 self.maxProcesses != 1)
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
-                        --output-nodata-value {} -o {}'.format(orthoFileTemp,  \
+                        --output-nodata-value {} -o {}'.format(orthoFileTemp, 
                                             settings.NO_DATA_VALUE, orthoFile)
 
             sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,
                                  True, True)
 
             # Copy xml to accompany ortho file (needed for TOA)
-            shutil.copy(origDgFile.xmlFileName, \
-                                              orthoFile.replace('.tif', '.xml'))
+            shutil.copy(origDgFile.xmlFileName,
+                        orthoFile.replace('.tif', '.xml'))
 
             DgFile(orthoFile).setBandName(bandName)
 
@@ -478,8 +480,8 @@ class EvhrMosaicRetriever(GeoRetriever):
 
                 self.mergeBands(toaBands, toaFinal)
       
-                shutil.copy(DgFile(orthoBand).xmlFileName, \
-                                              toaFinal.replace('.tif', '.xml'))    
+                shutil.copy(DgFile(orthoBand).xmlFileName, 
+                            toaFinal.replace('.tif', '.xml'))    
                 #self.mergeBands(orthoBands, os.path.join(self.toaDir, bname)) # yujie
 
             except:
@@ -520,7 +522,7 @@ class EvhrMosaicRetriever(GeoRetriever):
                   format(stripBandFile.replace('.r100.tif', ''), bandScenesStr)
 
             sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-                                 True, False)
+                                 True, self.maxProcesses != 1)
                 
             DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
