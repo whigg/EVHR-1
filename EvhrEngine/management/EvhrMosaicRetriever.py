@@ -262,7 +262,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             if not constituents.has_key(constituentFileName):
                 constituents[constituentFileName] = []
                 
-            constituents[constituentFileName].append(constituentFileName)
+            constituents[constituentFileName].append(scene)
             
         return constituents
     
