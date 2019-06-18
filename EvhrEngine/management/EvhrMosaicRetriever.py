@@ -260,7 +260,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             constituentFileName = os.path.join(self.toaDir, stripID + '-toa.tif')
             
             if not constituents.has_key(constituentFileName):
-                constituents[stripID] = []
+                constituents[constituentFileName] = []
                 
             constituents[stripID].append(constituentFileName)
             
