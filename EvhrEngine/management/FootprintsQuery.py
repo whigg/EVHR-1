@@ -206,7 +206,9 @@ class FootprintsQuery(object):
             
             cmd += unicode(' -sql "select * from nga_inventory_canon ') + \
                    where + \
-                   unicode(' order by ACQ_DATE, S_FILEPATH"')
+                   # unicode(' order by S_FILEPATH"')
+                   # unicode(' order by ACQ_DATE, S_FILEPATH"') 2 seg fault
+                   unicode(' order by ACQ_DATE"')
         
         queryResult = tempfile.mkstemp()[1]
         cmd += ' "' + queryResult + '"  "' + self.footprintsFile + '" '
