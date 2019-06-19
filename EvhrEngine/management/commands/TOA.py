@@ -144,19 +144,6 @@ class TOA():
                     logger.error('TOA failed for {}'.format(orthoBandFile))
             
                 return None  
-
-            # status = os.system(cmd)
-            #
-            # if status != 0 or not os.path.exists(toaBandFile):
-            #
-            #     if logger:
-            #         logger.info('Command: ' + str(cmd))
-            #
-            #     else:
-            #         print 'Command: ' + str(cmd)
-            #
-            #     raise RuntimeError('ToA failed.')
-
            
         return toaBandFile
 
