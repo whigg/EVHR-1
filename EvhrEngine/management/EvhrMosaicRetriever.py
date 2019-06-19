@@ -148,40 +148,6 @@ class EvhrMosaicRetriever(GeoRetriever):
             os.remove(f)
             
     #---------------------------------------------------------------------------
-    # extractBands
-    #
-    # retrieveOne -> processScene -> extractBands (multispectral only)
-    #---------------------------------------------------------------------------
-    def extractBands(self, nitfFile):
-
-        if self.logger:
-            self.logger.info('Extracting bands from ' + str(nitfFile.fileName))
-
-        # Get the bands to use.
-        bands = ['BAND_P'] if nitfFile.isPanchromatic() else \
-                ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
-
-        # Extract the bands.
-        bandFiles = []
-
-        for band in bands:
-
-            bandFileName = nitfFile.getBand(self.bandDir, band)
-
-            if bandFileName:
-                
-                bandFiles.append(bandFileName)
-
-            else:
-                
-                self.logger.error('Unable to extract band '  + \
-                                  str(band)                  + \
-                                  ' from '                   + \
-                                  nitfFile.fileName)
-                
-        return bandFiles
-
-    #---------------------------------------------------------------------------
     # getEndPointSRSs
     #---------------------------------------------------------------------------
     def getEndPointSRSs(self, endPoint):
@@ -289,7 +255,7 @@ class EvhrMosaicRetriever(GeoRetriever):
         sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, 
                              True, self.maxProcesses != 1)
                              
-        # for bandFile in bandFiles: os.remove(bandFile)
+        for bandFile in bandFiles: os.remove(bandFile)
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -469,10 +435,7 @@ class EvhrMosaicRetriever(GeoRetriever):
             try:
 
                 toaBands = []
-                #orthoBands = [] # temp-yujie
                 
-                # import pdb
-                # pdb.set_trace()
                 for stripBand in stripBands:
 
                     dgStrip = DgFile(stripBand)
@@ -488,7 +451,6 @@ class EvhrMosaicRetriever(GeoRetriever):
       
                 shutil.copy(DgFile(orthoBand).xmlFileName, 
                             toaFinal.replace('.tif', '.xml'))    
-                #self.mergeBands(orthoBands, os.path.join(self.toaDir, bname)) # yujie
 
             except:
                 pass
