@@ -59,6 +59,8 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
+    MAXIMUM_SCENES = 100
+    
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
@@ -212,9 +214,12 @@ class EvhrMosaicRetriever(GeoRetriever):
             fpq.addAoI(ulx, uly, lrx, lry, srs)
             fpq.setMinimumOverlapInDegrees()
 
+            maxScenes = EvhrMosaicRetriever.MAXIMUM_SCENES
+            
             if hasattr(settings, 'MAXIMUM_SCENES'):
-                fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
-
+                maxScenes = min(maxScenes, settings.MAXIMUM_SCENES)
+                
+            fpq.setMaximumScenes(maxScenes)
             fpScenes = fpq.getScenes()
             
             for scene in fpScenes:
