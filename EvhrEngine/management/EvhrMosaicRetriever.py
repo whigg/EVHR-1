@@ -217,9 +217,8 @@ class EvhrMosaicRetriever(GeoRetriever):
                                 self.retrievalLry,
                                 self.retrievalSRS)
 
-        if not scenes:
-            if self.logger:
-                self.logger.error('There were no level 1B scenes.')
+        if not scenes and self.logger:
+            self.logger.error('There were no level 1B scenes.')
 
         # Aggregate the scenes into strips.
         constituents = {}
