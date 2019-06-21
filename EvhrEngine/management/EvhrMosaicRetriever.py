@@ -1,5 +1,5 @@
 
-from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetrieter
+from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetriever
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
