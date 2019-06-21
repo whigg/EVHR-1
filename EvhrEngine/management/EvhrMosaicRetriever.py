@@ -28,7 +28,7 @@ from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrMosaicRetriever
-# maggieRoger
+# 
 # SRSs
 # - requestSRS: as usual, whatever the user chooses
 # - outSRS: this must be UTM, regardless of what the user chooses
@@ -59,6 +59,8 @@ from EvhrEngine.models import EvhrScene
 #-------------------------------------------------------------------------------
 class EvhrMosaicRetriever(GeoRetriever):
 
+    MAXIMUM_SCENES = 100
+    
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
@@ -91,39 +93,16 @@ class EvhrMosaicRetriever(GeoRetriever):
             raise RuntimeError('Retrieval SRS must be geographic.')
 
         # Ensure the ortho and toa directories exist.
-        self.tileDir  = os.path.join(self.request.destination.name, '1-tiles')
-        self.bandDir  = os.path.join(self.request.destination.name, '2-bands')
-        self.stripDir = os.path.join(self.request.destination.name, '3-strips')
-        self.demDir   = os.path.join(self.request.destination.name, '4-dems')
-        self.orthoDir = os.path.join(self.request.destination.name, '5-orthos')
-        self.toaDir   = os.path.join(self.request.destination.name, '6-toas')
+        self.bandDir  = os.path.join(self.request.destination.name, '1-bands')
+        self.stripDir = os.path.join(self.request.destination.name, '2-strips')
+        self.demDir   = os.path.join(self.request.destination.name, '3-dems')
+        self.orthoDir = os.path.join(self.request.destination.name, '4-orthos')
+        self.toaDir   = os.path.join(self.request.destination.name, '5-toas')
 
-        for d in [self.tileDir, self.bandDir, self.stripDir, self.demDir, \
-                                                   self.orthoDir, self.toaDir]:
-
+        for d in [self.bandDir, self.stripDir, self.demDir, self.orthoDir, 
+                  self.toaDir]:
             if not os.path.exists(d): os.mkdir(d)
             
-    #---------------------------------------------------------------------------
-    # compress
-    #
-    # retrieveOne -> processScene -> compress
-    #---------------------------------------------------------------------------
-    # def compress(self, orthoBand):
-    #
-    #     if self.logger:
-    #         self.logger.info('Compressing ' + orthoBand)
-    #
-    #     # To compress in place, copy the input file to a temporary file.
-    #     tempBandFile = tempfile.mkstemp()[1]
-    #     shutil.move(orthoBand, tempBandFile)
-    #
-    #     cmd = 'gdal_translate -q -ot Int16 -co COMPRESS=LZW' + \
-    #           ' -co BIGTIFF=YES'                             + \
-    #           ' ' + tempBandFile                             + \
-    #           ' ' + orthoBand
-    #
-    #     sCmd = SystemCommand(cmd, orthoBand, self.logger, self.request, True)
-
     #---------------------------------------------------------------------------
     # createDemForOrthos
     #
@@ -157,40 +136,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         return demName
 
     #---------------------------------------------------------------------------
-    # createEmptyTile
-    #---------------------------------------------------------------------------
-    def createEmptyTile(self, tileGeometry, srs, tileNum):
-
-        ulx = tileGeometry.GetGeometryRef(0).GetPoint(0)[0]
-        uly = tileGeometry.GetGeometryRef(0).GetPoint(0)[1]
-        lrx = tileGeometry.GetGeometryRef(0).GetPoint(2)[0]
-        lry = tileGeometry.GetGeometryRef(0).GetPoint(2)[1]
-
-        tileName = os.path.join(self.tileDir, 'tile' + str(tileNum) + '.tif')
-
-        height = 1  # Choose a nominal height and width.  All we really
-        width  = 1  # need is the extent and file name of this tile tif.
-        driver = gdal.GetDriverByName('GTiff')
-        ds     = driver.Create(tileName, width, height)
-
-        if not ds:
-            raise RuntimeError('Unable to open ' + str(tileName))
-
-        ds.SetProjection(srs.ExportToWkt())
-
-        rotation = 0
-        xRes = lrx - ulx
-        yRes = (uly - lry) * -1.0
-
-        ds.SetGeoTransform([ulx, xRes, rotation, uly, rotation, yRes])
-        raster = numpy.zeros((height, width), dtype = numpy.uint8)
-
-        ds.GetRasterBand(1).WriteArray(raster)
-        ds = None
-
-        return tileName
-
-    #---------------------------------------------------------------------------
     # deleteFiles
     #---------------------------------------------------------------------------
     def deleteFiles(self, deleteDir):
@@ -202,40 +147,6 @@ class EvhrMosaicRetriever(GeoRetriever):
         for f in files:
             os.remove(f)
             
-    #---------------------------------------------------------------------------
-    # extractBands
-    #
-    # retrieveOne -> processScene -> extractBands (multispectral only)
-    #---------------------------------------------------------------------------
-    def extractBands(self, nitfFile):
-
-        if self.logger:
-            self.logger.info('Extracting bands from ' + str(nitfFile.fileName))
-
-        # Get the bands to use.
-        bands = ['BAND_P'] if nitfFile.isPanchromatic() else \
-                ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
-
-        # Extract the bands.
-        bandFiles = []
-
-        for band in bands:
-
-            bandFileName = nitfFile.getBand(self.bandDir, band)
-
-            if bandFileName:
-                
-                bandFiles.append(bandFileName)
-
-            else:
-                
-                self.logger.error('Unable to extract band '  + \
-                                  str(band)                  + \
-                                  ' from '                   + \
-                                  nitfFile.fileName)
-                
-        return bandFiles
-
     #---------------------------------------------------------------------------
     # getEndPointSRSs
     #---------------------------------------------------------------------------
@@ -269,9 +180,12 @@ class EvhrMosaicRetriever(GeoRetriever):
             fpq.addAoI(ulx, uly, lrx, lry, srs)
             fpq.setMinimumOverlapInDegrees()
 
+            maxScenes = EvhrMosaicRetriever.MAXIMUM_SCENES
+            
             if hasattr(settings, 'MAXIMUM_SCENES'):
-                fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
-
+                maxScenes = min(maxScenes, settings.MAXIMUM_SCENES)
+                
+            fpq.setMaximumScenes(maxScenes)
             fpScenes = fpq.getScenes()
             
             for scene in fpScenes:
@@ -284,10 +198,14 @@ class EvhrMosaicRetriever(GeoRetriever):
             sceneFiles = [fps.fileName() for fps in fpScenes]
                 
         sceneFiles.sort()
+        
         return sceneFiles
         
     #---------------------------------------------------------------------------
     # listConstituents
+    #
+    # Constituent:  ToA strip
+    # Files:  scenes
     #---------------------------------------------------------------------------
     def listConstituents(self):
 
@@ -298,91 +216,26 @@ class EvhrMosaicRetriever(GeoRetriever):
                                 self.retrievalLrx,
                                 self.retrievalLry,
                                 self.retrievalSRS)
-        
-        if not scenes:
-            if self.logger:
-                self.logger.error('There were no level 1B scenes.')
-                
-        #---
-        # Create a polygon for each scene.  They are used to test for
-        # intersection below.
-        #---
-        sceneGeoms = {}
+
+        if not scenes and self.logger:
+            self.logger.error('There were no level 1B scenes.')
+
+        # Aggregate the scenes into strips.
+        constituents = {}
         
         for scene in scenes:
-        
-            try:
-                dg = DgFile(scene, self.logger)
-                
-            except Exception, e:
-                
-                err             = EvhrError()
-                err.request     = self.request
-                err.inputFile   = scene
-                err.errorOutput = traceback.format_exc()
-                err.save()
-                
-                continue
-                
-            geom = self.bBoxToPolygon(dg.ulx, dg.uly, dg.lrx, dg.lry,dg.srs)
-            sceneGeoms[scene] = geom
-                
-        # Define the tiles.
-        tiler = TilerHalfDegree(self.retrievalUlx,
-                                self.retrievalUly,
-                                self.retrievalLrx,
-                                self.retrievalLry,
-                                self.retrievalSRS, 
-                                self.logger)
-
-        grid  = tiler.defineGrid()
-        tiles = tiler.gridToPolygons(grid)
-        
-        # Tiles + scenes = constituents.
-        constituents = {}
-        tileNum = 0
-        
-        for tile in tiles:
             
-            tileNum += 1
-            tileFile = self.createEmptyTile(tile, self.retrievalSRS, tileNum)
-            constituents[tileFile] = []
+            dgf = DgFile(scene, self.logger)
+            stripID = dgf.getStripName()
+            constituentFileName = os.path.join(self.toaDir, stripID + '-toa.tif')
             
-            for scene in scenes:
+            if not constituents.has_key(constituentFileName):
+                constituents[constituentFileName] = []
                 
-                # Scenes could be rejected due to missing information.
-                if not scene in sceneGeoms:
-                    continue
-                    
-                if not tile.GetSpatialReference(). \
-                       IsSame(sceneGeoms[scene].GetSpatialReference()):
-                        
-                    if self.logger:
-                        msg = 'Scene {} SRS is different from tile SRS'.format(scene)
-                        self.logger.warning(msg)                    
-                    continue
-                   
-                if tile.Intersects(sceneGeoms[scene]):
-                    
-                    constituents[tileFile].append(scene)
-                    
-                    if hasattr(settings, 'MAX_SCENES_PER_TILE') and \
-                       len(constituents[tileFile]) >= \
-                           settings.MAX_SCENES_PER_TILE:
-                        
-                           break
-                    
-            # Ensure the tile has scenes covering it. If it doesn't, delete
-            if not constituents[tileFile]:
-                
-                if self.logger:
-                    msg = 'There were no scenes covering tile {}'.format(tile)
-                    self.logger.warning(msg)   
-
-                del constituents[tileFile]
-
+            constituents[constituentFileName].append(scene)
+            
         return constituents
-        
+    
     #---------------------------------------------------------------------------
     # mergeBands
     #---------------------------------------------------------------------------
@@ -398,8 +251,10 @@ class EvhrMosaicRetriever(GeoRetriever):
                        outFileName, \
                        ' '.join(bandFiles))
 
-        sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, True)
-        # for bandFile in bandFiles: os.remove(bandFile)
+        sCmd = SystemCommand(cmd, outFileName, self.logger, self.request, 
+                             True, self.maxProcesses != 1)
+                             
+        for bandFile in bandFiles: os.remove(bandFile)
 
     #---------------------------------------------------------------------------
     # mosaicAndClipDemTiles
@@ -487,10 +342,10 @@ class EvhrMosaicRetriever(GeoRetriever):
               ' --reverse-adjustment'
 
         sCmd = SystemCommand(cmd, outDemName, self.logger, self.request, True,
-                             True)
+                             self.maxProcesses != 1)
         
-        for log in glob.glob(os.path.join(self.demDir, '*log*.txt')): \
-                                 os.remove(log) # remove dem_geoid log file
+        for log in glob.glob(os.path.join(self.demDir, '*log*.txt')):
+            os.remove(log) # remove dem_geoid log file
     
     #---------------------------------------------------------------------------
     # orthoOne
@@ -541,19 +396,19 @@ class EvhrMosaicRetriever(GeoRetriever):
                                  self.logger, 
                                  self.request, 
                                  True,
-                                 True)
+                                 self.maxProcesses != 1)
 
             # Convert NoData to settings value, set output type to Int16
             cmd = '/opt/StereoPipeline/bin/image_calc -c "var_0" {} -d int16   \
-                        --output-nodata-value {} -o {}'.format(orthoFileTemp,  \
+                        --output-nodata-value {} -o {}'.format(orthoFileTemp, 
                                             settings.NO_DATA_VALUE, orthoFile)
 
             sCmd = SystemCommand(cmd, orthoFile, self.logger, self.request,
                                  True, True)
 
             # Copy xml to accompany ortho file (needed for TOA)
-            shutil.copy(origDgFile.xmlFileName, \
-                                              orthoFile.replace('.tif', '.xml'))
+            shutil.copy(origDgFile.xmlFileName,
+                        orthoFile.replace('.tif', '.xml'))
 
             DgFile(orthoFile).setBandName(bandName)
 
@@ -567,18 +422,10 @@ class EvhrMosaicRetriever(GeoRetriever):
     # unclipped.  Only the final orthorectified image is clipped in mergeBands
     # or compress. 
     #---------------------------------------------------------------------------
-    def processStrip(self, stripName, stripBands, tileName):
+    def processStrip(self, stripBands, toaFinal):
 
         if self.logger:
-            self.logger.info('Processing strip {}'.format(stripName))
-
-        # Get the output name to see if it exists.
-        bname = '{}-ortho.tif'.format(stripName)
-        
-        toaFinal = os.path.join(self.toaDir, 
-                                'EVHR_{}_{}'.format(tileName,
-                                                    bname.replace ('-ortho.tif', 
-                                                                   '-TOA.tif')))
+            self.logger.info('Processing strip {}'.format(toaFinal))
 
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
@@ -587,15 +434,8 @@ class EvhrMosaicRetriever(GeoRetriever):
             try:
 
                 toaBands = []
-                #orthoBands = [] # temp-yujie
                 
-                # import pdb
-                # pdb.set_trace()
                 for stripBand in stripBands:
-
-                    # if 'tile2_WV02_20130629_M1BS_10300100252A8800_BAND_R_19903' in stripBand:
-                    # import pdb
-                    # pdb.set_trace()
 
                     dgStrip = DgFile(stripBand)
                     orthoBand = self.orthoOne(stripBand, dgStrip)
@@ -608,14 +448,11 @@ class EvhrMosaicRetriever(GeoRetriever):
 
                 self.mergeBands(toaBands, toaFinal)
       
-                shutil.copy(DgFile(orthoBand).xmlFileName, \
-                                              toaFinal.replace('.tif', '.xml'))    
-                #self.mergeBands(orthoBands, os.path.join(self.toaDir, bname)) # yujie
+                shutil.copy(DgFile(orthoBand).xmlFileName, 
+                            toaFinal.replace('.tif', '.xml'))    
 
             except:
                 pass
-
-        return toaFinal
 
     #---------------------------------------------------------------------------
     # scenesToStrips()
@@ -623,7 +460,7 @@ class EvhrMosaicRetriever(GeoRetriever):
     # Takes a list of scenes belonging to a strip and mosaics the scenes
     # together with dg_mosaic
     #---------------------------------------------------------------------------
-    def scenesToStrip(self, stripName, stripScenes, tileName):
+    def scenesToStrip(self, stripName, stripScenes):
 
         if self.logger:
             self.logger.info('Extracting bands and mosaicking to strips for' + \
@@ -642,78 +479,34 @@ class EvhrMosaicRetriever(GeoRetriever):
                          for scene in stripScenes]
  
             bandScenesStr = ' '.join(bandScenes)
-            randomTag = random.randint(0, 1000000)
 
             stripBandFile = os.path.join(self.stripDir, 
-                                         '{}_{}_{}_{}.r100.tif'.format(tileName, 
-                                                                    stripName, 
-                                                                    bandName,
-                                                                    randomTag))
+                                         '{}_{}.r100.tif'.format(stripName, 
+                                                                 bandName))
 
             cmd = '/opt/StereoPipeline/bin/dg_mosaic --output-nodata-value 0' +\
                   ' --ignore-inconsistencies --output-prefix {} {}'. \
                   format(stripBandFile.replace('.r100.tif', ''), bandScenesStr)
 
-            #---
-            # There is a race condition when a scene is used in multiple tiles.
-            # Both tile processes can run this dg_mosaic simultaneously on the
-            # same output file, causing corruption.
-            #
-            # sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-            #                      True, True)
-            #---
             sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-                                 True)
-                
+                                 True, self.maxProcesses != 1)
+            
             DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
 
-        # Return the list of band strips
+        # Return the list of band strips.
         return stripBandList
 
     #---------------------------------------------------------------------------
     # retrieveOne
-    #
-    # This receives a 1/2 degree tile file and the list of NITF files that
-    # intersect it.  The NITF files have not been clipped.
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
-        
-        #---
-        # Mosaic scenes into strips, orthorectify the full strip, clip to the 
-        # half-degree-square tile, and covert to Geotiff.
-        #---
 
-        completedStrips = []
-        
-        # Get list of unique strip names for scenes in AOI
-        stripNameList = list(set([DgFile(scene).getStripName() \
-                                  for scene in fileList]))
-
-        tileName = \
-                os.path.splitext(os.path.basename(constituentFileName))[0]
-
-        # For each strip, extract bands --> mosaic, ortho, toa each band
-        for stripName in stripNameList:
-
-            stripScenes = [scene for scene in fileList \
-                           if DgFile(scene).getStripName() == stripName]
-
-            stripBandList = self.scenesToStrip(stripName, stripScenes, 
-                                                             tileName)
-            
-            completedStrips.append(self.processStrip(stripName, 
-                                                     stripBandList,
-                                                     tileName))
-        
-        # self.deleteFiles(self.bandDir)
+        stripName = DgFile(fileList[0], self.logger).getStripName()
+        stripBandList = self.scenesToStrip(stripName, fileList)
+        self.processStrip(stripBandList, constituentFileName)
         # self.deleteFiles(self.stripDir)
         # self.deleteFiles(self.demDir)
         # self.deleteFiles(self.orthoDir)
- 
-        # Mosaic the scenes into a single file.
         
-        # Transform the mosaic into the output SRS.
-        
-        return completedStrips[0]
-
+        return constituentFileName

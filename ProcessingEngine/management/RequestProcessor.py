@@ -97,7 +97,10 @@ class RequestProcessor():
             # you are asking MODIS to work out of multiple FTP directories
             # from a single connection.
             #---
-            maxRunning = max(self.retriever.maxProcesses, self.numProcs)
+            maxRunning = min(self.retriever.maxProcesses, self.numProcs)
+
+            if hasattr(settings, 'MAXIMUM_PROCESSES'):
+                maxRunning = min(maxRunning, settings.MAXIMUM_PROCESSES)
 
             #---
             # Activate the constituent processors using distributed processing.
