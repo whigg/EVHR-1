@@ -67,7 +67,7 @@ class EvhrToaRetriever(GeoRetriever):
         request.save(update_fields = ['outSRS'])
 
         # Initialize the base class.
-        super(EvhrMosaicRetriever, self).__init__(request, logger, numProcesses)
+        super(EvhrToaRetriever, self).__init__(request, logger, numProcesses)
 
         #---
         # GeoRetriever should always choose EPSG:4326 as the retrieval SRS
