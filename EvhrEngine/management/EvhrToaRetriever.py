@@ -167,7 +167,7 @@ class EvhrToaRetriever(GeoRetriever):
             fpq.addAoI(ulx, uly, lrx, lry, srs)
             fpq.setMinimumOverlapInDegrees()
 
-            maxScenes = EvhrMosaicRetriever.MAXIMUM_SCENES
+            maxScenes = EvhrToaRetriever.MAXIMUM_SCENES
             
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 maxScenes = min(maxScenes, settings.MAXIMUM_SCENES)
