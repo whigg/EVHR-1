@@ -1,5 +1,6 @@
 import os
 
+from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetriever
 
 #-------------------------------------------------------------------------------
