@@ -175,7 +175,7 @@ class EvhrToaRetriever(GeoRetriever):
             fpq.setMaximumScenes(maxScenes)
             if not useMultispectral: fpq.setMultispectralOff()
             if not usePanchromatic: fpq.setPanchromaticOff()
-            fpq.addSensors(runSensors)
+            fpq.addSensors(sensors)
             fpScenes = fpq.getScenes()
             
             for scene in fpScenes:
