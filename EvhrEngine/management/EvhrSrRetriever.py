@@ -75,6 +75,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 
             constituents[srName].append(toas[toa])
             
+        print constituents
         return constituents
 
     #---------------------------------------------------------------------------
