@@ -79,5 +79,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
-        pass
+        stripName = DgFile(fileList[0], self.logger).getStripName()
+        stripBandList = self.scenesToStrip(stripName, fileList)
+        self.processStrip(stripBandList, toaName)
         
