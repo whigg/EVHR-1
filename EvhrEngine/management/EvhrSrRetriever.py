@@ -58,9 +58,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
             toaName = os.path.join(self.toaDir, stripID + '-toa.tif')
 
             if not toas.has_key(toaName):
-                toa[toaName] = []
+                toas[toaName] = []
                 
-            toa[toaName].append(scene)
+            toas[toaName].append(scene)
             
         # Aggregate the ToAs into SRs.
         constituents = {}
