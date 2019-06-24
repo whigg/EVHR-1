@@ -140,13 +140,16 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
-    def getScenes(self, request, ulx, uly, lrx, lry, srs):
+    def getScenes(self, request, ulx, uly, lrx, lry, srs, \
+                  useMultispectral=True, usePanchromatic=True, \
+                  sensors=FootprintsQuery.RUN_SENSORS):
 
         # Check if there are already scenes associated with this request.
         evhrScenes = EvhrScene.objects.filter(request = request)
         sceneFiles = []
 
         if evhrScenes:
+            
             for evhrScene in evhrScenes:
                 scenePath = evhrScene.sceneFile.name
                 if not os.path.isfile(scenePath):
@@ -155,7 +158,7 @@ class EvhrToaRetriever(GeoRetriever):
                         msg = '{} does not exist in the filesystem'.format(scenePath)
                         self.logger.warning(msg)
                 else:
-                    sceneFiles.append(scenePath)            
+                    sceneFiles.append(scenePath)
         
         else:
             
@@ -170,6 +173,9 @@ class EvhrToaRetriever(GeoRetriever):
                 maxScenes = min(maxScenes, settings.MAXIMUM_SCENES)
                 
             fpq.setMaximumScenes(maxScenes)
+            if not useMultispectral: fpq.setMultispectralOff()
+            if not usePanchromatic: fpq.setPanchromaticOff()
+            fpq.addSensors(runSensors)
             fpScenes = fpq.getScenes()
             
             for scene in fpScenes:
@@ -494,3 +500,4 @@ class EvhrToaRetriever(GeoRetriever):
         # self.deleteFiles(self.orthoDir)
         
         return constituentFileName
+
