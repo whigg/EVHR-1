@@ -75,7 +75,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 
             fpq.setMaximumScenes(maxScenes)
             fpScenes = fpq.getScenes()
-            self._fpScenesToEvhrScenes(fpScenes()
+            self._fpScenesToEvhrScenes(fpScenes)
             sceneFiles = [fps.fileName() for fps in fpScenes]
                 
         sceneFiles.sort()
