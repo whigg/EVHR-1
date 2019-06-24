@@ -48,7 +48,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     if self.logger:
                         self.logger.warning('Scene ' + \
                                             sceneFile.fileName + \
-                                            ' is being skipped because' + \)
+                                            ' is being skipped because' + \
                                             ' it is panchromatic.')
                                             
                 if dgf.sensor() != 'WV02' and dgf.sensor() != 'WV03':
@@ -56,7 +56,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     if self.logger:
                         self.logger.warning('Scene ' + \
                                             sceneFile.fileName + \
-                                            ' is being skipped because' + \)
+                                            ' is being skipped because' + \
                                             ' it is not WV02 or WV03.')
                                             
         else:
