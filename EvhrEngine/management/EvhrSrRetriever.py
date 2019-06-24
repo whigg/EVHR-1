@@ -69,11 +69,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             toaBaseName = os.path.basename(toa).replace('-toa', '')
             srName = os.path.join(self.srDir, toaBaseName)
-
-            if not constituents.has_key(srName):
-                constituents[srName] = []
-                
-            constituents[srName].append(toas[toa])
+            constituents[srName] = toas[toa]
             
         print constituents
         return constituents
