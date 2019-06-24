@@ -39,6 +39,9 @@ class FootprintsQuery(object):
         self.pairsOnly = False
         self.scenes = []
         self.sensors = []
+
+        self.useMultispectral = True
+        self.usePanchromatic = True
         
         self.ulx = None
         self.uly = None
@@ -119,8 +122,9 @@ class FootprintsQuery(object):
         
         # Add sensor list.
         first = True
-
-        for sensor in FootprintsQuery.RUN_SENSORS:
+        sensors = self.sensors if self.sensors else FootprintsQuery.RUN_SENSORS
+        
+        for sensor in sensors:
 
             if first:
 
@@ -160,8 +164,15 @@ class FootprintsQuery(object):
 
         # Add the catalog ID.
         if self.catalogID:
-            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'     
+            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'   
+            
+        # Set panchromatic or multispectral.
+        if not self.usePanchromatic:
+            whereClause += ' AND (SPEC_TYPE <> "Multispectral" )'  
           
+        if not self.useMultispectral:
+            whereClause += ' AND (SPEC_TYPE <> "Panchromatic")'
+
         return unicode(whereClause)
         
     #---------------------------------------------------------------------------
@@ -243,3 +254,18 @@ class FootprintsQuery(object):
     def setPairsOnly(self, pairsOnly = True):
         
         self.pairsOnly = pairsOnly
+
+    #---------------------------------------------------------------------------
+    # setPanchromaticOff
+    #---------------------------------------------------------------------------
+    def setPanchromaticOff(self):
+        
+        self.usePanchromatic = False
+        
+    #---------------------------------------------------------------------------
+    # setMultispectralOff
+    #---------------------------------------------------------------------------
+    def setMultispectralOff(self):
+        
+        self.useMultispectral = False
+        
