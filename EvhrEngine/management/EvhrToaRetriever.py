@@ -508,10 +508,10 @@ class EvhrToaRetriever(GeoRetriever):
               
                 evhrScene.delete()
              
-            if self.logger:
+                if self.logger:
               
-                msg = '{} does not exist in the filesystem'.format(scenePath)
-                self.logger.warning(msg)
+                    msg = '{} does not exist in the filesystem'.format(scenePath)
+                    self.logger.warning(msg)
                   
             else:
                 sceneFiles.append(scenePath)
