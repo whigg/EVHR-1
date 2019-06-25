@@ -139,7 +139,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
         
-        toaName = os.path.join(self.toaPath, 
+        toaName = os.path.join(self.toaDir, 
                                os.path.basename(constituentFileName))
         
         self.processStrip(stripBandList, toaName)
