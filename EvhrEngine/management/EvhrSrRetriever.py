@@ -2,6 +2,7 @@ import os
 
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetriever
+from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
