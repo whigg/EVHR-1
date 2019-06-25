@@ -168,10 +168,10 @@ class FootprintsQuery(object):
             
         # Set panchromatic or multispectral.
         if not self.usePanchromatic:
-            whereClause += ' AND (SPEC_TYPE <> "Multispectral" )'  
+            whereClause += ' AND (SPEC_TYPE <> "Panchromatic" )'  
           
         if not self.useMultispectral:
-            whereClause += ' AND (SPEC_TYPE <> "Panchromatic")'
+            whereClause += ' AND (SPEC_TYPE <> "Multispectral")'
 
         return unicode(whereClause)
         
