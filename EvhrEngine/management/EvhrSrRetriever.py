@@ -1,5 +1,7 @@
 import os
 
+from django.conf import settings
+
 from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetriever
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
