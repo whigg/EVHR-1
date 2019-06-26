@@ -148,11 +148,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # self.processStrip(stripBandList, toaName)
         
         # Create the input file for the SR process.
-        srInputFileName = os.path.join(self.srDir, 'srInput.txt')
+        consBase = os.path.basename(constituentFileName)
+        srInputFileName = os.path.join(self.srDir, consBase + '-srInput.txt')
         print srInputFileName
 
-        with open(srInputFileName, 'aw+') as f:
-
+        with open(srInputFileName, 'w+') as f:
             for toaFile in fileList:
                 f.write(os.path.basename(toaFile).split('-')[0] + '\n')
             
