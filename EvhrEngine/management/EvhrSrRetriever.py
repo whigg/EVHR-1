@@ -134,7 +134,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 toaBaseName = os.path.basename(toa).replace('-toa', '')
                 srName = os.path.join(self.srDir, toaBaseName)
                 constituents[srName] = toas[toa]
-                f.write(os.path.basename(toaBaseName) + '\n')
+                f.write(os.path.splitext(os.path.basename(toaBaseName))[0]+'\n')
 
         return constituents
 
