@@ -136,21 +136,21 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def retrieveOne(self, constituentFileName, fileList):
 
         # Create the ToA.
-        stripName = DgFile(fileList[0], self.logger).getStripName()
-        stripBandList = self.scenesToStrip(stripName, fileList)
-        
-        toaName = os.path.join(self.toaDir, 
-                               os.path.basename(constituentFileName))
+        # stripName = DgFile(fileList[0], self.logger).getStripName()
+        # stripBandList = self.scenesToStrip(stripName, fileList)
+        #
+        # toaName = os.path.join(self.toaDir,
+        #                        os.path.basename(constituentFileName))
         
         self.processStrip(stripBandList, toaName)
         
         # Create the input file for the SR process.
-        # srInputFileName = os.path.join(self.srPath, 'srInput.txt')
-        #
-        # with open(srInputFileName, 'w') as f:
-        #
-        #     for toaFile in fileList:
-        #         f.write(toaFile.split('-')[0])
+        srInputFileName = os.path.join(self.srPath, 'srInput.txt')
+
+        with open(srInputFileName, 'w') as f:
+
+            for toaFile in fileList:
+                f.write(toaFile.split('-')[0])
             
             
         
