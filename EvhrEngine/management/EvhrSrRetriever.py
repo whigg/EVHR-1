@@ -151,7 +151,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         srInputFileName = os.path.join(self.srDir, 'srInput.txt')
         print srInputFileName
 
-        with open(srInputFileName, 'w+') as f:
+        with open(srInputFileName, 'aw+') as f:
 
             for toaFile in fileList:
                 f.write(toaFile.split('-')[0])
