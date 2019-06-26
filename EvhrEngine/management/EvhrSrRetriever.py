@@ -122,15 +122,20 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 
             toas[toaName].append(scene)
             
-        # Aggregate the ToAs into SRs.
+        # Aggregate the ToAs into SRs and create the SR input file.
         constituents = {}
-        
-        for toa in toas:
+        srInputFileName = os.path.join(self.srDir, 'srInput.txt')
+        print srInputFileName
+
+        with open(srInputFileName, 'aw+') as f:
             
-            toaBaseName = os.path.basename(toa).replace('-toa', '')
-            srName = os.path.join(self.srDir, toaBaseName)
-            constituents[srName] = toas[toa]
-            
+            for toa in toas:
+                
+                toaBaseName = os.path.basename(toa).replace('-toa', '')
+                srName = os.path.join(self.srDir, toaBaseName)
+                constituents[srName] = toas[toa]
+                f.write(os.path.basename(toaBaseName) + '\n')
+
         return constituents
 
     #---------------------------------------------------------------------------
@@ -147,14 +152,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         #
         # self.processStrip(stripBandList, toaName)
         
-        # Create the input file for the SR process.
-        consBase = os.path.basename(constituentFileName)
-        srInputFileName = os.path.join(self.srDir, consBase + '-srInput.txt')
-        print srInputFileName
-
-        with open(srInputFileName, 'w+') as f:
-            for toaFile in fileList:
-                f.write(os.path.basename(toaFile).split('-')[0] + '\n')
             
             
         
