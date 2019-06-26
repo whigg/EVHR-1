@@ -21,6 +21,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         super(EvhrSrRetriever, self).__init__(request, logger, numProcesses)
 
         self.srDir = os.path.join(self.request.destination.name, '6-sr')
+        
+        if not os.path.exists(self.srDir):
+            os.mkdir(self.srDir)
 
     #---------------------------------------------------------------------------
     # aggregate
