@@ -147,7 +147,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # Create the input file for the SR process.
         srInputFileName = os.path.join(self.srDir, 'srInput.txt')
 
-        with open(srInputFileName, 'w') as f:
+        with open(srInputFileName, 'w+') as f:
 
             for toaFile in fileList:
                 f.write(toaFile.split('-')[0])
