@@ -168,9 +168,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
         dgFile = DgFile(toaName)
 
         # Time-related fields.
-        date, time = dgFile.firstLineTime().split('T')
-        hour, minute, second = t.split(':')
-        minutes = hour * 60 + float(minute)
+        date = dgFile.firstLineTime().strftime('%Y-%m-%d')
+        hour = dgFile.firstLineTime().strftime('%H')
+        minute = dgFile.firstLineTime().strftime('%M')
+        minutes = float(hour) * 60.0 + float(minute)
 
         # Angles, elevations, etc.
         SZA = 90.0 - dgFile.meanSunElevation()
