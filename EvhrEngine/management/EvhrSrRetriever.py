@@ -181,8 +181,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
         relAZ = SAZ - VAZ
         
         # Projection information
-        lat = float(dgFile.imdTag.find('BAND_B//LRLAT'))
-        lon = float(dgFile.imdTag.find('BAND_B//LRLON'))
+        lat = float(dgFile.imdTag.find('LRLAT'))
+        lon = float(dgFile.imdTag.find('LRLON'))
         projWords = dgFile.srs.GetAttrValue('projcs').split()
         xScale = dgFile.dataset.GetGeoTransform()[1]
         yScale = dgFile.dataset.GetGeoTransform()[5]
