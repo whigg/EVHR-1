@@ -125,7 +125,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # Aggregate the ToAs into SRs and create the SR input file.
         constituents = {}
         srInputFileName = os.path.join(self.srDir, 'srInput.txt')
-        print srInputFileName
 
         with open(srInputFileName, 'aw+') as f:
             
@@ -144,15 +143,67 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def retrieveOne(self, constituentFileName, fileList):
 
         # Create the ToA.
-        # stripName = DgFile(fileList[0], self.logger).getStripName()
-        # stripBandList = self.scenesToStrip(stripName, fileList)
-        #
-        # toaName = os.path.join(self.toaDir,
-        #                        os.path.basename(constituentFileName))
-        #
-        # self.processStrip(stripBandList, toaName)
-        
-        pass
+        stripName = DgFile(fileList[0], self.logger).getStripName()
+        stripBandList = self.scenesToStrip(stripName, fileList)
+
+        toaName = os.path.join(self.toaDir,
+                               os.path.basename(constituentFileName))
+
+        self.processStrip(stripBandList, toaName)
             
+        # Bin file: extract the ToA's raster.
+        toaBin = toaName.replace('.tif', '.bin')
         
+        # Meta file
+        toaMeta = self.writeMeta(toaName)
+        
+        # Wv2 file
+        toaWv2 = toaName.replace('.tif', '.wv2')
+        
+    #---------------------------------------------------------------------------
+    # writeMeta
+    #---------------------------------------------------------------------------
+    def writeMeta(self, toaName):
+        
+        dgFile = DgFile(toaName)
+
+        # Time-related fields.
+        date, time = dgFile.firstLineTime().split('T')
+        hour, minute, second = t.split(':')
+        minutes = hour * 60 + float(minute)
+
+        # Angles, elevations, etc.
+        SZA = 90.0 - dgFile.meanSunElevation()
+        VZA = 90.0 - dgFile.meanSatelliteElevation()
+        SAZ = dgFile.meanSunAzimuth()
+        VAZ = dgFile.meanSatelliteAzimuth()
+        relAZ = SAZ - VAZ
+        
+        # Projection information
+        lat = float(dfFile.imdTag.find('.//BAND_B//LRLAT'))
+        lon = float(dfFile.imdTag.find('.//BAND_B//LRLON'))
+        projWords = dgFile.srs.GetAttrValue('projcs').split()
+        xScale = dgFile.dataset.GetGeoTransform()[1]
+        yScale = dgFile.dataset.GetGeoTransform()[5]
+        ulx = dgFile.dataset.GetGeoTransform()[0]
+        uly = dgFile.dataset.GetGeoTransform()[3]
+        
+        # Write the file.
+        toaMetaFileName = toaName.replace('.tif', '.meta')
+
+        with open(toaMetaFileName, 'w') as f:
+            
+            f.write(date)
+            f.write('   %d\n' % minutes)
+            f.write('%f   %f\n' % (lat, lon))
+            f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA, SAZ, VAZ, relAZ))
+            
+            f.write('%d   %d\n' % (dgFile.dataset.RasterYSize, 
+                                   dgFile.dataset.RasterXSize))
+            
+            f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
+            f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
+            f.write(dgFile.dataset.GetProjection())
+
+        return toaMetaFileName
         
