@@ -190,6 +190,23 @@ class DgFile(GdalFile):
         return self.imdTag.findall('./IMAGE/CATID')[0].text
 
     #---------------------------------------------------------------------------
+    # getField
+    #---------------------------------------------------------------------------
+    def getField(self, nitfTag, xmlTag):
+        
+        try:
+            
+            value = self.dataset.GetMetadataItem(nitfTag)
+            
+            if not value:
+                value = self.imdTag.find('IMAGE').find(xmlTag).text
+
+            return float(value)
+
+        except:
+            return None
+        
+    #---------------------------------------------------------------------------
     # getStripName()
     #---------------------------------------------------------------------------
     def getStripName(self):
@@ -231,19 +248,32 @@ class DgFile(GdalFile):
         return self.specTypeCode() == 'PAN'
 
     #---------------------------------------------------------------------------
+    # meanSatelliteAzimuth
+    #---------------------------------------------------------------------------
+    def meanSatelliteAzimuth(self):
+        
+        return self.getField('NITF_CSEXRA_AZ_OF_OBLIQUITY', 'MEANSATAZ')
+
+    #---------------------------------------------------------------------------
+    # meanSatelliteElevation
+    #---------------------------------------------------------------------------
+    def meanSatelliteElevation(self):
+        
+        return self.getField('', 'MEANSATEL')
+
+    #---------------------------------------------------------------------------
+    # meanSunAzimuth
+    #---------------------------------------------------------------------------
+    def meanSunAzimuth(self):
+    
+        return self.getField('NITF_CSEXRA_SUN_AZIMUTH', 'MEANSUNAZ')
+
+    #---------------------------------------------------------------------------
     # meanSunElevation()
     #---------------------------------------------------------------------------
     def meanSunElevation(self):
     
-        try: 
-            mse = self.dataset.GetMetadataItem('NITF_CSEXRA_SUN_ELEVATION')
-            if mse is None:
-                mse = self.imdTag.find('IMAGE').find('MEANSUNEL').text
-
-            return float(mse)
-
-        except:
-            return None
+        return self.getField('NITF_CSEXRA_SUN_ELEVATION', 'MEANSUNEL')
 
     #---------------------------------------------------------------------------
     # prodLevelCode()
