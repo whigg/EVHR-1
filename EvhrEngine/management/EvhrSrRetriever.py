@@ -45,10 +45,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def getLatLon(self, imgTag):
         
-        ulLat = float(imdTag.find('BAND_B/ULLAT').text)
-        ulLon = float(imdTag.find('BAND_B/ULLON').text)
-        lrLat = float(imdTag.find('BAND_B/LRLAT').text)
-        lrLon = float(imdTag.find('BAND_B/LRLON').text)
+        ulLat = float(imgTag.find('BAND_B/ULLAT').text)
+        ulLon = float(imgTag.find('BAND_B/ULLON').text)
+        lrLat = float(imgTag.find('BAND_B/LRLAT').text)
+        lrLon = float(imgTag.find('BAND_B/LRLON').text)
         lat = ulLat
         lon = ulLon
         
