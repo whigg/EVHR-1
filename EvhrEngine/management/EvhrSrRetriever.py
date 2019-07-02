@@ -43,12 +43,12 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # LR, swapping them as needed, to accommodate both correct and incorrect
     # XML files.
     #---------------------------------------------------------------------------
-    def getLatLon(self, xml):
+    def getLatLon(self, imgTag):
         
-        ulLat = float(dgFile.imdTag.find('BAND_B/ULLAT').text)
-        ulLon = float(dgFile.imdTag.find('BAND_B/ULLON').text)
-        lrLat = float(dgFile.imdTag.find('BAND_B/LRLAT').text)
-        lrLon = float(dgFile.imdTag.find('BAND_B/LRLON').text)
+        ulLat = float(imdTag.find('BAND_B/ULLAT').text)
+        ulLon = float(imdTag.find('BAND_B/ULLON').text)
+        lrLat = float(imdTag.find('BAND_B/LRLAT').text)
+        lrLon = float(imdTag.find('BAND_B/LRLON').text)
         lat = ulLat
         lon = ulLon
         
@@ -213,7 +213,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # According to Yujie, "The xml file has messed up UL and LR," hence
         # the seemingly misnamed tags.
         #---
-        lat, lon = self.getLatLon()
+        lat, lon = self.getLatLon(dgFile.imdTag)
         projWords = dgFile.srs.GetAttrValue('projcs').split()
         xScale = dgFile.dataset.GetGeoTransform()[1]
         yScale = dgFile.dataset.GetGeoTransform()[5]
