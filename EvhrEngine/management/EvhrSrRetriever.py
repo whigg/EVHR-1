@@ -34,6 +34,33 @@ class EvhrSrRetriever(EvhrToaRetriever):
         pass
 
     #---------------------------------------------------------------------------
+    # getLatLon 
+    #
+    # According to Yujie's script, WV02Cal.py, which is the example used here
+    # to create the .meta files for the SR process, the UL and LR values are
+    # "messed up" in the XML.  While this might have been the case at some 
+    # point, it is not now.  To be safe, this method will validate the UL and
+    # LR, swapping them as needed, to accommodate both correct and incorrect
+    # XML files.
+    #---------------------------------------------------------------------------
+    def getLatLon(self, xml):
+        
+        ulLat = float(dgFile.imdTag.find('BAND_B/ULLAT').text)
+        ulLon = float(dgFile.imdTag.find('BAND_B/ULLON').text)
+        lrLat = float(dgFile.imdTag.find('BAND_B/LRLAT').text)
+        lrLon = float(dgFile.imdTag.find('BAND_B/LRLON').text)
+        lat = ulLat
+        lon = ulLon
+        
+        if ulLat < lrLat:
+            lat = lrLat
+            
+        if ulLon > lrLon:
+            lon = lrLon
+            
+        return lat, lon
+        
+    #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
     def getScenes(self, request, ulx, uly, lrx, lry, srs):
@@ -180,9 +207,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
         VAZ = dgFile.meanSatelliteAzimuth()
         relAZ = SAZ - VAZ
         
+        #---
         # Projection information
-        lat = float(dgFile.imdTag.find('LRLAT'))
-        lon = float(dgFile.imdTag.find('LRLON'))
+        #
+        # According to Yujie, "The xml file has messed up UL and LR," hence
+        # the seemingly misnamed tags.
+        #---
+        lat, lon = self.getLatLon()
         projWords = dgFile.srs.GetAttrValue('projcs').split()
         xScale = dgFile.dataset.GetGeoTransform()[1]
         yScale = dgFile.dataset.GetGeoTransform()[5]
