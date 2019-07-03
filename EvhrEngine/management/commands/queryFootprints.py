@@ -43,7 +43,7 @@ class Command(BaseCommand):
             fpq.setPanchromaticOff()
             
         if options['sensors']:
-            fpq.addSensors([options['sensors']])
+            fpq.addSensors(options['sensors'])
 
         if hasattr(settings, 'MAXIMUM_SCENES'):
             fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
