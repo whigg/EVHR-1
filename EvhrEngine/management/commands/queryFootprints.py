@@ -35,16 +35,12 @@ class Command(BaseCommand):
 
         fpq = FootprintsQuery()
 
-        if options['catIDs']:
-            for catID in options['catIDs']:
-                fpq.addCatalogID(catID)
+        fpq.addCatalogID(options['catIDs'])
+        fpq.addSensors(options['sensors'])
 
         if options['multiOnly']:
             fpq.setPanchromaticOff()
             
-        if options['sensors']:
-            fpq.addSensors(options['sensors'])
-
         if hasattr(settings, 'MAXIMUM_SCENES'):
             fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
