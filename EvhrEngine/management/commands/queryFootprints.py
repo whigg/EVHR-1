@@ -6,6 +6,8 @@ from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 
 #-------------------------------------------------------------------------------
 # class Command
+#
+# ./manage.py queryFootprints --catIDs '10300100053F4400 10300100060AF200 10300100064CE200 10300100060DDC00 103001000667BA00 103001001F95E700 103001002047F300'  --multiOnly --sensors 'WV02 WV03'
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
@@ -20,8 +22,7 @@ class Command(BaseCommand):
                             help = 'Only use multispectral',
                             action = 'store_true')
                             
-        parser.add_argument('--sensors', help = 'List of sensors, like WV02')
-        
+        parser.add_argument('--sensors', help = 'List of sensors, like WV02')        
 
     #---------------------------------------------------------------------------
     # handle
@@ -31,17 +32,17 @@ class Command(BaseCommand):
         fpq = FootprintsQuery()
 
         if options['catIDs']:
-            for catID in options['catIDs'].split():
+            for catID in [options['catIDs']]:
                 fpq.addCatalogID(catID)
 
         if options['multiOnly']:
             fpq.setPanchromaticOff()
             
         if options['sensors']:
-            fpq.addSensors(options['sensors'])
+            fpq.addSensors([options['sensors']])
 
         if hasattr(settings, 'MAXIMUM_SCENES'):
-            maxScenes = min(maxScenes, settings.MAXIMUM_SCENES)
+            fpq.setMaximumScenes(settings.MAXIMUM_SCENES))
             
         fpq.setMaximumScenes(maxScenes)
         fpScenes = fpq.getScenes()
