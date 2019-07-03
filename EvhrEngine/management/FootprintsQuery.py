@@ -33,7 +33,7 @@ class FootprintsQuery(object):
                                
         self.footprintsFile = footprintsFile
         self.logger = logger
-        self.catalogID = None
+        self.catalogIDs = []
         self.maxScenes = None
         self.minOverlapInDegrees = 0.0
         self.pairsOnly = False
@@ -82,9 +82,9 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     # addCatalogID
     #---------------------------------------------------------------------------
-    def addCatalogID(self, catalogID):
+    def addCatalogID(self, catalogIDs = []):
         
-        self.catalogID = catalogID
+        self.catalogIDs.extend(catalogIDs)
         
     #---------------------------------------------------------------------------
     # addEvhrScenes
@@ -162,9 +162,26 @@ class FootprintsQuery(object):
         if self.pairsOnly:
             whereClause += ' AND (pairname IS NOT NULL)'
 
-        # Add the catalog ID.
-        if self.catalogID:
-            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'   
+        # Add the catalog ID list.
+        # if self.catalogID:
+        #     whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'
+            
+        first = True
+        
+        for catID in self.catalogIDs:
+
+            if first:
+
+                first = False
+                whereClause += ' AND ('
+
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'CATALOG_ID=' + "'" + catID + "'"
+
+        if not first:
+            whereClause += ')'
             
         # Set panchromatic or multispectral.
         if not self.usePanchromatic:
