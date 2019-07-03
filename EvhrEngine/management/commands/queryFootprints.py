@@ -42,7 +42,7 @@ class Command(BaseCommand):
             fpq.addSensors([options['sensors']])
 
         if hasattr(settings, 'MAXIMUM_SCENES'):
-            fpq.setMaximumScenes(settings.MAXIMUM_SCENES))
+            fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
         fpq.setMaximumScenes(maxScenes)
         fpScenes = fpq.getScenes()
