@@ -36,7 +36,7 @@ class Command(BaseCommand):
         fpq = FootprintsQuery()
 
         if options['catIDs']:
-            for catID in [options['catIDs']]:
+            for catID in options['catIDs']:
                 fpq.addCatalogID(catID)
 
         if options['multiOnly']:
