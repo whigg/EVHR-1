@@ -1,5 +1,7 @@
 import os
 
+import gdal
+
 from django.conf import settings
 
 from EvhrEngine.management.DgFile import DgFile
