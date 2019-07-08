@@ -7,8 +7,6 @@ import random
 import shutil
 import traceback
 
-import numpy
-
 from osgeo import gdal
 from osgeo.osr import SpatialReference
 
