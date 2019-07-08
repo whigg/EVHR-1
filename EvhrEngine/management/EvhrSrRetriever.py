@@ -179,13 +179,58 @@ class EvhrSrRetriever(EvhrToaRetriever):
         self.processStrip(stripBandList, toaName)
             
         # Bin file: extract the ToA's raster.
-        toaBin = toaName.replace('.tif', '.bin')
+        toaBin = self.toaToBin(toaName)
         
         # Meta file
         toaMeta = self.writeMeta(toaName)
         
         # Wv2 file
         toaWv2 = toaName.replace('.tif', '.wv2')
+        
+    #---------------------------------------------------------------------------
+    # toaToBin
+    #
+    # line 1, band 1
+    # line 1, band 2
+    # ...
+    # line2, band 1
+    # line2, band 2
+    # ...
+    #---------------------------------------------------------------------------
+    def toaToBin(self, toaName):
+
+        # Dictionary of GDAL to Numpy data type conversions.
+        gdalToNp = {gdal.GDT_Int16 : 'int16', 
+                    gdal.GDT_Int32 : 'int32', 
+                    gdal.GDT_Byte : 'uint8', 
+                    gdal.GDT_UInt16 : 'uint16', 
+                    gdal.GDT_UInt32 : 'uint32', 
+                    gdal.GDT_Float32 : 'float16', 
+                    gdal.GDT_Float32 : 'float32', 
+                    gdal.GDT_Float64 : 'float64'}
+
+        # Create a numpy array to hold the pixels.
+        toaDgFile = DgFile(toaName)
+        band0 = toaDgFile.GetRasterBand(0)
+        numLines = band0.YSize
+        numSamples = band0.XSize
+        numBands = toaDgFile.dataset.RasterCount
+        npType = gdalToNp[band0.DataType]
+        npArray = numpy.empty((numLines, numSamples, numBands), dtype=npType)
+        
+        # Loop through each line of the image
+        for lineNum in range(numLines):
+            for bandNum in range(numBands):
+                npArray[lineNum][0][bandNum] = toaDgFile.GetRasterBand(bandNum)
+        
+        toaBinFileName = toaName.replace('.tif', '.bin')
+        
+        with open(toaBinFileName, 'w') as f:
+            
+            byteArray = bytearray(npArray)
+            f.write(byteArray)
+
+        return toaBin
         
     #---------------------------------------------------------------------------
     # writeMeta
