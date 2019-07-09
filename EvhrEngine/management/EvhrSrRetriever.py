@@ -204,39 +204,48 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def toaToBin(self, toaName):
 
         # Dictionary of GDAL to Numpy data type conversions.
-        gdalToNp = {gdal.GDT_Int16 : 'int16', 
-                    gdal.GDT_Int32 : 'int32', 
-                    gdal.GDT_Byte : 'uint8', 
-                    gdal.GDT_UInt16 : 'uint16', 
-                    gdal.GDT_UInt32 : 'uint32', 
-                    gdal.GDT_Float32 : 'float16', 
-                    gdal.GDT_Float32 : 'float32', 
-                    gdal.GDT_Float64 : 'float64'}
+        # gdalToNp = {gdal.GDT_Int16 : 'int16',
+        #             gdal.GDT_Int32 : 'int32',
+        #             gdal.GDT_Byte : 'uint8',
+        #             gdal.GDT_UInt16 : 'uint16',
+        #             gdal.GDT_UInt32 : 'uint32',
+        #             gdal.GDT_Float32 : 'float16',
+        #             gdal.GDT_Float32 : 'float32',
+        #             gdal.GDT_Float64 : 'float64'}
 
         # Create a numpy array to hold the pixels.
         toaGdalFile = GdalFile(toaName)
         import pdb
         pdb.set_trace()
-        npType = gdalToNp[toaGdalFile.dataset.GetRasterBand(1).DataType]
-        
-        npArray = numpy.empty((toaGdalFile.dataset.RasterXSize, 
-                               toaGdalFile.dataset.RasterYSize, 
-                               toaGdalFile.dataset.RasterCount), 
-                               dtype=npType)
-        
-        # Loop through each line of the image
-        for lineNum in range(numLines):
-            for bandNum in range(numBands):
-                
-                npArray[lineNum][0][bandNum] = \
-                    toaGdalFile.dataset.GetRasterBand(bandNum)
+        # npType = gdalToNp[toaGdalFile.dataset.GetRasterBand(1).DataType]
+        #
+        # npArray = numpy.empty((toaGdalFile.dataset.RasterXSize,
+        #                        toaGdalFile.dataset.RasterYSize,
+        #                        toaGdalFile.dataset.RasterCount),
+        #                        dtype=npType)
+        #
+        # # Loop through each line of the image
+        # for lineNum in range(toaGdalFile.dataset.RasterYSize):
+        #     for bandNum in range(toaGdalFile.dataset.RasterCount):
+        #
+        #         npArray[lineNum][0][bandNum] = \
+        #             toaGdalFile.dataset.GetRasterBand(bandNum)
         
         toaBinFileName = toaName.replace('.tif', '.bin')
         
         with open(toaBinFileName, 'w') as f:
             
-            byteArray = bytearray(npArray)
-            f.write(byteArray)
+            # Loop through each line of the image
+            for lineNum in range(toaGdalFile.dataset.RasterYSize):
+                for bandNum in range(toaGdalFile.dataset.RasterCount):
+                    
+                    band = toaGdalFile.GetRasterBand(bandNum + 1)
+                    
+                    npa = band(0, 
+                               lineNum,
+                               toaGdalFile.dataset.RasterXSize)
+                    
+                    f.write(byteArray(npa))
 
         return toaBin
         
