@@ -1,6 +1,7 @@
 import os
 
 import gdal
+import numpy
 
 from django.conf import settings
 
