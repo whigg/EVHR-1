@@ -216,7 +216,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         toaGdalFile = GdalFile(toaName)
         import pdb
         pdb.set_trace()
-        npType = gdalToNp[toaGdalFile.GetRasterBand(1).DataType]
+        npType = gdalToNp[toaGdalFile.dataset.GetRasterBand(1).DataType]
         
         npArray = numpy.empty((toaGdalFile.dataset.RasterXSize, 
                                toaGdalFile.dataset.RasterYSize, 
