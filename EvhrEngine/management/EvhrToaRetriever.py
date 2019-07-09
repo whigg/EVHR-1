@@ -464,12 +464,16 @@ class EvhrToaRetriever(GeoRetriever):
                                          '{}_{}.r100.tif'.format(stripName, 
                                                                  bandName))
 
-            cmd = '/opt/StereoPipeline/bin/dg_mosaic --output-nodata-value 0' +\
-                  ' --ignore-inconsistencies --output-prefix {} {}'. \
-                  format(stripBandFile.replace('.r100.tif', ''), bandScenesStr)
+            if not os.path.exists(stripBandFile):
+                
+                cmd = '/opt/StereoPipeline/bin/dg_mosaic ' + \
+                      '--output-nodata-value 0' + \
+                      ' --ignore-inconsistencies --output-prefix {} {}'. \
+                      format(stripBandFile.replace('.r100.tif', ''), 
+                             bandScenesStr)
 
-            sCmd = SystemCommand(cmd, stripBandFile, self.logger, self.request,
-                                 True, self.maxProcesses != 1)
+                sCmd = SystemCommand(cmd, stripBandFile, self.logger, 
+                                     self.request, True, self.maxProcesses != 1)
             
             DgFile(stripBandFile).setBandName(bandName)                          
             stripBandList.append(stripBandFile) 
