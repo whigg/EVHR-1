@@ -214,12 +214,14 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         # Create a numpy array to hold the pixels.
         toaGdalFile = GdalFile(toaName)
-        band0 = toaGdalFile.dataset.GetRasterBand(0)
-        numLines = band0.YSize
-        numSamples = band0.XSize
-        numBands = toaGdalFile.dataset.RasterCount
-        npType = gdalToNp[band0.DataType]
-        npArray = numpy.empty((numLines, numSamples, numBands), dtype=npType)
+        import pdb
+        pdb.set_trace()
+        npType = gdalToNp[toaGdalFile.GetRasterBand(1).DataType]
+        
+        npArray = numpy.empty((toaGdalFile.dataset.RasterXSize, 
+                               toaGdalFile.dataset.RasterYSize, 
+                               toaGdalFile.dataset.RasterCount), 
+                               dtype=npType)
         
         # Loop through each line of the image
         for lineNum in range(numLines):
