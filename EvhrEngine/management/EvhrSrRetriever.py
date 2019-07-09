@@ -213,7 +213,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         # Create a numpy array to hold the pixels.
         toaDgFile = DgFile(toaName)
-        band0 = toaDgFile.GetRasterBand(0)
+        band0 = toaDgFile.dataset.GetRasterBand(0)
         numLines = band0.YSize
         numSamples = band0.XSize
         numBands = toaDgFile.dataset.RasterCount
@@ -223,7 +223,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # Loop through each line of the image
         for lineNum in range(numLines):
             for bandNum in range(numBands):
-                npArray[lineNum][0][bandNum] = toaDgFile.GetRasterBand(bandNum)
+                
+                npArray[lineNum][0][bandNum] = \
+                    toaDgFile.dataset.GetRasterBand(bandNum)
         
         toaBinFileName = toaName.replace('.tif', '.bin')
         
