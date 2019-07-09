@@ -5,6 +5,7 @@ import gdal
 from django.conf import settings
 
 from EvhrEngine.management.DgFile import DgFile
+from EvhrEngine.management.GdalFile import GdalFile
 from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetriever
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 from EvhrEngine.models import EvhrScene
@@ -212,11 +213,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     gdal.GDT_Float64 : 'float64'}
 
         # Create a numpy array to hold the pixels.
-        toaDgFile = DgFile(toaName)
-        band0 = toaDgFile.dataset.GetRasterBand(0)
+        toaGdalFile = GdalFile(toaName)
+        band0 = toaGdalFile.dataset.GetRasterBand(0)
         numLines = band0.YSize
         numSamples = band0.XSize
-        numBands = toaDgFile.dataset.RasterCount
+        numBands = toaGdalFile.dataset.RasterCount
         npType = gdalToNp[band0.DataType]
         npArray = numpy.empty((numLines, numSamples, numBands), dtype=npType)
         
@@ -225,7 +226,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             for bandNum in range(numBands):
                 
                 npArray[lineNum][0][bandNum] = \
-                    toaDgFile.dataset.GetRasterBand(bandNum)
+                    toaGdalFile.dataset.GetRasterBand(bandNum)
         
         toaBinFileName = toaName.replace('.tif', '.bin')
         
