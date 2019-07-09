@@ -239,7 +239,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             for lineNum in range(toaGdalFile.dataset.RasterYSize):
                 for bandNum in range(toaGdalFile.dataset.RasterCount):
                     
-                    band = toaGdalFile.GetRasterBand(bandNum + 1)
+                    band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
                     
                     npa = band(0, 
                                lineNum,
