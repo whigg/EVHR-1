@@ -221,7 +221,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                            toaGdalFile.dataset.RasterXSize,
                                            1)
                     
-                    # f.write(bytearray(npa))
                     npa.tofile(f)
                     
         return toaBinFileName
@@ -231,19 +230,19 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def writeMeta(self, toaName):
         
-        gdalFile = GdalFile(toaName)
+        dgFile = DgFile(toaName)
 
         # Time-related fields.
-        date = gdalFile.firstLineTime().strftime('%Y-%m-%d')
-        hour = gdalFile.firstLineTime().strftime('%H')
-        minute = gdalFile.firstLineTime().strftime('%M')
+        date = dgFile.firstLineTime().strftime('%Y-%m-%d')
+        hour = dgFile.firstLineTime().strftime('%H')
+        minute = dgFile.firstLineTime().strftime('%M')
         minutes = float(hour) * 60.0 + float(minute)
 
         # Angles, elevations, etc.
-        SZA = 90.0 - gdalFile.meanSunElevation()
-        VZA = 90.0 - gdalFile.meanSatelliteElevation()
-        SAZ = gdalFile.meanSunAzimuth()
-        VAZ = gdalFile.meanSatelliteAzimuth()
+        SZA = 90.0 - dgFile.meanSunElevation()
+        VZA = 90.0 - dgFile.meanSatelliteElevation()
+        SAZ = dgFile.meanSunAzimuth()
+        VAZ = dgFile.meanSatelliteAzimuth()
         relAZ = SAZ - VAZ
         
         #---
@@ -252,12 +251,12 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # According to Yujie, "The xml file has messed up UL and LR," hence
         # the seemingly misnamed tags.
         #---
-        lat, lon = self.getLatLon(gdalFile.imdTag)
-        projWords = gdalFile.srs.GetAttrValue('projcs').split()
-        xScale = gdalFile.dataset.GetGeoTransform()[1]
-        yScale = gdalFile.dataset.GetGeoTransform()[5]
-        ulx = gdalFile.dataset.GetGeoTransform()[0]
-        uly = gdalFile.dataset.GetGeoTransform()[3]
+        lat, lon = self.getLatLon(dgFile.imdTag)
+        projWords = dgFile.srs.GetAttrValue('projcs').split()
+        xScale = dgFile.dataset.GetGeoTransform()[1]
+        yScale = dgFile.dataset.GetGeoTransform()[5]
+        ulx = dgFile.dataset.GetGeoTransform()[0]
+        uly = dgFile.dataset.GetGeoTransform()[3]
         
         # Write the file.
         toaMetaFileName = toaName.replace('.tif', '.meta')
@@ -269,12 +268,12 @@ class EvhrSrRetriever(EvhrToaRetriever):
             f.write('%f   %f\n' % (lat, lon))
             f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA, SAZ, VAZ, relAZ))
             
-            f.write('%d   %d\n' % (gdalFile.dataset.RasterYSize, 
-                                   gdalFile.dataset.RasterXSize))
+            f.write('%d   %d\n' % (dgFile.dataset.RasterYSize, 
+                                   dgFile.dataset.RasterXSize))
             
             f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
             f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
-            f.write(gdalFile.dataset.GetProjection())
+            f.write(dgFile.dataset.GetProjection())
 
         return toaMetaFileName
         
