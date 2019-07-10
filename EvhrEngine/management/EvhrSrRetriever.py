@@ -220,7 +220,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     
                     f.write(bytearray(npa))
 
-        return toaBin
+        return toaBinFileName
         
     #---------------------------------------------------------------------------
     # writeMeta
