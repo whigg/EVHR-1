@@ -213,9 +213,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     
                     band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
                     
-                    npa = band.ReadAsArray(0, 
+                    npa = band.ReadAsArray(0,
                                            lineNum,
-                                           toaGdalFile.dataset.RasterXSize)
+                                           toaGdalFile.dataset.RasterXSize,
+                                           1)
                     
                     f.write(bytearray(npa))
 
