@@ -259,7 +259,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         uly = dgFile.dataset.GetGeoTransform()[3]
         
         # Write the file.
-        toaMetaFileName = toaName.replace('.tif', '.meta')
+        toaMetaFileName = \
+            os.path.join(self.srDir, 
+                         os.path.basename(toaName).replace('.tif', '.meta'))
 
         with open(toaMetaFileName, 'w') as f:
             
