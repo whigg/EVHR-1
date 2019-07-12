@@ -50,7 +50,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def createWv2(self, toaName):
 
         wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                'SurfaceReflectance/WVImg5')
+                                'SurfaceReflectance/WVimg5')
         
         wv2File = \
             os.path.join(self.srDir, 
