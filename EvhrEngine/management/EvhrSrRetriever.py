@@ -9,6 +9,7 @@ from EvhrEngine.management.DgFile import DgFile
 from EvhrEngine.management.GdalFile import GdalFile
 from EvhrEngine.management.EvhrToaRetriever import EvhrToaRetriever
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
+from EvhrEngine.management.SystemCommand import SystemCommand
 from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
@@ -28,6 +29,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         if not os.path.exists(self.srDir):
             os.mkdir(self.srDir)
+            
+        self.srInputFileName = os.path.join(self.srDir, 'srInput.txt')
 
     #---------------------------------------------------------------------------
     # aggregate
@@ -36,6 +39,40 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         # This is where the mosaic data set is created from the set of ToAs.
         pass
+
+    #---------------------------------------------------------------------------
+    # createWv2
+    #
+    # WVimg5 /att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt file_Barrow
+    # Barrow
+    # File_Barrow = 6-sr/srInput.txt
+    #---------------------------------------------------------------------------
+    def createWv2(self, toaName):
+
+        wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                'SurfaceReflectance/WVImg5')
+        
+        wv2File = \
+            os.path.join(self.srDir, 
+                         os.path.basename(toaName).replace('.tif', '.wv2'))
+
+        #---
+        # This file is used by WVImg5 to identify the MAIAC files to use.
+        # This needs to be generalized, but it's all that Yujie provided.
+        #---
+        maiacFile = '/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
+        
+        self.srInputFileName
+        
+        cmd = wvImgExe + ' ' + \
+              maiacFile + ' ' + \
+              self.srInputFileName + ' ' + \
+              self.srDir
+              
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
+                             self.maxProcesses != 1)
+        
+        return wv2File
 
     #---------------------------------------------------------------------------
     # getLatLon 
@@ -155,9 +192,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
         # Aggregate the ToAs into SRs and create the SR input file.
         constituents = {}
-        srInputFileName = os.path.join(self.srDir, 'srInput.txt')
 
-        with open(srInputFileName, 'aw+') as f:
+        with open(self.srInputFileName, 'aw+') as f:
             
             for toa in toas:
                 
@@ -183,13 +219,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
         self.processStrip(stripBandList, toaName)
             
         # Bin file: extract the ToA's raster.
-        toaBin = self.toaToBin(toaName)
+        binFile = self.toaToBin(toaName)
         
         # Meta file
-        toaMeta = self.writeMeta(toaName)
+        metaFile = self.writeMeta(toaName)
         
         # Wv2 file
-        toaWv2 = toaName.replace('.tif', '.wv2')
+        wv2File = self.createWv2(toaName)
         
     #---------------------------------------------------------------------------
     # toaToBin
@@ -203,13 +239,16 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def toaToBin(self, toaName):
 
+        if self.logger:
+            self.logger.info('Extracting raster from ' + str(toaName))
+
         toaGdalFile = GdalFile(toaName)
 
-        toaBinFileName = \
+        binFileName = \
             os.path.join(self.srDir, 
                          os.path.basename(toaName).replace('.tif', '.bin'))
         
-        with open(toaBinFileName, 'w') as f:
+        with open(binFileName, 'w') as f:
             
             for lineNum in range(toaGdalFile.dataset.RasterYSize):
                 for bandNum in range(toaGdalFile.dataset.RasterCount):
@@ -223,13 +262,16 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     
                     npa.tofile(f)
                     
-        return toaBinFileName
+        return binFileName
         
     #---------------------------------------------------------------------------
     # writeMeta
     #---------------------------------------------------------------------------
     def writeMeta(self, toaName):
         
+        if self.logger:
+            self.logger.info('Extracting metadata from ' + str(toaName))
+
         dgFile = DgFile(toaName)
 
         # Time-related fields.
@@ -259,11 +301,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
         uly = dgFile.dataset.GetGeoTransform()[3]
         
         # Write the file.
-        toaMetaFileName = \
+        metaFileName = \
             os.path.join(self.srDir, 
                          os.path.basename(toaName).replace('.tif', '.meta'))
 
-        with open(toaMetaFileName, 'w') as f:
+        with open(metaFileName, 'w') as f:
             
             f.write(date)
             f.write('   %d\n' % minutes)
@@ -277,5 +319,5 @@ class EvhrSrRetriever(EvhrToaRetriever):
             f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
             f.write(dgFile.dataset.GetProjection())
 
-        return toaMetaFileName
+        return metaFileName
         
