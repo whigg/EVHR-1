@@ -49,28 +49,30 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def createWv2(self, toaName):
 
-        wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                'SurfaceReflectance/WVimg5')
-        
         wv2File = \
             os.path.join(self.srDir, 
                          os.path.basename(toaName).replace('.tif', '.wv2'))
 
-        #---
-        # This file is used by WVImg5 to identify the MAIAC files to use.
-        # This needs to be generalized, but it's all that Yujie provided.
-        #---
-        maiacFile = '/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
+        if not os.path.exists(wv2File):
+            
+            wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                    'SurfaceReflectance/WVimg5')
         
-        self.srInputFileName
+            #---
+            # This file is used by WVImg5 to identify the MAIAC files to use.
+            # This needs to be generalized, but it's all that Yujie provided.
+            #---
+            maiacFile ='/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
         
-        cmd = wvImgExe + ' ' + \
-              maiacFile + ' ' + \
-              self.srInputFileName + ' ' + \
-              self.srDir
+            self.srInputFileName
+        
+            cmd = wvImgExe + ' ' + \
+                  maiacFile + ' ' + \
+                  self.srInputFileName + ' ' + \
+                  self.srDir
               
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
-                             self.maxProcesses != 1)
+            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
+                                 self.maxProcesses != 1)
         
         return wv2File
 
@@ -197,7 +199,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             for toa in toas:
                 
-                toaBaseName = os.path.basename(toa).replace('-toa', '')
+                toaBaseName = os.path.basename(toa).replace('-toa.tif', '.bin')
                 srName = os.path.join(self.srDir, toaBaseName)
                 constituents[srName] = toas[toa]
                 f.write(os.path.splitext(os.path.basename(toaBaseName))[0]+'\n')
@@ -209,23 +211,39 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
-        # Create the ToA.
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
 
         toaName = os.path.join(self.toaDir,
-                               os.path.basename(constituentFileName))
+                               os.path.basename(constituentFileName). \
+                                   replace('.bin', '-toa.tif'))
 
         self.processStrip(stripBandList, toaName)
+        self.toaToBin(toaName)
+        self.writeMeta(toaName)
+        # self.createWv2(toaName)
+        # self.runSr()
+        
+    #---------------------------------------------------------------------------
+    # runSr
+    #---------------------------------------------------------------------------
+    def runSr(self):
+        
+        srFile = \
+            os.path.join(self.srDir, 
+                         os.path.basename(toaName).replace('.tif', '.wv2'))
+
+        if not os.path.exists(srFile):
             
-        # Bin file: extract the ToA's raster.
-        binFile = self.toaToBin(toaName)
+            srExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'SurfaceReflectance/WVimg5')
         
-        # Meta file
-        metaFile = self.writeMeta(toaName)
-        
-        # Wv2 file
-        wv2File = self.createWv2(toaName)
+            # cmd = srExe + ' ' + \
+            #       **thecatid** + ' ' + \
+            #       **theoutdir**
+                  
+                  
+                  
         
     #---------------------------------------------------------------------------
     # toaToBin
