@@ -221,7 +221,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         self.processStrip(stripBandList, toaName)
         self.toaToBin(toaName)
         self.writeMeta(toaName)
-        # self.createWv2(toaName)
+        self.createWv2(toaName)
         # self.runSr()
         
     #---------------------------------------------------------------------------
