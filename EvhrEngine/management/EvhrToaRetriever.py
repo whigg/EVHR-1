@@ -404,11 +404,11 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def processStrip(self, stripBands, toaFinal):
 
-        if self.logger:
-            self.logger.info('Processing strip {}'.format(toaFinal))
-
         # If the output file exists, don't bother running it again.
         if not os.path.exists(toaFinal):
+
+            if self.logger:
+                self.logger.info('Processing strip {}'.format(toaFinal))
 
             # Catch errors, so the constituent continues despite errors.
             try:
@@ -435,7 +435,7 @@ class EvhrToaRetriever(GeoRetriever):
                 pass
 
     #---------------------------------------------------------------------------
-    # scenesToStrips()
+    # scenesToStrip()
     #
     # Takes a list of scenes belonging to a strip and mosaics the scenes
     # together with dg_mosaic
