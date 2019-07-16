@@ -227,7 +227,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         self.toaToBin(toaName)
         self.writeMeta(toaName)
         self.createWv2(toaName)
-        # self.runSr(stripName)
+        self.runSr(stripName)
         
     #---------------------------------------------------------------------------
     # runSr
@@ -239,9 +239,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(srFile):
             
             srExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                 'SurfaceReflectance/WVimg5')
+                                 'SurfaceReflectance/MAIAC_WV2_5')
         
-            cmd = srExe + ' ' + stripName + ' ' + self.srDir
+            # MAIAC_WV2_5  inputfilebase   TOApath outputBRFpath
+            cmd = srExe + ' ' + stripName + ' ' + self.srDir + ' ' + self.srDir
             
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
