@@ -196,7 +196,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
         # Aggregate the ToAs into SRs and create the SR input file.
         constituents = {}
-        os.remove(self.srInputFileName) # Reprocessing could add to original.
+        
+        if os.path.exists(self.srInputFileName):
+            os.remove(self.srInputFileName)
         
         with open(self.srInputFileName, 'aw+') as f:
             
