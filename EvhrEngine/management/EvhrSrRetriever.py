@@ -49,12 +49,18 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def createWv2(self, toaName):
 
+        import pdb
+        pdb.set_trace()
+        
         wv2File = \
             os.path.join(self.srDir, 
                          os.path.basename(toaName).replace('.tif', '.wv2'))
 
         if not os.path.exists(wv2File):
             
+            if self.logger:
+                self.logger.info('Creating wv2 file from ' + str(toaName))
+
             wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                     'SurfaceReflectance/WVimg5')
         
@@ -257,28 +263,30 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def toaToBin(self, toaName):
 
-        if self.logger:
-            self.logger.info('Extracting raster from ' + str(toaName))
-
-        toaGdalFile = GdalFile(toaName)
-
         binFileName = \
             os.path.join(self.srDir, 
                          os.path.basename(toaName).replace('.tif', '.bin'))
         
-        with open(binFileName, 'w') as f:
+        if not os.path.exists(binFileName):
             
-            for lineNum in range(toaGdalFile.dataset.RasterYSize):
-                for bandNum in range(toaGdalFile.dataset.RasterCount):
+            if self.logger:
+                self.logger.info('Extracting raster from ' + str(toaName))
+
+            toaGdalFile = GdalFile(toaName)
+
+            with open(binFileName, 'w') as f:
+            
+                for lineNum in range(toaGdalFile.dataset.RasterYSize):
+                    for bandNum in range(toaGdalFile.dataset.RasterCount):
                     
-                    band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
+                        band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
                     
-                    npa = band.ReadAsArray(0,
-                                           lineNum,
-                                           toaGdalFile.dataset.RasterXSize,
-                                           1)
+                        npa = band.ReadAsArray(0,
+                                               lineNum,
+                                               toaGdalFile.dataset.RasterXSize,
+                                               1)
                     
-                    npa.tofile(f)
+                        npa.tofile(f)
                     
         return binFileName
         
@@ -287,55 +295,57 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def writeMeta(self, toaName):
         
-        if self.logger:
-            self.logger.info('Extracting metadata from ' + str(toaName))
-
-        dgFile = DgFile(toaName)
-
-        # Time-related fields.
-        date = dgFile.firstLineTime().strftime('%Y-%m-%d')
-        hour = dgFile.firstLineTime().strftime('%H')
-        minute = dgFile.firstLineTime().strftime('%M')
-        minutes = float(hour) * 60.0 + float(minute)
-
-        # Angles, elevations, etc.
-        SZA = 90.0 - dgFile.meanSunElevation()
-        VZA = 90.0 - dgFile.meanSatelliteElevation()
-        SAZ = dgFile.meanSunAzimuth()
-        VAZ = dgFile.meanSatelliteAzimuth()
-        relAZ = SAZ - VAZ
-        
-        #---
-        # Projection information
-        #
-        # According to Yujie, "The xml file has messed up UL and LR," hence
-        # the seemingly misnamed tags.
-        #---
-        lat, lon = self.getLatLon(dgFile.imdTag)
-        projWords = dgFile.srs.GetAttrValue('projcs').split()
-        xScale = dgFile.dataset.GetGeoTransform()[1]
-        yScale = dgFile.dataset.GetGeoTransform()[5]
-        ulx = dgFile.dataset.GetGeoTransform()[0]
-        uly = dgFile.dataset.GetGeoTransform()[3]
-        
-        # Write the file.
         metaFileName = \
             os.path.join(self.srDir, 
                          os.path.basename(toaName).replace('.tif', '.meta'))
 
-        with open(metaFileName, 'w') as f:
+        if not os.path.exists(metaFileName):
             
-            f.write(date)
-            f.write('   %d\n' % minutes)
-            f.write('%f   %f\n' % (lat, lon))
-            f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA, SAZ, VAZ, relAZ))
+            if self.logger:
+                self.logger.info('Extracting metadata from ' + str(toaName))
+
+            dgFile = DgFile(toaName)
+
+            # Time-related fields.
+            date = dgFile.firstLineTime().strftime('%Y-%m-%d')
+            hour = dgFile.firstLineTime().strftime('%H')
+            minute = dgFile.firstLineTime().strftime('%M')
+            minutes = float(hour) * 60.0 + float(minute)
+
+            # Angles, elevations, etc.
+            SZA = 90.0 - dgFile.meanSunElevation()
+            VZA = 90.0 - dgFile.meanSatelliteElevation()
+            SAZ = dgFile.meanSunAzimuth()
+            VAZ = dgFile.meanSatelliteAzimuth()
+            relAZ = SAZ - VAZ
+        
+            #---
+            # Projection information
+            #
+            # According to Yujie, "The xml file has messed up UL and LR," hence
+            # the seemingly misnamed tags.
+            #---
+            lat, lon = self.getLatLon(dgFile.imdTag)
+            projWords = dgFile.srs.GetAttrValue('projcs').split()
+            xScale = dgFile.dataset.GetGeoTransform()[1]
+            yScale = dgFile.dataset.GetGeoTransform()[5]
+            ulx = dgFile.dataset.GetGeoTransform()[0]
+            uly = dgFile.dataset.GetGeoTransform()[3]
+        
+            # Write the file.
+            with open(metaFileName, 'w') as f:
             
-            f.write('%d   %d\n' % (dgFile.dataset.RasterYSize, 
-                                   dgFile.dataset.RasterXSize))
+                f.write(date)
+                f.write('   %d\n' % minutes)
+                f.write('%f   %f\n' % (lat, lon))
+                f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA,SAZ,VAZ,relAZ))
             
-            f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
-            f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
-            f.write(dgFile.dataset.GetProjection())
+                f.write('%d   %d\n' % (dgFile.dataset.RasterYSize, 
+                                       dgFile.dataset.RasterXSize))
+            
+                f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
+                f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
+                f.write(dgFile.dataset.GetProjection())
 
         return metaFileName
         
