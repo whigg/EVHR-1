@@ -51,7 +51,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         wv2File = \
             os.path.join(self.srDir, 
-                         os.path.basename(toaName).replace('.tif', '.wv2'))
+                         os.path.basename(toaName).replace('-toa.tif', '.wv2'))
 
         if not os.path.exists(wv2File):
             
