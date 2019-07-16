@@ -48,9 +48,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # File_Barrow = 6-sr/srInput.txt
     #---------------------------------------------------------------------------
     def createWv2(self, toaName):
-
-        import pdb
-        pdb.set_trace()
         
         wv2File = \
             os.path.join(self.srDir, 
@@ -69,9 +66,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # This needs to be generalized, but it's all that Yujie provided.
             #---
             maiacFile ='/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
-        
-            self.srInputFileName
-        
+
+            # WVimg5   MAIACruntimefile  imagelistfile   TOApath
             cmd = wvImgExe + ' ' + \
                   maiacFile + ' ' + \
                   self.srInputFileName + ' ' + \
@@ -200,7 +196,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
         # Aggregate the ToAs into SRs and create the SR input file.
         constituents = {}
-
+        os.remove(self.srInputFileName) # Reprocessing could add to original.
+        
         with open(self.srInputFileName, 'aw+') as f:
             
             for toa in toas:
@@ -228,29 +225,27 @@ class EvhrSrRetriever(EvhrToaRetriever):
         self.toaToBin(toaName)
         self.writeMeta(toaName)
         self.createWv2(toaName)
-        # self.runSr()
+        # self.runSr(stripName)
         
     #---------------------------------------------------------------------------
     # runSr
     #---------------------------------------------------------------------------
-    def runSr(self):
+    def runSr(self, stripName):
         
-        srFile = \
-            os.path.join(self.srDir, 
-                         os.path.basename(toaName).replace('.tif', '.wv2'))
+        srFile = os.path.join(self.srDir, stripName + '.bin')
 
         if not os.path.exists(srFile):
             
             srExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'SurfaceReflectance/WVimg5')
         
-            # cmd = srExe + ' ' + \
-            #       **thecatid** + ' ' + \
-            #       **theoutdir**
+            cmd = srExe + ' ' + stripName + ' ' + self.srDir
+            
+            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
+                                 self.maxProcesses != 1)
+            
+        return srFile      
                   
-                  
-                  
-        
     #---------------------------------------------------------------------------
     # toaToBin
     #
