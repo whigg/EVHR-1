@@ -51,7 +51,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         wv2File = \
             os.path.join(self.srDir, 
-                         os.path.basename(toaName).replace('-toa.tif', '.wv2'))
+                         os.path.basename(toaName).replace('.tif', '.wv2'))
 
         if not os.path.exists(wv2File):
             
@@ -204,7 +204,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             for toa in toas:
                 
-                toaBaseName = os.path.basename(toa).replace('-toa.tif', '.bin')
+                toaBaseName = os.path.basename(toa).replace('.tif', '.bin')
                 srName = os.path.join(self.srDir, toaBaseName)
                 constituents[srName] = toas[toa]
                 f.write(os.path.splitext(os.path.basename(toaBaseName))[0]+'\n')
@@ -221,7 +221,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         toaName = os.path.join(self.toaDir,
                                os.path.basename(constituentFileName). \
-                                   replace('.bin', '-toa.tif'))
+                                   replace('.bin', '.tif'))
 
         self.processStrip(stripBandList, toaName)
         self.toaToBin(toaName)
@@ -295,7 +295,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         metaFileName = \
             os.path.join(self.srDir, 
-                         os.path.basename(toaName).replace('-toa.tif', '.meta'))
+                         os.path.basename(toaName).replace('.tif', '.meta'))
 
         if not os.path.exists(metaFileName):
             
