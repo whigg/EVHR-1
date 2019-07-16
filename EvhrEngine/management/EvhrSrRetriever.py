@@ -294,7 +294,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         metaFileName = \
             os.path.join(self.srDir, 
-                         os.path.basename(toaName).replace('.tif', '.meta'))
+                         os.path.basename(toaName).replace('-toa.tif', '.meta'))
 
         if not os.path.exists(metaFileName):
             
