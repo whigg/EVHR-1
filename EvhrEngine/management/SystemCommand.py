@@ -26,6 +26,7 @@ class SystemCommand(object):
         NODE_FAILURE_MSG,
         'no such file or directory',
         RANSAC_MSG,
+        'segmentation fault',
         'stale file handle',
         'stereogrammetry unsuccessful',
         'traceback']
