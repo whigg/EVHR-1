@@ -215,7 +215,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # retrieveOne
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
-
+        
+        import pdb
+        pdb.set_trace()
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
 
