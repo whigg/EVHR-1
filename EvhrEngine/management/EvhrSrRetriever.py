@@ -25,7 +25,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # Initialize the base class.
         super(EvhrSrRetriever, self).__init__(request, logger, numProcesses)
 
-        self.srDir = os.path.join(self.request.destination.name, '6-sr')
+        self.srInputDir = os.path.join(self.request.destination.name, '6-srIn')
+        
+        self.srOutputDir = os.path.join(self.request.destination.name, 
+                                        '7-srOut')
         
         if not os.path.exists(self.srDir):
             os.mkdir(self.srDir)
@@ -50,7 +53,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def createWv2(self, toaName):
         
         wv2File = \
-            os.path.join(self.srDir, 
+            os.path.join(self.srInDir, 
                          os.path.basename(toaName).replace('.tif', '.wv2'))
 
         if not os.path.exists(wv2File):
@@ -234,7 +237,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def runSr(self, stripName):
         
-        srFile = os.path.join(self.srDir, stripName + '.bin')
+        srFile = os.path.join(self.srOutDir, stripName + '.bin')
 
         if not os.path.exists(srFile):
             
@@ -262,7 +265,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def toaToBin(self, toaName):
 
         binFileName = \
-            os.path.join(self.srDir, 
+            os.path.join(self.srInDir, 
                          os.path.basename(toaName).replace('.tif', '.bin'))
         
         if not os.path.exists(binFileName):
@@ -294,7 +297,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def writeMeta(self, toaName):
         
         metaFileName = \
-            os.path.join(self.srDir, 
+            os.path.join(self.srInDir, 
                          os.path.basename(toaName).replace('.tif', '.meta'))
 
         if not os.path.exists(metaFileName):
