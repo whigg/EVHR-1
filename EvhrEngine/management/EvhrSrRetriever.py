@@ -77,7 +77,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             cmd = wvImgExe + ' ' + \
                   maiacFile + ' ' + \
                   self.srInputFileName + ' ' + \
-                  self.srDir
+                  self.srInputDir
               
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
