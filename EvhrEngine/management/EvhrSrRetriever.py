@@ -248,7 +248,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                  'SurfaceReflectance/MAIAC_WV2_5')
         
             # MAIAC_WV2_5  inputfilebase   TOApath outputBRFpath
-            cmd = srExe + ' ' + stripName + ' ' + self.srDir + ' ' + self.srDir
+            cmd = srExe + ' ' + \
+                  stripName + ' ' + \
+                  self.srInputDir + ' ' + \
+                  self.srOutputDir
             
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
