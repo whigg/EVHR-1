@@ -27,13 +27,16 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         self.srInputDir = os.path.join(self.request.destination.name, '6-srIn')
         
+        if not os.path.exists(self.srInDir):
+            os.mkdir(self.srInDir)
+            
         self.srOutputDir = os.path.join(self.request.destination.name, 
                                         '7-srOut')
         
-        if not os.path.exists(self.srDir):
-            os.mkdir(self.srDir)
+        if not os.path.exists(self.srOutDir):
+            os.mkdir(self.srOutDir)
             
-        self.srInputFileName = os.path.join(self.srDir, 'srInput.txt')
+        self.srInputFileName = os.path.join(self.srInDir, 'srInput.txt')
 
     #---------------------------------------------------------------------------
     # aggregate
