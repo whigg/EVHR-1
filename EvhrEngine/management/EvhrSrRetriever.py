@@ -204,8 +204,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             for toa in toas:
                 
-                toaBaseName = os.path.basename(toa).replace('.tif', '.bin')
-                srName = os.path.join(self.srDir, toaBaseName)
+                srBaseName = os.path.basename(toa).replace('-toa.tif', '.bin')
+                srName = os.path.join(self.srDir, srBaseName)
                 constituents[srName] = toas[toa]
                 f.write(os.path.splitext(os.path.basename(toaBaseName))[0]+'\n')
 
@@ -216,8 +216,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
         
-        import pdb
-        pdb.set_trace()
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
 
