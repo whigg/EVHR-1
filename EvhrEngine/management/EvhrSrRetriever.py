@@ -211,7 +211,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             for toa in toas:
                 
                 srBaseName = os.path.basename(toa).replace('-toa.tif', '.bin')
-                srName = os.path.join(self.srDir, srBaseName)
+                srName = os.path.join(self.srOutputDir, srBaseName)
                 constituents[srName] = toas[toa]
                 f.write(os.path.splitext(os.path.basename(srBaseName))[0]+'\n')
 
