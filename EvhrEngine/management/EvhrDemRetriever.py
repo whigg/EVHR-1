@@ -196,13 +196,14 @@ class EvhrDemRetriever(GeoRetriever):
         workDir = os.path.join(self.demDir, pairName)
         os.mkdir(workDir)
         
-        # Copy the scenes to the working directory.
+        # Copy the scenes to the working directory using sym links
         for scene in fileList.items()[0][1]:
-            
-            shutil.copy(scene, workDir)
-            xmlName = scene.replace('.ntf', '.xml')
-            shutil.copy(xmlName, workDir)
-        
+
+            ext = os.path.splitext(scene)[1] # could be .tif or .ntf            
+            dst = os.path.join(workDir, os.path.basename(scene))
+            os.symlink(scene, dst)
+            os.symlink(scene.replace(ext, '.xml'), dst.replace(ext, '.xml'))
+
         # PAIR_NAME     = fileList[0]
         PAIR_NAME     = pairName
         TEST          = 'true'
