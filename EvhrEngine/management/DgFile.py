@@ -6,6 +6,7 @@ import shutil
 import xml.etree.ElementTree as ET
 
 from osgeo.osr import SpatialReference
+from osgeo import gdal
 
 from django.conf import settings
 
@@ -32,8 +33,10 @@ class DgFile(GdalFile):
         if extension != '.ntf' and extension != '.tif':
             raise RuntimeError('{} is not a NITF or TIFF file'.format(fileName))
 
+        self.extension = extension
+
         # Ensure the XML file exists.
-        xmlFileName = fileName.replace(extension, '.xml')
+        xmlFileName = fileName.replace(self.extension, '.xml')
 
         if not os.path.isfile(xmlFileName):
             raise RuntimeError('{} does not exist'.format(xmlFileName))
@@ -144,10 +147,8 @@ class DgFile(GdalFile):
     def getBand(self, outputDir, bandName):
 
         gdalBandIndex = int(self.bandNameList.index(bandName)) + 1
- 
-        extension = os.path.splitext(self.fileName)[1]
-        
-        baseName = os.path.basename(self.fileName.replace(extension, \
+       
+        baseName = os.path.basename(self.fileName.replace(self.extension, \
                                             '_b{}.tif'.format(gdalBandIndex)))
 
         tempBandFile = os.path.join(outputDir, baseName)
@@ -296,6 +297,23 @@ class DgFile(GdalFile):
 
         except:
           return None          
+    
+    #---------------------------------------------------------------------------
+    # toBandInterleavedBinary()
+    #---------------------------------------------------------------------------
+    def toBandInterleavedBinary(self, outputDir):
+   
+        outBin = os.path.join(outputDir, 
+               os.path.basename(self.fileName.replace(self.extension, '.bin')))
+
+        try:
+            ds = gdal.Open(self.fileName)
+            ds = gdal.Translate(outBin, ds, creationOptions = ["INTERLEAVE=BAND"])
+            ds = None
+            return outBin
+
+        except:
+            return None
 
     #---------------------------------------------------------------------------
     # year()
