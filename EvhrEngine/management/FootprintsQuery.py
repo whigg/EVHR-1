@@ -1,5 +1,6 @@
 
 import os
+import psycopg2
 import tempfile
 from xml.dom import minidom
 
@@ -163,9 +164,6 @@ class FootprintsQuery(object):
             whereClause += ' AND (pairname IS NOT NULL)'
 
         # Add the catalog ID list.
-        # if self.catalogID:
-        #     whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'
-            
         first = True
         
         for catID in self.catalogIDs:
@@ -251,6 +249,22 @@ class FootprintsQuery(object):
 
         return scenes
         
+    #---------------------------------------------------------------------------
+    # getScenesFromPostgres
+    #---------------------------------------------------------------------------
+    def getScenesFromPostgres(self):
+        
+        connection = \
+            psycopg2.connect(user='rlgill',
+                             password='vcKpgkA08Wu0gD2y33Py',
+                             host='arcdb02.atss.adapt.nccs.nasa.gov',
+                             database='arcgis')
+        
+
+        if(connection):
+            
+            connection.close()            
+
     #---------------------------------------------------------------------------
     # setMaximumScenes
     #---------------------------------------------------------------------------
