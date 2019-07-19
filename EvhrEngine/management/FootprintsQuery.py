@@ -340,7 +340,11 @@ class FootprintsQuery(object):
         cursor = connection.cursor()
         
         # Run the query.
-        cmd = 'select * from nga_footprint ' + \
+        fields = (sensor, acq_time, catalog_id, stereopair, s_filepath)
+        
+        cmd = 'select ' + \
+              ', '.join(fields) + \
+              ' from nga_footprint ' + \
               self._buildWhereClausePostgres() + \
               ' order by acq_time desc'
         
