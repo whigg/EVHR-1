@@ -191,6 +191,83 @@ class FootprintsQuery(object):
         return unicode(whereClause)
         
     #---------------------------------------------------------------------------
+    # _buildWhereClausePostgres
+    #---------------------------------------------------------------------------
+    def _buildWhereClausePostgres(self):
+        
+        # Add level-1 data only, the start of a where clause.    
+        whereClause = "where (prod_code like '_1B_')"
+        
+        # Add sensor list.
+        first = True
+        sensors = self.sensors if self.sensors else FootprintsQuery.RUN_SENSORS
+        
+        for sensor in sensors:
+
+            if first:
+
+                first = False
+                whereClause += ' AND ('
+
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'SENSOR=' + "'" + sensor + "'"
+
+        if not first:
+            whereClause += ')'
+
+        # Add scene list.
+        first = True
+        
+        for scene in self.scenes:
+    
+            if first:
+
+                first = False
+
+                whereClause += ' AND ('
+                
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'S_FILEPATH=' + "'" + scene + "'"
+
+        if not first:
+            whereClause += ')'
+
+        # Add pairs only clause.
+        if self.pairsOnly:
+            whereClause += ' AND (pairname IS NOT NULL)'
+
+        # Add the catalog ID list.
+        first = True
+        
+        for catID in self.catalogIDs:
+
+            if first:
+
+                first = False
+                whereClause += ' AND ('
+
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'CATALOG_ID=' + "'" + catID + "'"
+
+        if not first:
+            whereClause += ')'
+            
+        # Set panchromatic or multispectral.
+        if not self.usePanchromatic:
+            whereClause += ' AND (SPEC_TYPE <> \'Panchromatic\' )'  
+          
+        if not self.useMultispectral:
+            whereClause += ' AND (SPEC_TYPE <> \'Multispectral\')'
+
+        return unicode(whereClause)
+        
+    #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
     def getScenes(self):
@@ -260,8 +337,12 @@ class FootprintsQuery(object):
                                       database='arcgis')
         
         cursor = connection.cursor()
-        sqlCommand = 'select * from nga_footprint ' + self._buildWhereClause()
-        cursor.execute(sqlCommand)
+        
+        cmd = 'select * from nga_footprint ' + \
+              self._buildWhereClausePostgres() + \
+              ' order by acq_time desc'
+        
+        cursor.execute(cmd)
         
         if(connection):
             
