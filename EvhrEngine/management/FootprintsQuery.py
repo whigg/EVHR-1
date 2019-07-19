@@ -340,7 +340,8 @@ class FootprintsQuery(object):
         cursor = connection.cursor()
         
         # Run the query.
-        fields = (sensor, acq_time, catalog_id, stereopair, s_filepath)
+        fields = ('sensor', 'acq_time', 'catalog_id', 'stereopair', 
+                  's_filepath')
         
         cmd = 'select ' + \
               ', '.join(fields) + \
