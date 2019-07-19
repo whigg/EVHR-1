@@ -331,6 +331,7 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     def getScenesFromPostgres(self):
         
+        # Establish a DB connection.
         connection = psycopg2.connect(user='rlgill',
                                       password='vcKpgkA08Wu0gD2y33Py',
                                       host='arcdb02.atss.adapt.nccs.nasa.gov',
@@ -338,16 +339,34 @@ class FootprintsQuery(object):
         
         cursor = connection.cursor()
         
+        # Run the query.
         cmd = 'select * from nga_footprint ' + \
               self._buildWhereClausePostgres() + \
               ' order by acq_time desc'
         
+        if self.maxScenes:
+            cmd += ' -limit ' + str(self.maxScenes)
+
+        if self.logger:
+            self.logger.info(cmd)
+            
         cursor.execute(cmd)
         
+        # Store the results in FootprintScenes.
+        scenes = []
+
+        for record in cursor:
+            import pdb
+            pdb.set_trace()
+            scenes.append(FootprintsScene(record))
+            
+        # Close connections.
         if(connection):
             
             cursor.close()
-            connection.close()            
+            connection.close()  
+            
+        return scenes          
 
     #---------------------------------------------------------------------------
     # setMaximumScenes
