@@ -260,10 +260,7 @@ class FootprintsQuery(object):
                                       database='arcgis')
         
         cursor = connection.cursor()
-
-        sqlCommand = 'select * from nga_footprint ' + 
-                     self._buildWhereClause()
-                     
+        sqlCommand = 'select * from nga_footprint ' + self._buildWhereClause()
         cursor.execute(sqlCommand)
         
         if(connection):
