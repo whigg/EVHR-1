@@ -254,15 +254,21 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     def getScenesFromPostgres(self):
         
-        connection = \
-            psycopg2.connect(user='rlgill',
-                             password='vcKpgkA08Wu0gD2y33Py',
-                             host='arcdb02.atss.adapt.nccs.nasa.gov',
-                             database='arcgis')
+        connection = psycopg2.connect(user='rlgill',
+                                      password='vcKpgkA08Wu0gD2y33Py',
+                                      host='arcdb02.atss.adapt.nccs.nasa.gov',
+                                      database='arcgis')
         
+        cursor = connection.cursor()
 
+        sqlCommand = 'select * from nga_footprint ' + 
+                     self._buildWhereClause()
+                     
+        cursor.execute(sqlCommand)
+        
         if(connection):
             
+            cursor.close()
             connection.close()            
 
     #---------------------------------------------------------------------------
