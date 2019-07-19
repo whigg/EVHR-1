@@ -113,6 +113,20 @@ class DgFile(GdalFile):
             raise RuntimeError('Could not retrieve abscal factor.')
 
     #---------------------------------------------------------------------------
+    # cloudCover()
+    #---------------------------------------------------------------------------
+    def cloudCover(self):
+
+        try:
+            cc = self.imdTag.find('IMAGE').find('CLOUDCOVER').text
+            if cc is None:
+                cc = self.dataset.GetMetadataItem('NITF_PIAIMC_CLOUDCVR')
+            return float(cc)
+
+        except:
+            return None
+
+    #---------------------------------------------------------------------------
     # effectiveBandwidth()
     #---------------------------------------------------------------------------
     def effectiveBandwidth(self, bandName):
