@@ -92,8 +92,6 @@ class EvhrToaRetriever(GeoRetriever):
 
         outputVrtFileName = os.path.join(self.toaDir, 'toa.vrt')
         
-        import pdb
-        pdb.set_trace()
         cmd = 'gdalbuildvrt -q -overwrite ' + \
               outputVrtFileName + ' ' + \
               ' '.join(outFiles.keys())
