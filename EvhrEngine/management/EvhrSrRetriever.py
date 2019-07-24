@@ -247,7 +247,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
             srExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'SurfaceReflectance/MAIAC_WV2_5')
         
-            # MAIAC_WV2_5  inputfilebase   TOApath outputBRFpath
             cmd = srExe + ' ' + \
                   stripName + ' ' + \
                   self.srInputDir + ' ' + \
