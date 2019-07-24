@@ -90,7 +90,7 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def aggregate(self, outFiles):
 
-        outputVrtFileName = os.path.join(self.toaDir, toa.vrt)
+        outputVrtFileName = os.path.join(self.toaDir, 'toa.vrt')
         
         cmd = 'gdalbuildvrt -q -overwrite ' + \
               outputVrtFileName + ' ' + \
