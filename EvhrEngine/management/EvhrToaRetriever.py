@@ -86,6 +86,20 @@ class EvhrToaRetriever(GeoRetriever):
             if not os.path.exists(d): os.mkdir(d)
             
     #---------------------------------------------------------------------------
+    # aggregate
+    #---------------------------------------------------------------------------
+    def aggregate(self, outFiles):
+
+        import pdb
+        pdb.set_trace()
+        
+        cmd = 'gdalbuildvrt -q -overwrite ' + \
+              outputVrtFileName + ' ' + \
+              sortedToaList
+              
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
+
+    #---------------------------------------------------------------------------
     # createDemForOrthos
     #
     # retrieveOne -> processScene -> orthoOne -> createDemForOrthos
