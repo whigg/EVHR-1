@@ -90,12 +90,9 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def aggregate(self, outFiles):
 
-        import pdb
-        pdb.set_trace()
-        
         cmd = 'gdalbuildvrt -q -overwrite ' + \
               outputVrtFileName + ' ' + \
-              sortedToaList
+              outFiles.keys()
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
