@@ -96,7 +96,7 @@ class EvhrToaRetriever(GeoRetriever):
         pdb.set_trace()
         cmd = 'gdalbuildvrt -q -overwrite ' + \
               outputVrtFileName + ' ' + \
-              outFiles.keys()
+              ' '.join(outFiles.keys())
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
