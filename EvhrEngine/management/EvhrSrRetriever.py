@@ -230,7 +230,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                    replace('.bin', '.tif'))
 
         self.processStrip(stripBandList, toaName)
-        self.toaToBin(toaName)
+        # self.toaToBin(toaName)
+        DgFile(toaName).toBandInterleavedBinary(self.srInputDir)
         self.writeMeta(toaName)
         self.createWv2(toaName)
         self.runSr(stripName)
@@ -267,34 +268,34 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # line2, band 2
     # ...
     #---------------------------------------------------------------------------
-    def toaToBin(self, toaName):
-
-        binFileName = \
-            os.path.join(self.srInputDir, 
-                         os.path.basename(toaName).replace('.tif', '.bin'))
-        
-        if not os.path.exists(binFileName):
-            
-            if self.logger:
-                self.logger.info('Extracting raster from ' + str(toaName))
-
-            toaGdalFile = GdalFile(toaName)
-
-            with open(binFileName, 'w') as f:
-            
-                for lineNum in range(toaGdalFile.dataset.RasterYSize):
-                    for bandNum in range(toaGdalFile.dataset.RasterCount):
-                    
-                        band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
-                    
-                        npa = band.ReadAsArray(0,
-                                               lineNum,
-                                               toaGdalFile.dataset.RasterXSize,
-                                               1)
-                    
-                        npa.tofile(f)
-                    
-        return binFileName
+    # def toaToBin(self, toaName):
+    #
+    #     binFileName = \
+    #         os.path.join(self.srInputDir,
+    #                      os.path.basename(toaName).replace('.tif', '.bin'))
+    #
+    #     if not os.path.exists(binFileName):
+    #
+    #         if self.logger:
+    #             self.logger.info('Extracting raster from ' + str(toaName))
+    #
+    #         toaGdalFile = GdalFile(toaName)
+    #
+    #         with open(binFileName, 'w') as f:
+    #
+    #             for lineNum in range(toaGdalFile.dataset.RasterYSize):
+    #                 for bandNum in range(toaGdalFile.dataset.RasterCount):
+    #
+    #                     band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
+    #
+    #                     npa = band.ReadAsArray(0,
+    #                                            lineNum,
+    #                                            toaGdalFile.dataset.RasterXSize,
+    #                                            1)
+    #
+    #                     npa.tofile(f)
+    #
+    #     return binFileName
         
     #---------------------------------------------------------------------------
     # writeMeta
