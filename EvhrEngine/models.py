@@ -114,31 +114,3 @@ class EvhrScene(models.Model):
                                 on_delete = models.CASCADE)
 
     sceneFile = models.FileField()
-
-    # #---------------------------------------------------------------------------
-    # # getProdLevelCode
-    # #---------------------------------------------------------------------------
-    # def getProdLevelCode(self):
-    #
-    #     try:
-    #         extension = os.path.splitext(self.sceneFile.name)[1]
-    #         xmlFileName = self.sceneFile.name.replace(extension, '.xml')
-    #         tree = ET.parse(xmlFileName)
-    #
-    #         return tree.getroot().find('IMD').find('PRODUCTLEVEL').text
-    #
-    #     except:
-    #         return ''
-    #
-    # #---------------------------------------------------------------------------
-    # # save
-    # #---------------------------------------------------------------------------
-    # def save(self, *args, **kwargs):
-    #
-    #     if '1B' in self.getProdLevelCode(): # could be Stereo 1B or LV1B
-    #
-    #         # Invoke the base class save().
-    #         super(EvhrScene, self).save(*args, **kwargs)
-    #
-    #     else:
-    #         print 'Scene was not saved because it is not level 1B.'

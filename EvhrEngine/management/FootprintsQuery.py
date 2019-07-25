@@ -1,5 +1,6 @@
 
 import os
+import psycopg2
 import tempfile
 from xml.dom import minidom
 
@@ -33,12 +34,15 @@ class FootprintsQuery(object):
                                
         self.footprintsFile = footprintsFile
         self.logger = logger
-        self.catalogID = None
+        self.catalogIDs = []
         self.maxScenes = None
         self.minOverlapInDegrees = 0.0
         self.pairsOnly = False
         self.scenes = []
         self.sensors = []
+
+        self.useMultispectral = True
+        self.usePanchromatic = True
         
         self.ulx = None
         self.uly = None
@@ -79,9 +83,9 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     # addCatalogID
     #---------------------------------------------------------------------------
-    def addCatalogID(self, catalogID):
+    def addCatalogID(self, catalogIDs = []):
         
-        self.catalogID = catalogID
+        self.catalogIDs.extend(catalogIDs)
         
     #---------------------------------------------------------------------------
     # addEvhrScenes
@@ -119,8 +123,9 @@ class FootprintsQuery(object):
         
         # Add sensor list.
         first = True
-
-        for sensor in FootprintsQuery.RUN_SENSORS:
+        sensors = self.sensors if self.sensors else FootprintsQuery.RUN_SENSORS
+        
+        for sensor in sensors:
 
             if first:
 
@@ -158,10 +163,108 @@ class FootprintsQuery(object):
         if self.pairsOnly:
             whereClause += ' AND (pairname IS NOT NULL)'
 
-        # Add the catalog ID.
-        if self.catalogID:
-            whereClause += ' AND (CATALOG_ID=' "'" + self.catalogID + "'" + ')'     
+        # Add the catalog ID list.
+        first = True
+        
+        for catID in self.catalogIDs:
+
+            if first:
+
+                first = False
+                whereClause += ' AND ('
+
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'CATALOG_ID=' + "'" + catID + "'"
+
+        if not first:
+            whereClause += ')'
+            
+        # Set panchromatic or multispectral.
+        if not self.usePanchromatic:
+            whereClause += ' AND (SPEC_TYPE <> \'Panchromatic\' )'  
           
+        if not self.useMultispectral:
+            whereClause += ' AND (SPEC_TYPE <> \'Multispectral\')'
+
+        return unicode(whereClause)
+        
+    #---------------------------------------------------------------------------
+    # _buildWhereClausePostgres
+    #---------------------------------------------------------------------------
+    def _buildWhereClausePostgres(self):
+        
+        # Add level-1 data only, the start of a where clause.    
+        whereClause = "where (prod_code like '_1B_')"
+        
+        # Add sensor list.
+        first = True
+        sensors = self.sensors if self.sensors else FootprintsQuery.RUN_SENSORS
+        
+        for sensor in sensors:
+
+            if first:
+
+                first = False
+                whereClause += ' AND ('
+
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'SENSOR=' + "'" + sensor + "'"
+
+        if not first:
+            whereClause += ')'
+
+        # Add scene list.
+        first = True
+        
+        for scene in self.scenes:
+    
+            if first:
+
+                first = False
+
+                whereClause += ' AND ('
+                
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'S_FILEPATH=' + "'" + scene + "'"
+
+        if not first:
+            whereClause += ')'
+
+        # Add pairs only clause.
+        if self.pairsOnly:
+            whereClause += ' AND (pairname IS NOT NULL)'
+
+        # Add the catalog ID list.
+        first = True
+        
+        for catID in self.catalogIDs:
+
+            if first:
+
+                first = False
+                whereClause += ' AND ('
+
+            else:
+                whereClause += ' OR '
+
+            whereClause += 'CATALOG_ID=' + "'" + catID + "'"
+
+        if not first:
+            whereClause += ')'
+            
+        # Set panchromatic or multispectral.
+        if not self.usePanchromatic:
+            whereClause += ' AND (SPEC_TYPE <> \'Panchromatic\' )'  
+          
+        if not self.useMultispectral:
+            whereClause += ' AND (SPEC_TYPE <> \'Multispectral\')'
+
         return unicode(whereClause)
         
     #---------------------------------------------------------------------------
@@ -224,6 +327,53 @@ class FootprintsQuery(object):
         return scenes
         
     #---------------------------------------------------------------------------
+    # getScenesFromPostgres
+    #---------------------------------------------------------------------------
+    def getScenesFromPostgres(self):
+        
+        # Establish a DB connection.
+        connection = psycopg2.connect(user='rlgill',
+                                      password='vcKpgkA08Wu0gD2y33Py',
+                                      host='arcdb02.atss.adapt.nccs.nasa.gov',
+                                      database='arcgis')
+        
+        cursor = connection.cursor()
+        
+        # Run the query.
+        fields = ('sensor', 'acq_time', 'catalog_id', 'stereopair', 
+                  's_filepath')
+        
+        cmd = 'select ' + \
+              ', '.join(fields) + \
+              ' from nga_footprint ' + \
+              self._buildWhereClausePostgres() + \
+              ' order by acq_time desc'
+        
+        if self.maxScenes:
+            cmd += ' -limit ' + str(self.maxScenes)
+
+        if self.logger:
+            self.logger.info(cmd)
+            
+        cursor.execute(cmd)
+        
+        # Store the results in FootprintScenes.
+        scenes = []
+
+        for record in cursor:
+            import pdb
+            pdb.set_trace()
+            scenes.append(FootprintsScene(record))
+            
+        # Close connections.
+        if(connection):
+            
+            cursor.close()
+            connection.close()  
+            
+        return scenes          
+
+    #---------------------------------------------------------------------------
     # setMaximumScenes
     #---------------------------------------------------------------------------
     def setMaximumScenes(self, maximum):
@@ -243,3 +393,18 @@ class FootprintsQuery(object):
     def setPairsOnly(self, pairsOnly = True):
         
         self.pairsOnly = pairsOnly
+
+    #---------------------------------------------------------------------------
+    # setPanchromaticOff
+    #---------------------------------------------------------------------------
+    def setPanchromaticOff(self):
+        
+        self.usePanchromatic = False
+        
+    #---------------------------------------------------------------------------
+    # setMultispectralOff
+    #---------------------------------------------------------------------------
+    def setMultispectralOff(self):
+        
+        self.useMultispectral = False
+        
