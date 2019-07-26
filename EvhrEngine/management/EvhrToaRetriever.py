@@ -90,11 +90,22 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def aggregate(self, outFiles):
 
+        # Sort the files from least to most cloud cover.
+        ccDict = {}
+        
+        for outFile in outFiles:
+            
+            dg = DgFile(outFile)
+            ccDict[dg.cloudCover()] = outFile
+        
+        sortedFiles = [value for (key, value) in sorted(ccDict.items())]
+        
+        # Build the VRT.
         outputVrtFileName = os.path.join(self.toaDir, 'toa.vrt')
         
         cmd = 'gdalbuildvrt -q -overwrite ' + \
               outputVrtFileName + ' ' + \
-              ' '.join(outFiles.keys())
+              ' '.join(sortedFiles)
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
