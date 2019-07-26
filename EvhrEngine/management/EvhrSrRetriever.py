@@ -208,7 +208,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         with open(self.srInputFileName, 'aw+') as f:
             
-            for toa in toas:
+            for toa in sorted(toas):
                 
                 srBaseName = os.path.basename(toa).replace('-toa.tif', '.bin')
                 srName = os.path.join(self.srOutputDir, srBaseName)
