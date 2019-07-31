@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 import gdal
 import numpy
@@ -73,14 +74,27 @@ class EvhrSrRetriever(EvhrToaRetriever):
             #---
             maiacFile ='/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
 
+            #---
+            # WVimg5 wants to process all IDs in srInput.txt, while we need it
+            # to only process this one.  To work around that, create a
+            # temporary file containing only this ID.
+            #---
+            oneID = os.path.basename(toaName)
+            tempInput = tempfile.mkstemp()[1]
+            
+            with open(tempInput, 'w') as f:
+                f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
+            
             # WVimg5   MAIACruntimefile  imagelistfile   TOApath
             cmd = wvImgExe + ' ' + \
                   maiacFile + ' ' + \
-                  self.srInputFileName + ' ' + \
+                  tempInput + ' ' + \
                   self.srInputDir
               
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
+                                 
+            os.remove(tempInput)
         
         return wv2File
 
