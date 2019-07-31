@@ -44,7 +44,7 @@ class Command(BaseCommand):
         if hasattr(settings, 'MAXIMUM_SCENES'):
             fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
-        # fpScenes = fpq.getScenes()
-        # print 'Scenes: ' + str(fpScenes)
+        fpScenes = fpq.getScenes()
+        print 'Scenes: ' + str(fpScenes)
 
-        fpq.getScenesFromPostgres()
+        # fpq.getScenesFromPostgres()
