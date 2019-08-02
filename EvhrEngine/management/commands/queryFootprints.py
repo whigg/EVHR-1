@@ -45,7 +45,7 @@ class Command(BaseCommand):
             
             ulx, uly, lrx, lry, epsg = options['aoi']
             srs = SpatialReference()
-            srs.ImportFromEPSG(epsg)
+            srs.ImportFromEPSG(int(epsg))
             fpq.addAoi(ulx, uly, lrx, lry, srs)
             
         if options['catIDs']:
