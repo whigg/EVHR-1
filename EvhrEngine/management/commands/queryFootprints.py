@@ -1,3 +1,5 @@
+import sys
+
 from osgeo.osr import SpatialReference
 
 from django.core.management.base import BaseCommand
@@ -26,6 +28,9 @@ class Command(BaseCommand):
                             help='List of catalog IDs',
                             nargs='+')
 
+        parser.add_argument('--maxScenes', 
+                            help='The maximum number of scenes to return')
+                            
         parser.add_argument('--multiOnly', 
                             help='Only use multispectral',
                             action='store_true')
@@ -51,14 +56,21 @@ class Command(BaseCommand):
         if options['catIDs']:
             fpq.addCatalogID(options['catIDs'])
         
-        if options['sensors']:
-            fpq.addSensors(options['sensors'])
-
         if options['multiOnly']:
             fpq.setPanchromaticOff()
             
+        if options['sensors']:
+            fpq.addSensors(options['sensors'])
+
+        maxScenes = sys.maxint
+        
         if hasattr(settings, 'MAXIMUM_SCENES'):
-            fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
+            maxScenes = min(maxScenes, settings.MAXIMUM_SCENES)
+            
+        if options['maxScenes']:
+            maxScenes = min(maxScenes, options['maxScenes'])
+            
+        fpq.setMaximumScenes(maxScenes)
             
         fpScenes = fpq.getScenes()
         print 'Scenes: ' + str(fpScenes)
