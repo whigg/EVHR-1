@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
         parser.add_argument('--aoi', 
                             help='ulx uly lrx lry epsg',
-                            nargs=4)
+                            nargs=5)
 
         parser.add_argument('--catIDs', 
                             help='List of catalog IDs',
