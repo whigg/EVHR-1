@@ -12,6 +12,7 @@ from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 # class Command
 #
 # ./manage.py queryFootprints --catIDs 10300100053F4400 10300100060AF200 10300100064CE200 10300100060DDC00 103001000667BA00 103001001F95E700 103001002047F300 --multiOnly --sensors WV02 WV03
+# ./manage.py queryFootprints --sensors WV03 --aoi -148.00 65.00 -147.50 64.50 4326 --maxScenes 1
 #-------------------------------------------------------------------------------
 class Command(BaseCommand):
     
@@ -62,6 +63,8 @@ class Command(BaseCommand):
         if options['sensors']:
             fpq.addSensors(options['sensors'])
 
+        import pdb
+        pdb.set_trace()
         maxScenes = sys.maxint
         
         if hasattr(settings, 'MAXIMUM_SCENES'):
