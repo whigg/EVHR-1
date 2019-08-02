@@ -30,7 +30,8 @@ class Command(BaseCommand):
                             nargs='+')
 
         parser.add_argument('--maxScenes', 
-                            help='The maximum number of scenes to return')
+                            help='The maximum number of scenes to return',
+                            type=int)
                             
         parser.add_argument('--multiOnly', 
                             help='Only use multispectral',
