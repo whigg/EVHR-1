@@ -1,4 +1,5 @@
 import os
+import shutil
 import tempfile
 
 import gdal
@@ -30,6 +31,16 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         if not os.path.exists(self.srInputDir):
             os.mkdir(self.srInputDir)
+            
+        # Copy the look-up files.
+        lu0 = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                           'SurfaceReflectance/LUT_WV2.0.bin')
+
+        lu1 = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                           'SurfaceReflectance/LUT_WV2.1.bin')
+
+        shutil.copy(lu0, self.srInputDir)
+        shutil.copy(lu1, self.srInputDir)
             
         self.srOutputDir = os.path.join(self.request.destination.name, 
                                         '7-srOut')
