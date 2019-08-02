@@ -35,8 +35,11 @@ class Command(BaseCommand):
 
         fpq = FootprintsQuery()
 
-        fpq.addCatalogID(options['catIDs'])
-        fpq.addSensors(options['sensors'])
+        if options['catIDs']:
+            fpq.addCatalogID(options['catIDs'])
+        
+        if options['sensors']:
+            fpq.addSensors(options['sensors'])
 
         if options['multiOnly']:
             fpq.setPanchromaticOff()
