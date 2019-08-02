@@ -203,8 +203,14 @@ class EvhrDemRetriever(GeoRetriever):
 
             ext = os.path.splitext(scene)[1] # could be .tif or .ntf            
             dst = os.path.join(workDir, os.path.basename(scene))
-            os.symlink(scene, dst)
-            os.symlink(scene.replace(ext, '.xml'), dst.replace(ext, '.xml'))
+            
+            if not os.path.exists(dst):
+                os.symlink(scene, dst)
+                
+            dstXml = dst.replace(ext, '.xml')
+            
+            if not os.path.exists(dstXml):
+                os.symlink(scene.replace(ext, '.xml'), dstXml)
 
         # PAIR_NAME     = fileList[0]
         PAIR_NAME     = pairName
