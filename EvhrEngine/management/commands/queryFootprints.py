@@ -1,3 +1,5 @@
+from osgeo.osr import SpatialReference
+
 from django.core.management.base import BaseCommand
 
 from django.conf import settings
@@ -15,6 +17,10 @@ class Command(BaseCommand):
     # add_arguments
     #---------------------------------------------------------------------------
     def add_arguments(self, parser):
+
+        parser.add_argument('--aoi', 
+                            help='ulx uly lrx lry epsg',
+                            nargs=4)
 
         parser.add_argument('--catIDs', 
                             help='List of catalog IDs',
@@ -35,6 +41,13 @@ class Command(BaseCommand):
 
         fpq = FootprintsQuery()
 
+        if options['aoi']:
+            
+            ulx, uly, lrx, lry, epsg = options['aoi']
+            srs = SpatialReference()
+            srs.ImportFromEPSG(epsg)
+            fpq.addAoi(ulx, uly, lrx, lry, srs)
+            
         if options['catIDs']:
             fpq.addCatalogID(options['catIDs'])
         
