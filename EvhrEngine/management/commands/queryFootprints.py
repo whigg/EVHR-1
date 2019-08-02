@@ -64,8 +64,6 @@ class Command(BaseCommand):
         if options['sensors']:
             fpq.addSensors(options['sensors'])
 
-        import pdb
-        pdb.set_trace()
         maxScenes = sys.maxint
         
         if hasattr(settings, 'MAXIMUM_SCENES'):
