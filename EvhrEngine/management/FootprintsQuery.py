@@ -361,8 +361,6 @@ class FootprintsQuery(object):
         scenes = []
 
         for record in cursor:
-            import pdb
-            pdb.set_trace()
             scenes.append(FootprintsScene(record))
             
         # Close connections.
