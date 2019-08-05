@@ -3,7 +3,6 @@ import sys
 from osgeo.osr import SpatialReference
 
 from django.core.management.base import BaseCommand
-
 from django.conf import settings
 
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
