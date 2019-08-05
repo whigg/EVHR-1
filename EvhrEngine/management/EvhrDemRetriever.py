@@ -191,6 +191,9 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
 
+        if os.path.exists(constituentFileName):
+            return
+            
         # Create the working directory.
         pairName = fileList.items()[0][0]
         workDir = os.path.join(self.demDir, pairName)
