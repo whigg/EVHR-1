@@ -352,15 +352,15 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             relAZ = SAZ - VAZ
          
-            if (RelAZ > 360):
+            if (relAZ > 360):
                 
-                RelAZ -= 360
+                relAZ -= 360
                  
-            elif (RelAZ<-360):
+            elif (relAZ<-360):
                 
-                RelAZ += 360
+                relAZ += 360
 
-            RelAZ = math.fabs(180 - math.fabs(RelAZ))
+            relAZ = math.fabs(180 - math.fabs(relAZ))
         
             #---
             # Projection information
