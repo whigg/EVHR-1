@@ -360,7 +360,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 
                 RelAZ += 360
 
-            RelAZ = math.fabs(180 - math.fabs(RelAZ)
+            RelAZ = math.fabs(180 - math.fabs(RelAZ))
         
             #---
             # Projection information
