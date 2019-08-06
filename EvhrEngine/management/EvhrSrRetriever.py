@@ -349,7 +349,18 @@ class EvhrSrRetriever(EvhrToaRetriever):
             VZA = 90.0 - dgFile.meanSatelliteElevation()
             SAZ = dgFile.meanSunAzimuth()
             VAZ = dgFile.meanSatelliteAzimuth()
+            
             relAZ = SAZ - VAZ
+         
+            if (RelAZ > 360):
+                
+                RelAZ -= 360
+                 
+            elif (RelAZ<-360):
+                
+                RelAZ += 360
+
+            RelAZ = math.fabs(180 - math.fabs(RelAZ)
         
             #---
             # Projection information
