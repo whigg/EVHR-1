@@ -19,6 +19,8 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 #-------------------------------------------------------------------------------
 class EvhrDemRetriever(GeoRetriever):
 
+    DEBUG_ONLY_PREPARE_DATA = True
+    
     #---------------------------------------------------------------------------
     # __init__
     #---------------------------------------------------------------------------
@@ -215,6 +217,9 @@ class EvhrDemRetriever(GeoRetriever):
             if not os.path.exists(dstXml):
                 os.symlink(scene.replace(ext, '.xml'), dstXml)
 
+        if EvhrDemRetriever.DEBUG_ONLY_PREPARE_DATA:
+            return constituentFileName
+            
         # PAIR_NAME     = fileList[0]
         PAIR_NAME     = pairName
         TEST          = 'true'
