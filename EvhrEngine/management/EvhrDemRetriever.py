@@ -86,7 +86,7 @@ class EvhrDemRetriever(GeoRetriever):
             
             fpq.setPairsOnly()
 
-            if EvhrDemRetriver.DEBUG:
+            if EvhrDemRetriever.DEBUG:
                 fpq.addSensors(['WV03'])
                 
             fpScenes = fpq.getScenes()
