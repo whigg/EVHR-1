@@ -472,11 +472,12 @@ class EvhrToaRetriever(GeoRetriever):
 
         stripBandList = [] # Length of list = number of bands
             
-        bands = ['BAND_P'] if 'P1BS' in stripName else \
-                ['BAND_B', 'BAND_C', 'BAND_G', 'BAND_R', 'BAND_N']
+        # bands = ['BAND_P'] if 'P1BS' in stripName else \
+        #         ['BAND_B', 'BAND_C', 'BAND_G', 'BAND_R', 'BAND_N']
 	
-        #bands =	DgFile(stripScenes[0]).bandNameList # yujie. might use later
-
+        bands = ['BAND_P'] if 'P1BS' in stripName else \
+                ['BAND_C', 'BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
+	
         for bandName in bands:
            
             bandScenes = [DgFile(scene).getBand(self.bandDir, bandName) \
