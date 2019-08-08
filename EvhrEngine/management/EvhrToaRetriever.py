@@ -443,7 +443,6 @@ class EvhrToaRetriever(GeoRetriever):
 
                     dgStrip = DgFile(stripBand)
                     orthoBand = self.orthoOne(stripBand, dgStrip)
-                    #orthoBands.append(orthoBand) # yujie
 
                     toaBands.append(TOA.run(orthoBand,
                                             self.toaDir,
@@ -461,8 +460,13 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # scenesToStrip()
     #
-    # Takes a list of scenes belonging to a strip and mosaics the scenes
-    # together with dg_mosaic
+    # This need not have stripName passed because stripName is derived from any
+    # of the stripScenes.
+    #
+    # Input: a list of scenes all belonging to the same strip
+    #
+    # Output:  a mosaic of all the scenes for each band:  a mosaic containing
+    # band1 from every scene, a mosaic containing band2 from every scene ...
     #---------------------------------------------------------------------------
     def scenesToStrip(self, stripName, stripScenes):
 
@@ -475,6 +479,7 @@ class EvhrToaRetriever(GeoRetriever):
         # bands = ['BAND_P'] if 'P1BS' in stripName else \
         #         ['BAND_B', 'BAND_C', 'BAND_G', 'BAND_R', 'BAND_N']
 	
+        # Yujie says, "coastal band, blue, green, red, NIR".
         bands = ['BAND_P'] if 'P1BS' in stripName else \
                 ['BAND_C', 'BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
 	
