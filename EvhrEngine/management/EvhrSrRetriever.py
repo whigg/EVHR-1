@@ -259,6 +259,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                      replace('.bin', '.tif'))
                                    
         self.orthoStrip(stripBandList, orthoName)
+        
+        import pdb
+        pdb.set_trace()
         self.writeMetaAndBin(orthoName)
         self.writeWv2(orthoName)
         self.runSr(stripName)
