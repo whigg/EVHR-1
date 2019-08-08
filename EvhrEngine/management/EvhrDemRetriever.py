@@ -19,7 +19,7 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 #-------------------------------------------------------------------------------
 class EvhrDemRetriever(GeoRetriever):
 
-    DEBUG_ONLY_PREPARE_DATA = True
+    DEBUG_ONLY_PREPARE_DATA = False
     
     #---------------------------------------------------------------------------
     # __init__
@@ -84,8 +84,8 @@ class EvhrDemRetriever(GeoRetriever):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
             fpq.setPairsOnly()
-            print '*** QUERY ONLY WV03 ***'
-            fpq.addSensors(['WV03'])
+            # print '*** QUERY ONLY WV03 ***'
+            # fpq.addSensors(['WV03'])
             fpScenes = fpq.getScenes()
 
             for scene in fpScenes:
