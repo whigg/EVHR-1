@@ -19,7 +19,7 @@ from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 #-------------------------------------------------------------------------------
 class EvhrDemRetriever(GeoRetriever):
 
-    DEBUG_ONLY_PREPARE_DATA = True
+    DEBUG_ONLY_PREPARE_DATA = False
     
     #---------------------------------------------------------------------------
     # __init__
@@ -143,7 +143,7 @@ class EvhrDemRetriever(GeoRetriever):
             
             self.logger.info('There are ' + \
                              str(len(pairs)) + \
-                             ' pairs amongst the input scenes.')
+                             ' pairs among the input scenes.')
 
         return pairs
 
