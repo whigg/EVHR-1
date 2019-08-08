@@ -257,11 +257,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
         orthoName = os.path.join(self.srInputDir,
                                  os.path.basename(constituentFileName). \
                                      replace('.bin', '.tif'))
-                                   
-        self.orthoStrip(stripBandList, orthoName)
         
         import pdb
         pdb.set_trace()
+                                   
+        self.orthoStrip(stripBandList, orthoName)
         self.writeMetaAndBin(orthoName)
         self.writeWv2(orthoName)
         self.runSr(stripName)
