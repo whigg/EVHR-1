@@ -259,20 +259,22 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + QUERY                 + \
               ' ' + CROP_WINDOW
             
-        try:
-            SystemCommand(cmd, None, self.logger, self.request, True)
-            
-        except RuntimeError as error:
-            
-            if SystemCommand.RANSAC_MSG in error.message.lower():
-                
-                self.logger.warning('ASP was unable to match the left and ' + \
-                                    'right images of a pair.  This pair ' + \
-                                    'will not be processed.')
+        # try:
+        #     SystemCommand(cmd, None, self.logger, self.request, True)
+        #
+        # except RuntimeError as error:
+        #
+        #     if SystemCommand.RANSAC_MSG in error.message.lower():
+        #
+        #         self.logger.warning('ASP was unable to match the left and ' + \
+        #                             'right images of a pair.  This pair ' + \
+        #                             'will not be processed.')
+        #
+        #     else:
+        #         raise
 
-            else:
-                raise 
-                
+        os.system(cmd)
+        
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
         outDemName = os.path.join(pairDir, 'out-DEM_4m.tif')
