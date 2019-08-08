@@ -273,8 +273,6 @@ class EvhrDemRetriever(GeoRetriever):
         #     else:
         #         raise
 
-        import pdb
-        pdb.set_trace()
         os.system(cmd)
         
         # Move the primary output file to the constituent name.
