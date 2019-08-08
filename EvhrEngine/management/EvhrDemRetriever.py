@@ -224,7 +224,7 @@ class EvhrDemRetriever(GeoRetriever):
             
         # PAIR_NAME     = fileList[0]
         PAIR_NAME     = pairName
-        TEST          = 'true'
+        TEST          = 'false' #'true'
         ADAPT         = 'true'
         MAP           = 'false'
         RUN_PSTEREO   = 'true' 
