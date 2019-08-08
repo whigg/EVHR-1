@@ -60,57 +60,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         pass
 
     #---------------------------------------------------------------------------
-    # createWv2
-    #
-    # WVimg5 /att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt file_Barrow
-    # Barrow
-    # File_Barrow = 6-sr/srInput.txt
-    #---------------------------------------------------------------------------
-    def createWv2(self, toaName):
-        
-        wv2File = \
-            os.path.join(self.srInputDir, 
-                         os.path.basename(toaName).replace('.tif', '.wv2'))
-
-        if not os.path.exists(wv2File):
-            
-            if self.logger:
-                self.logger.info('Creating wv2 file from ' + str(toaName))
-
-            wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                    'SurfaceReflectance/WVimg5')
-        
-            #---
-            # This file is used by WVImg5 to identify the MAIAC files to use.
-            # This needs to be generalized, but it's all that Yujie provided.
-            #---
-            maiacFile ='/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
-
-            #---
-            # WVimg5 wants to process all IDs in srInput.txt, while we need it
-            # to only process this one.  To work around that, create a
-            # temporary file containing only this ID.
-            #---
-            oneID = os.path.basename(toaName)
-            tempInput = tempfile.mkstemp()[1]
-            
-            with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
-            
-            # WVimg5   MAIACruntimefile  imagelistfile   TOApath
-            cmd = wvImgExe + ' ' + \
-                  maiacFile + ' ' + \
-                  tempInput + ' ' + \
-                  self.srInputDir
-              
-            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
-                                 self.maxProcesses != 1)
-                                 
-            os.remove(tempInput)
-        
-        return wv2File
-
-    #---------------------------------------------------------------------------
     # getLatLon 
     #
     # According to Yujie's script, WV02Cal.py, which is the example used here
@@ -244,6 +193,60 @@ class EvhrSrRetriever(EvhrToaRetriever):
         return constituents
 
     #---------------------------------------------------------------------------
+    # orthoStrip
+    #
+    # Input:  a mosaic of all the scenes for each band:  a mosaic containing
+    # band1 from every scene, a mosaic containing band2 from every scene ...
+    #
+    # Output:  an orthorectified version of each of the bands in stripBands
+    #---------------------------------------------------------------------------
+    def orthoStrip(self, stripBands, orthoFinal):
+
+        # If the output file exists, don't bother running it again.
+        if not os.path.exists(orthoFinal):
+
+            if self.logger:
+                self.logger.info('Orthorectifing strip {}'.format(orthoFinal))
+
+            # Catch errors, so the constituent continues despite errors.
+            try:
+
+                orthoBands = []
+                
+                for stripBand in stripBands:
+
+                    dgStrip = DgFile(stripBand)
+                    orthoBand = self.orthoOne(stripBand, dgStrip)
+                    orthoBands.append(orthoBand)
+
+                self.mergeBands(orthoBands, orthoFinal)
+      
+                shutil.copy(DgFile(orthoBand).xmlFileName, 
+                            orthoFinal.replace('.tif', '.xml'))    
+
+            except:
+                pass
+
+    #---------------------------------------------------------------------------
+    # retrieveOne
+    #---------------------------------------------------------------------------
+    # def retrieveOne(self, constituentFileName, fileList):
+    #
+    #     stripName = DgFile(fileList[0], self.logger).getStripName()
+    #     stripBandList = self.scenesToStrip(stripName, fileList)
+    #
+    #     toaName = os.path.join(self.toaDir,
+    #                            os.path.basename(constituentFileName). \
+    #                                replace('.bin', '.tif'))
+    #
+    #     self.processStrip(stripBandList, toaName)
+    #     # self.toaToBin(toaName)
+    #     DgFile(toaName).toBandInterleavedBinary(self.srInputDir)
+    #     self.writeMeta(toaName)
+    #     self.writeWv2(toaName)
+    #     self.runSr(stripName)
+        
+    #---------------------------------------------------------------------------
     # retrieveOne
     #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
@@ -251,15 +254,14 @@ class EvhrSrRetriever(EvhrToaRetriever):
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
 
-        toaName = os.path.join(self.toaDir,
-                               os.path.basename(constituentFileName). \
-                                   replace('.bin', '.tif'))
-
-        self.processStrip(stripBandList, toaName)
-        # self.toaToBin(toaName)
-        DgFile(toaName).toBandInterleavedBinary(self.srInputDir)
-        self.writeMeta(toaName)
-        self.createWv2(toaName)
+        orthoName = \
+            os.path.join(self.srInputDir,
+                         os.path.basename(constituentFileName) + '-ortho'. \
+                         replace('.bin', '.tif'))
+                                   
+        self.orthoStrip(stripBandList, orthoName)
+        self.writeMetaAndBin(orthoName)
+        self.writeWv2(orthoName)
         self.runSr(stripName)
         
     #---------------------------------------------------------------------------
@@ -326,70 +328,145 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     # writeMeta
     #---------------------------------------------------------------------------
-    def writeMeta(self, toaName):
-        
+    # def writeMeta(self, toaName):
+    #
+    #     metaFileName = \
+    #         os.path.join(self.srInputDir,
+    #                      os.path.basename(toaName).replace('.tif', '.meta'))
+    #
+    #     if not os.path.exists(metaFileName):
+    #
+    #         if self.logger:
+    #             self.logger.info('Extracting metadata from ' + str(toaName))
+    #
+    #         dgFile = DgFile(toaName)
+    #
+    #         # Time-related fields.
+    #         date = dgFile.firstLineTime().strftime('%Y-%m-%d')
+    #         hour = dgFile.firstLineTime().strftime('%H')
+    #         minute = dgFile.firstLineTime().strftime('%M')
+    #         minutes = float(hour) * 60.0 + float(minute)
+    #
+    #         # Angles, elevations, etc.
+    #         SZA = 90.0 - dgFile.meanSunElevation()
+    #         VZA = 90.0 - dgFile.meanSatelliteElevation()
+    #         SAZ = dgFile.meanSunAzimuth()
+    #         VAZ = dgFile.meanSatelliteAzimuth()
+    #
+    #         relAZ = SAZ - VAZ
+    #
+    #         if (relAZ > 360):
+    #
+    #             relAZ -= 360
+    #
+    #         elif (relAZ<-360):
+    #
+    #             relAZ += 360
+    #
+    #         relAZ = math.fabs(180 - math.fabs(relAZ))
+    #
+    #         #---
+    #         # Projection information
+    #         #
+    #         # According to Yujie, "The xml file has messed up UL and LR," hence
+    #         # the seemingly misnamed tags.
+    #         #---
+    #         lat, lon = self.getLatLon(dgFile.imdTag)
+    #         projWords = dgFile.srs.GetAttrValue('projcs').split()
+    #         xScale = dgFile.dataset.GetGeoTransform()[1]
+    #         yScale = dgFile.dataset.GetGeoTransform()[5]
+    #         ulx = dgFile.dataset.GetGeoTransform()[0]
+    #         uly = dgFile.dataset.GetGeoTransform()[3]
+    #
+    #         # Write the file.
+    #         with open(metaFileName, 'w') as f:
+    #
+    #             f.write(date)
+    #             f.write('   %d\n' % minutes)
+    #             f.write('%f   %f\n' % (lat, lon))
+    #             f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA,SAZ,VAZ,relAZ))
+    #
+    #             f.write('%d   %d\n' % (dgFile.dataset.RasterYSize,
+    #                                    dgFile.dataset.RasterXSize))
+    #
+    #             f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
+    #             f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
+    #             f.write(dgFile.dataset.GetProjection())
+    #
+    #     return metaFileName
+
+    #---------------------------------------------------------------------------
+    # writeMetaAndBin
+    #---------------------------------------------------------------------------
+    def writeMetaAndBin(self, orthoName):
+
         metaFileName = \
-            os.path.join(self.srInputDir, 
-                         os.path.basename(toaName).replace('.tif', '.meta'))
+            os.path.join(self.srInputDir,
+                         os.path.basename(orthoName).replace('.tif', '.meta'))
 
         if not os.path.exists(metaFileName):
-            
+
             if self.logger:
-                self.logger.info('Extracting metadata from ' + str(toaName))
+                self.logger.info('Extracting metadata from ' + str(orthoName))
 
-            dgFile = DgFile(toaName)
+            wv02CalExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                      'SurfaceReflectance/WV02Cal.py')
 
-            # Time-related fields.
-            date = dgFile.firstLineTime().strftime('%Y-%m-%d')
-            hour = dgFile.firstLineTime().strftime('%H')
-            minute = dgFile.firstLineTime().strftime('%M')
-            minutes = float(hour) * 60.0 + float(minute)
+            cmd = wv02CalExe + ' ' + \
+                  os.path.join(self.srInputDir, 'srInput.txt') + ' ' + \
+                  self.srInputDir
+            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
+                                 self.maxProcesses != 1)
 
-            # Angles, elevations, etc.
-            SZA = 90.0 - dgFile.meanSunElevation()
-            VZA = 90.0 - dgFile.meanSatelliteElevation()
-            SAZ = dgFile.meanSunAzimuth()
-            VAZ = dgFile.meanSatelliteAzimuth()
-            
-            relAZ = SAZ - VAZ
-         
-            if (relAZ > 360):
-                
-                relAZ -= 360
-                 
-            elif (relAZ<-360):
-                
-                relAZ += 360
+    #---------------------------------------------------------------------------
+    # writeWv2
+    #
+    # WVimg5 /att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt file_Barrow
+    # Barrow
+    # File_Barrow = 6-sr/srInput.txt
+    #---------------------------------------------------------------------------
+    def writeWv2(self, toaName):
 
-            relAZ = math.fabs(180 - math.fabs(relAZ))
-        
+        wv2File = \
+            os.path.join(self.srInputDir,
+                         os.path.basename(toaName).replace('.tif', '.wv2'))
+
+        if not os.path.exists(wv2File):
+
+            if self.logger:
+                self.logger.info('Creating wv2 file from ' + str(toaName))
+
+            wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                    'SurfaceReflectance/WVimg5')
+
             #---
-            # Projection information
-            #
-            # According to Yujie, "The xml file has messed up UL and LR," hence
-            # the seemingly misnamed tags.
+            # This file is used by WVImg5 to identify the MAIAC files to use.
+            # This needs to be generalized, but it's all that Yujie provided.
             #---
-            lat, lon = self.getLatLon(dgFile.imdTag)
-            projWords = dgFile.srs.GetAttrValue('projcs').split()
-            xScale = dgFile.dataset.GetGeoTransform()[1]
-            yScale = dgFile.dataset.GetGeoTransform()[5]
-            ulx = dgFile.dataset.GetGeoTransform()[0]
-            uly = dgFile.dataset.GetGeoTransform()[3]
-        
-            # Write the file.
-            with open(metaFileName, 'w') as f:
-            
-                f.write(date)
-                f.write('   %d\n' % minutes)
-                f.write('%f   %f\n' % (lat, lon))
-                f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA,SAZ,VAZ,relAZ))
-            
-                f.write('%d   %d\n' % (dgFile.dataset.RasterYSize, 
-                                       dgFile.dataset.RasterXSize))
-            
-                f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
-                f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
-                f.write(dgFile.dataset.GetProjection())
+            maiacFile ='/att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt'
 
-        return metaFileName
+            #---
+            # WVimg5 wants to process all IDs in srInput.txt, while we need it
+            # to only process this one.  To work around that, create a
+            # temporary file containing only this ID.
+            #---
+            oneID = os.path.basename(toaName)
+            tempInput = tempfile.mkstemp()[1]
+
+            with open(tempInput, 'w') as f:
+                f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
+
+            # WVimg5   MAIACruntimefile  imagelistfile   TOApath
+            cmd = wvImgExe + ' ' + \
+                  maiacFile + ' ' + \
+                  tempInput + ' ' + \
+                  self.srInputDir
+
+            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
+                                 self.maxProcesses != 1)
+
+            os.remove(tempInput)
+
+        return wv2File
+
         
