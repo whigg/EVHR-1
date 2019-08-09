@@ -163,17 +163,15 @@ for filebase in f1:
      ulcX = gtf[0] + startx*gtf[1];
      ulcY = gtf[3] + gtf[5]*starty;
      outfile.write('%f   %f   %f   %f\n'% (ulcX, gtf[1], ulcY, gtf[5]))
-     #outfile.write('%f   %f   %f   %f\n'% (gtf[0], gtf[1], gtf[3], gtf[5]))
      outfile.write(proj)
      outfile.close()
 
-     TOAfile = datapath + 'EVHR_' +  filebase + '-TOA.tif'
+     TOAfile = os.path.join(datapath, filebase + '-TOA.tif')
      TOAary = np.zeros((SizeY, SizeX), dtype=np.float32)
      ds2 = gdal.Open(TOAfile)
      if ds2 is None:
          print "Error: cannot open file", WVfile
          sys.exit(1)
-    
    
      outary=np.zeros((SizeY, SizeX), dtype=np.float32)
      bandary= np.zeros((SizeY,SizeX,3)).astype(np.float32)
