@@ -32,16 +32,20 @@ datapath = sys.argv[2] + '/'
 outpath = sys.argv[2] + '/'
 f =open(sys.argv[1], "r")
 f1=f.readlines()
+
 for filebase in f1:
+
      filebase=filebase.strip("\n")
      print filebase
      WVfile = datapath + filebase + '-ortho.tif'
-     xmlfile= datapath + 'EVHR_' + filebase + '-TOA.xml'
+     # xmlfile= datapath + 'EVHR_' + filebase + '-TOA.xml'
+     xmlfile= datapath + filebase + '.xml'
      outbin = outpath + filebase +  '.bin'
      outmeta = outpath + filebase+'.meta'
 
      with open(xmlfile, 'rt') as f:
          tree = ET.parse(f)
+         
      node  = tree.find('.//MEANSUNEL')
      SZA = 90 - float(node.text)
      node  = tree.find('.//MEANSUNAZ')
