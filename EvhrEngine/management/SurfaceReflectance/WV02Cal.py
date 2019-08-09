@@ -158,13 +158,15 @@ for filebase in f1:
      words = sr.GetAttrValue('projcs').split()
      print words[-1][0:-1], "   ", words[-1][-1]
      outfile.write('%s   %s\n'% (words[-1][0:-1],words[-1][-1]))
-         
 	 
      ulcX = gtf[0] + startx*gtf[1];
      ulcY = gtf[3] + gtf[5]*starty;
      outfile.write('%f   %f   %f   %f\n'% (ulcX, gtf[1], ulcY, gtf[5]))
      outfile.write(proj)
      outfile.close()
+     
+     import pdb
+     pdb.set_trace()
 
      TOAfile = os.path.join(datapath, filebase + '-TOA.tif')
      TOAary = np.zeros((SizeY, SizeX), dtype=np.float32)
@@ -180,30 +182,14 @@ for filebase in f1:
          band=ds.GetRasterBand(BandNum[i])
          buf= np.array(band.ReadAsArray(startx, starty, SizeX, SizeY))
          outary= np.float32((buf*gain[i]*(AbScal[i]/EBWidth[i]) + offset[i])*PI*des*des/(S0[i]*math.cos(SZA*D2R)))
-	 #outary= np.float32(buf)
+
 	 band2 = ds2.GetRasterBand(BandNum[i])
 	 buf = np.array(band2.ReadAsArray(startx, starty, SizeX, SizeY))
 	 TOAary = np.float32(buf)
 	 
          print i, gain[i], AbScal[i],EBWidth[i],  offset[i],S0[i],SZA, math.cos(SZA*D2R) , outary[1000][1000], TOAary[1000][1000]
-         #print "outary=", outary.dtype
          if(RGBNum[i]>=0):
              bandary[:,:, RGBNum[i]]=np.float32(TOAary/10000.0)
-	    # print RGBNum[i], BandNum[i], outary[1000][1000], buf[1000][1000],  outary[10][10], buf[10][10]
          outary.tofile(fd)
-     fd.close()
-     print "....\n"
-     #plt.imshow(bandary)
-     #plt.show()
- 
-     #TOAfile = datapath + filebase + '-TOA.tif'
-     #TOAary = np.zeros((SizeY, SizeX), dtype=np.float32)
-     #ds2 = gdal.Open()
-     #if ds2 is None:
-     #    print "Error: cannot open file", WVfile
-     #    sys.exit(1)
-     #for i in range(0, nBands):
-     #    band=ds.GetRasterBand(BandNum[i])
-     #    buf= np.array(band.ReadAsArray(startx, starty, SizeX, SizeY))
-     #	  outary = 
 
+     fd.close()
