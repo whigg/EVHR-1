@@ -33,16 +33,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(self.srInputDir):
             os.mkdir(self.srInputDir)
             
-        # Copy the look-up files.
-        lu0 = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                           'SurfaceReflectance/LUT_WV2.0.bin')
-
-        lu1 = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                           'SurfaceReflectance/LUT_WV2.1.bin')
-
-        shutil.copy(lu0, self.srInputDir)
-        shutil.copy(lu1, self.srInputDir)
-            
         self.srOutputDir = os.path.join(self.request.destination.name, 
                                         '7-srOut')
         
@@ -69,22 +59,22 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # LR, swapping them as needed, to accommodate both correct and incorrect
     # XML files.
     #---------------------------------------------------------------------------
-    def getLatLon(self, imgTag):
-        
-        ulLat = float(imgTag.find('BAND_B/ULLAT').text)
-        ulLon = float(imgTag.find('BAND_B/ULLON').text)
-        lrLat = float(imgTag.find('BAND_B/LRLAT').text)
-        lrLon = float(imgTag.find('BAND_B/LRLON').text)
-        lat = ulLat
-        lon = ulLon
-        
-        if ulLat < lrLat:
-            lat = lrLat
-            
-        if ulLon > lrLon:
-            lon = lrLon
-            
-        return lat, lon
+    # def getLatLon(self, imgTag):
+    #
+    #     ulLat = float(imgTag.find('BAND_B/ULLAT').text)
+    #     ulLon = float(imgTag.find('BAND_B/ULLON').text)
+    #     lrLat = float(imgTag.find('BAND_B/LRLAT').text)
+    #     lrLon = float(imgTag.find('BAND_B/LRLON').text)
+    #     lat = ulLat
+    #     lon = ulLon
+    #
+    #     if ulLat < lrLat:
+    #         lat = lrLat
+    #
+    #     if ulLon > lrLon:
+    #         lon = lrLon
+    #
+    #     return lat, lon
         
     #---------------------------------------------------------------------------
     # getScenes
@@ -259,9 +249,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                      replace('.bin', '.tif'))
         
         self.orthoStrip(stripBandList, orthoName)
-        import pdb
-        pdb.set_trace()
-                                   
         self.writeMetaAndBin(orthoName)
         self.writeWv2(orthoName)
         self.runSr(stripName)
