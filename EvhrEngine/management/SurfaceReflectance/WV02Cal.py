@@ -5,17 +5,10 @@ from osgeo import gdal
 from osgeo import osr
 import numpy as np
 import numpy.ma as ma
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+# import matplotlib.pyplot as plt
+# import matplotlib.image as mpimg
 import sys
-print "?????"
 nBands = 5
-#BandName = ["BAND_C", "BAND_B", "BAND_G", "BAND_Y", "BAND_R","BAND_RE", "BAND_N"]
-#BandName =[ "BAND_B","BAND_G","BAND_R", "BAND_N"]
-#BandNum = [1, 2, 3, 4]
-#RGBNum =  [ 2, 1, 0]
-#gain = [ 0.988, 0.936, 0.952, 0.961]
-#offset=[ -5.736,-3.546, -2.512, -3.300]
 BandName =["BAND_C", "BAND_B","BAND_G","BAND_R", "BAND_N"]
 BandNum = [1, 2, 3, 5, 7] 
 RGBNum =  [-1, 2, 1, 0, -1]
@@ -31,10 +24,10 @@ S0=[1773.81, 2007.27, 1829.62, 1538.85, 1053.21]
 
 PI = 3.14159265358979
 D2R = PI/180
-print "?????"
-datapath = '/att/gpfsfs/briskfs01/ppl/mwooten3/AIST/forYujie/2/' + sys.argv[2] + '/'
-outpath = '../TOA/' + sys.argv[2] + '/'
-print outpath
+# datapath = '/att/gpfsfs/briskfs01/ppl/mwooten3/AIST/forYujie/2/' + sys.argv[2] + '/'
+# outpath = '../TOA/' + sys.argv[2] + '/'
+datapath = sys.argv[2] + '/'
+outpath = sys.argv[2] + '/'
 f =open(sys.argv[1], "r")
 f1=f.readlines()
 for filebase in f1:
