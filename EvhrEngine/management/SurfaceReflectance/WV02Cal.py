@@ -120,10 +120,10 @@ for filebase in f1:
      # ULLat = float(node.text)
      # lat = ULLat
      
-     ulLat = float(imgTag.find('BAND_B/ULLAT').text)
-     ulLon = float(imgTag.find('BAND_B/ULLON').text)
-     lrLat = float(imgTag.find('BAND_B/LRLAT').text)
-     lrLon = float(imgTag.find('BAND_B/LRLON').text)
+     ulLat = float(tree.find('BAND_B/ULLAT').text)
+     ulLon = float(tree.find('BAND_B/ULLON').text)
+     lrLat = float(tree.find('BAND_B/LRLAT').text)
+     lrLon = float(tree.find('BAND_B/LRLON').text)
      lat = ulLat
      lon = ulLon
      
