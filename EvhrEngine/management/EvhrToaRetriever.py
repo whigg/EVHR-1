@@ -358,13 +358,17 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def orthoOne(self, bandFile, origDgFile):
 
-        if self.logger:
-            self.logger.info('Orthorectifying ' + str(bandFile))
-
         baseName  = os.path.splitext(os.path.basename(bandFile))[0]
         orthoFile = os.path.join(self.orthoDir, baseName + '-ortho.tif')
 
         if not os.path.exists(orthoFile):
+
+            if self.logger:
+                
+                self.logger.info('Orthorectifying ' + \
+                                 str(bandFile) + \
+                                 ' to ' + \
+                                 orthoFile)
 
             try:
                 clippedDEM = self.createDemForOrthos(origDgFile.ulx,
