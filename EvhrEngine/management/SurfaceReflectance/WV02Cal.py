@@ -183,9 +183,6 @@ for filebase in f1:
      outfile.write(proj)
      outfile.close()
      
-     import pdb
-     pdb.set_trace()
-     
      # TOAfile = os.path.join(datapath, filebase + '-TOA.tif')
      # TOAary = np.zeros((SizeY, SizeX), dtype=np.float32)
      # ds2 = gdal.Open(TOAfile)
