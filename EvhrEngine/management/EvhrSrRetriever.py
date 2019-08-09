@@ -406,7 +406,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
             os.path.join(self.srInputDir,
                          os.path.basename(orthoName).replace('.tif', '.meta'))
 
-        if not os.path.exists(metaFileName):
+        binFileName = \
+            os.path.join(self.srInputDir,
+                         os.path.basename(orthoName).replace('.tif', '.bin'))
+
+        if not os.path.exists(metaFileName) or os.path.exists(binFileName):
 
             if self.logger:
                 
