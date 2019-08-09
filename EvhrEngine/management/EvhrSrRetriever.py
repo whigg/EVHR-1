@@ -258,10 +258,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                  os.path.basename(constituentFileName). \
                                      replace('.bin', '.tif'))
         
+        self.orthoStrip(stripBandList, orthoName)
         import pdb
         pdb.set_trace()
                                    
-        self.orthoStrip(stripBandList, orthoName)
         self.writeMetaAndBin(orthoName)
         self.writeWv2(orthoName)
         self.runSr(stripName)
@@ -410,7 +410,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             os.path.join(self.srInputDir,
                          os.path.basename(orthoName).replace('.tif', '.bin'))
 
-        if not os.path.exists(metaFileName) or os.path.exists(binFileName):
+        if not os.path.exists(metaFileName) or not os.path.exists(binFileName):
 
             if self.logger:
                 
