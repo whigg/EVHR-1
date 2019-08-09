@@ -28,8 +28,9 @@ PI = 3.14159265358979
 D2R = PI/180
 # datapath = '/att/gpfsfs/briskfs01/ppl/mwooten3/AIST/forYujie/2/' + sys.argv[2] + '/'
 # outpath = '../TOA/' + sys.argv[2] + '/'
-datapath = sys.argv[2] + '/'
-outpath = sys.argv[2] + '/'
+datapath = sys.argv[2]
+outpath = sys.argv[2]
+
 f =open(sys.argv[1], "r")
 f1=f.readlines()
 
@@ -37,11 +38,13 @@ for filebase in f1:
 
      filebase=filebase.strip("\n")
      print filebase
-     WVfile = datapath + filebase + '-ortho.tif'
+
+     # WVfile = datapath + filebase + '-ortho.tif'
      # xmlfile= datapath + 'EVHR_' + filebase + '-TOA.xml'
-     xmlfile= datapath + filebase + '.xml'
-     outbin = outpath + filebase +  '.bin'
-     outmeta = outpath + filebase+'.meta'
+     WVfile = os.path.join(datapath, filebase + '.tif')
+     xmlfile = os.path.join(datapath, filebase + '.xml')
+     outbin = os.path.join(outpath, filebase + '.bin')
+     outmeta = os.path.join(outpath, filebase + '.meta')
 
      with open(xmlfile, 'rt') as f:
          tree = ET.parse(f)
