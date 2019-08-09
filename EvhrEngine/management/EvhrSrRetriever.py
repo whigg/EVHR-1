@@ -417,6 +417,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             cmd = wv02CalExe + ' ' + \
                   os.path.join(self.srInputDir, 'srInput.txt') + ' ' + \
                   self.srInputDir
+                  
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
 
