@@ -221,7 +221,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
                 self.mergeBands(orthoBands, orthoFinal)
       
-                shutil.copy(DgFile(orthoBand).xmlFileName, 
+                shutil.copy(dgStrip.xmlFileName, 
                             orthoFinal.replace('.tif', '.xml'))    
 
             except:
@@ -409,7 +409,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(metaFileName):
 
             if self.logger:
-                self.logger.info('Extracting metadata from ' + str(orthoName))
+                
+                self.logger.info('Extracting metadata and bin from ' + \
+                                 str(orthoName))
 
             wv02CalExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                       'SurfaceReflectance/WV02Cal.py')
