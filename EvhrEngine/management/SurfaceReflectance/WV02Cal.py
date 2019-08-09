@@ -121,9 +121,9 @@ for filebase in f1:
      # lat = ULLat
      
      ulLat = float(tree.find('.//BAND_B//ULLAT').text)
-     ulLon = float(tree.find('BAND_B/ULLON').text)
-     lrLat = float(tree.find('BAND_B/LRLAT').text)
-     lrLon = float(tree.find('BAND_B/LRLON').text)
+     ulLon = float(tree.find('.//BAND_B//ULLON').text)
+     lrLat = float(tree.find('.//BAND_B//LRLAT').text)
+     lrLon = float(tree.find('.//BAND_B//LRLON').text)
      lat = ulLat
      lon = ulLon
      
