@@ -12,7 +12,8 @@ import numpy.ma as ma
 import sys
 nBands = 5
 BandName =["BAND_C", "BAND_B","BAND_G","BAND_R", "BAND_N"]
-BandNum = [1, 2, 3, 5, 7]
+# BandNum = [1, 2, 3, 5, 7]
+BandNum = [1, 2, 3, 4, 5]
 RGBNum =  [-1, 2, 1, 0, -1]
 AbScal = []
 EBWidth = []
@@ -101,23 +102,40 @@ for filebase in f1:
      
      print dimy, dimx, date, m,year, month, day, UT,A, B, JD,  des
      m = h *60+ float(m)
-     node = tree.find(".//BAND_B//ULLON")
-     # The xml file has messed up UL and LR
-     LRLon = float(node.text)
      
-     node = tree.find(".//BAND_B//LRLON")
-     ULLon = float(node.text)
+     # ---
+     # Lat / Lon
+     # ---
+     # node = tree.find(".//BAND_B//ULLON")
+     # # The xml file has messed up UL and LR
+     # LRLon = float(node.text)
+     #
+     # node = tree.find(".//BAND_B//LRLON")
+     # ULLon = float(node.text)
+     #
+     # lon =  ULLon
+     # node = tree.find(".//BAND_B//ULLAT")
+     # LRLat = float(node.text)
+     # node = tree.find(".//BAND_B//LRLAT")
+     # ULLat = float(node.text)
+     # lat = ULLat
      
-     lon =  ULLon
-     print "UL-LR", ULLon, LRLon, lon
-     node = tree.find(".//BAND_B//ULLAT")
-     LRLat = float(node.text)
-     node = tree.find(".//BAND_B//LRLAT")
-     ULLat = float(node.text)
+     ulLat = float(imgTag.find('BAND_B/ULLAT').text)
+     ulLon = float(imgTag.find('BAND_B/ULLON').text)
+     lrLat = float(imgTag.find('BAND_B/LRLAT').text)
+     lrLon = float(imgTag.find('BAND_B/LRLON').text)
+     lat = ulLat
+     lon = ulLon
      
-     lat = ULLat
-     print "LAT--", ULLat, LRLat, lat
+     if ulLat < lrLat:
+         lat = lrLat
+         
+     if ulLon > lrLon:
+         lon = lrLon
      
+     # ---
+     # Abscal and Effect Bandwidth
+     # ---
      AbScal = []
      EBWidth = []
      for bname in BandName:
