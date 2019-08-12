@@ -236,6 +236,53 @@ def orderMosaic(request):
     return JsonResponse({'id': geoRequest.id})
     
 #-------------------------------------------------------------------------------
+# orderSR
+#
+# http://localhost:8000/api/orderSR?ulx=-157.5&uly=71.5&lrx=-156.0&lry=71.0&epsg=4326&outEpsg=102039
+#-------------------------------------------------------------------------------
+@csrf_exempt
+def orderSR(request):
+
+    if request.method != 'POST':
+
+        return JsonResponse({'success': False,
+                             'msg': 'Please use a "POST" request.'})
+
+    geoRequest             = GeoRequest()
+    geoRequest.name        = 'API_' + str(uuid.uuid4())
+    geoRequest.destination = None   # settings.OUTPUT_DIRECTORY
+    geoRequest.startDate   = None   # N/A
+    geoRequest.endDate     = None   # N/A
+    geoRequest.started     = False
+    geoRequest.ulx         = request.POST['ulx']
+    geoRequest.uly         = request.POST['uly']
+    geoRequest.lrx         = request.POST['lrx']
+    geoRequest.lry         = request.POST['lry']
+    
+    ep = EndPoint.objects.filter(name = 'EVHR SR')[0]
+    geoRequest.endPoint = ep
+    
+    geoRequest.srs = GeoRetriever. \
+                     constructSrsFromIntCode(request.POST['epsg']). \
+                     ExportToWkt()
+    
+    geoRequest.save()
+    
+    if request.POST.has_key('scenes'):
+        
+        sceneStr = request.POST['scenes']
+        sceneList = sceneStr.split(',')
+        
+        for scene in sceneList:
+            
+            evhrScene = EvhrScene()
+            evhrScene.request = geoRequest
+            evhrScene.sceneFile = scene
+            evhrScene.save()
+        
+    return JsonResponse({'id': geoRequest.id})
+    
+#-------------------------------------------------------------------------------
 # percentageComplete
 #
 # curl --url "http://evhr102/api/percentageComplete/?id=36"
