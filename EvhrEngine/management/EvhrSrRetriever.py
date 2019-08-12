@@ -17,6 +17,9 @@ from EvhrEngine.models import EvhrScene
 
 #-------------------------------------------------------------------------------
 # class EvhrSrRetriever
+#
+# NOTE: the LUT files must reside in the Django project directory, the directory
+# containing manage.py.
 #-------------------------------------------------------------------------------
 class EvhrSrRetriever(EvhrToaRetriever):
 
@@ -249,10 +252,15 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                      replace('.bin', '.tif'))
         
         self.orthoStrip(stripBandList, orthoName)
-        self.writeMetaAndBin(orthoName)
-        self.writeWv2(orthoName)
-        self.runSr(stripName)
         
+        try:
+            self.writeMetaAndBin(orthoName)
+            self.writeWv2(orthoName)
+            self.runSr(stripName)
+
+        except:
+            pass
+            
     #---------------------------------------------------------------------------
     # runSr
     #---------------------------------------------------------------------------
