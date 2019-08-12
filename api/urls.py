@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^getToaPath/$',         api.views.getToaPath),
     url(r'^orderDEM/$',           api.views.orderDEM),
     url(r'^orderComposite/$',     api.views.orderMosaic),
+    url(r'^orderSR/$',            api.views.orderSR),
     url(r'^percentageComplete/$', api.views.percentageComplete),
     url(r'^ready/$',              api.views.ready),
     url(r'^status/$',             api.views.status),
