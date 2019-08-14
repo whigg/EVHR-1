@@ -70,6 +70,8 @@ CORS_ORIGIN_WHITELIST = (
     'gs618-dslaybl1.ndc.nasa.gov',
 )
 
+SECURE_SSL_REDIRECT = True
+
 ROOT_URLCONF = 'EVHR.urls'
 
 TEMPLATES = [
