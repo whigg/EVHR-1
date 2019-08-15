@@ -108,6 +108,10 @@ class EvhrToaRetriever(GeoRetriever):
               ' '.join(sortedFiles)
               
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
+        
+        # Build pyramids.
+        cmd = 'gdaladdo ' + outputVrtFileName + ' 2 4 8 16'
+        sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
     #---------------------------------------------------------------------------
     # createDemForOrthos
