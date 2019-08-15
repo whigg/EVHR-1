@@ -32,6 +32,9 @@ class EvhrDemRetriever(GeoRetriever):
         request.outSRS = self.evhrHelper.getUtmSrs(request)
         request.save(update_fields = ['outSRS'])
 
+        # The DEM processor fails when it attempts to run more than 5 processes.
+        numProcesses = max(5, numProcesses)
+        
         # Initialize the base class.
         super(EvhrDemRetriever, self).__init__(request, logger, numProcesses)
 
