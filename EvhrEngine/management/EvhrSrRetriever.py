@@ -252,7 +252,21 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                      replace('.bin', '.tif'))
         
         self.orthoStrip(stripBandList, orthoName)
-        
+
+        #---
+        # For some reason, the XML files are not always being copied to
+        # the SR input directory.
+        #---
+        xmlName = orthoName.replace('.tif', '.xml')
+
+        if not os.path.exists(xmlName):
+            
+            import pdb
+            pdb.set_trace()
+            
+            raise RuntimeError(xmlName + ' does not exist.')
+            
+        # Run the SR code.
         try:
             self.writeMetaAndBin(orthoName)
             self.writeWv2(orthoName)
@@ -459,7 +473,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
             with open(tempInput, 'w') as f:
                 f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
-
+                
             # WVimg5   MAIACruntimefile  imagelistfile   TOApath
             cmd = wvImgExe + ' ' + \
                   maiacFile + ' ' + \
