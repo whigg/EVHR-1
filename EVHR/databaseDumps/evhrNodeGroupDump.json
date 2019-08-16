@@ -1,1 +1,1 @@
-[{"model": "EvhrEngine.evhrnodegroup", "pk": "evhr", "fields": {"enabled": true}}, {"model": "EvhrEngine.evhrnodegroup", "pk": "gumby", "fields": {"enabled": true}}]
+[{"model": "EvhrEngine.evhrnodegroup", "pk": "crane", "fields": {"enabled": true}}, {"model": "EvhrEngine.evhrnodegroup", "pk": "evhr", "fields": {"enabled": true}}, {"model": "EvhrEngine.evhrnodegroup", "pk": "gumby", "fields": {"enabled": true}}]
