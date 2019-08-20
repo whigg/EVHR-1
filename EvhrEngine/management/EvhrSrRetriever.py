@@ -260,11 +260,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
         xmlName = orthoName.replace('.tif', '.xml')
 
         if not os.path.exists(xmlName):
-            
-            import pdb
-            pdb.set_trace()
-            
             raise RuntimeError(xmlName + ' does not exist.')
+            
+        import pdb
+        pdb.set_trace()
             
         # Run the SR code.
         try:
