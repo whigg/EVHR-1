@@ -257,11 +257,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # For some reason, the XML files are not always being copied to
         # the SR input directory.
         #---
-        xmlName = orthoName.replace('.tif', '.xml')
-
         if not os.path.exists(xmlName):
             raise RuntimeError(xmlName + ' does not exist.')
             
+        xmlName = orthoName.replace('.tif', '.xml')
+
         import pdb
         pdb.set_trace()
             
