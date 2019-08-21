@@ -437,7 +437,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             tempInput = tempfile.mkstemp()[1]
 
             with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
+                f.write(os.path.splitext(os.path.basename(orthoName))[0]+'\n')
               
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
