@@ -68,7 +68,7 @@ class SystemCommand(object):
                 
                 msg = 'Node group, ' + \
                       str(settings.NODE_GROUP) + \
-                      ' does not exist or is disabled.'
+                      ', does not exist or is disabled.'
                       
                 if logger:
                     logger.error(msg)
