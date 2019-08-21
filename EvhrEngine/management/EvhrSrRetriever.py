@@ -428,9 +428,19 @@ class EvhrSrRetriever(EvhrToaRetriever):
             wv02CalExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                       'SurfaceReflectance/WV02Cal.py')
 
-            cmd = wv02CalExe + ' ' + \
-                  os.path.join(self.srInputDir, 'srInput.txt') + ' ' + \
-                  self.srInputDir
+            #---
+            # WVimg5 wants to process all IDs in srInput.txt, while we need it
+            # to only process this one.  To work around that, create a
+            # temporary file containing only this ID.
+            #---
+            oneID = os.path.basename(orthoName)
+            tempInput = tempfile.mkstemp()[1]
+
+            with open(tempInput, 'w') as f:
+                f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
+              
+            # Build and run the command.  
+            cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
                   
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
@@ -442,16 +452,16 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # Barrow
     # File_Barrow = 6-sr/srInput.txt
     #---------------------------------------------------------------------------
-    def writeWv2(self, toaName):
+    def writeWv2(self, orthoName):
 
         wv2File = \
             os.path.join(self.srInputDir,
-                         os.path.basename(toaName).replace('.tif', '.wv2'))
+                         os.path.basename(orthoName).replace('.tif', '.wv2'))
 
         if not os.path.exists(wv2File):
 
             if self.logger:
-                self.logger.info('Creating wv2 file from ' + str(toaName))
+                self.logger.info('Creating wv2 file from ' + str(orthoName))
 
             wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                     'SurfaceReflectance/WVimg5')
@@ -467,11 +477,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # to only process this one.  To work around that, create a
             # temporary file containing only this ID.
             #---
-            oneID = os.path.basename(toaName)
+            oneID = os.path.basename(orthoName)
             tempInput = tempfile.mkstemp()[1]
 
             with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(toaName))[0]+'\n')
+                f.write(os.path.splitext(os.path.basename(orthoName))[0]+'\n')
                 
             # WVimg5   MAIACruntimefile  imagelistfile   TOApath
             cmd = wvImgExe + ' ' + \
