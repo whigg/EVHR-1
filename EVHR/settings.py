@@ -28,8 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['evhr101',
                  'evhr101.atusrvm.adapt.nccs.nasa.gov',
-                 'evhr102']
-
+                 'evhr102',
+                 'evhr102.atusrvm.adapt.nccs.nasa.gov',
+                 'evhr103',
+                 'evhr103.atusrvm.adapt.nccs.nasa.gov']
 
 # Application definition
 
