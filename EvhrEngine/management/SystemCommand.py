@@ -71,7 +71,7 @@ class SystemCommand(object):
                       ' does not exist or is disabled.'
                       
                 if logger:
-                    self.logger.error(msg)
+                    logger.error(msg)
                     
                 if raiseException:
                     raise RuntimeError(msg)
