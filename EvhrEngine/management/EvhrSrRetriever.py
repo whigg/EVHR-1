@@ -28,6 +28,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def __init__(self, request, logger, numProcesses):
 
+        # NumProcesses must be 1 because SR can only run on evhr103.
+        numProcesses = 1
+        
         # Initialize the base class.
         super(EvhrSrRetriever, self).__init__(request, logger, numProcesses)
 
