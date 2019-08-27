@@ -109,7 +109,7 @@ class Constituent(models.Model):
         if self.request:
             return self.request.name
             
-        baseName = os.path.basename(self.predFile)
+        baseName = os.path.basename(self.destination.name)
         name, ext = os.path.splitext(baseName)
         return name
 
