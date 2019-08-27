@@ -220,30 +220,21 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         self.orthoStrip(stripBandList, orthoName)
 
-        #---
-        # For some reason, the XML files are not always being copied to
-        # the SR input directory.
-        #---
-        xmlName = orthoName.replace('.tif', '.xml')
-
-        if not os.path.exists(xmlName):
-            raise RuntimeError(xmlName + ' does not exist.')
-            
         # Run the SR code.
         try:
-            self.writeMetaAndBin(orthoName)
-            self.writeWv2(orthoName)
-            self.runSr(stripName)
+            self.writeMetaAndBin(stripName)
+            self.writeWv2(stripName)
+            self.runMaiac(stripName)
 
         except:
             pass
             
         return constituentFileName
-            
+        
     #---------------------------------------------------------------------------
-    # runSr
+    # runMaiac
     #---------------------------------------------------------------------------
-    def runSr(self, stripName):
+    def runMaiac(self, stripName):
         
         srFile = os.path.join(self.srOutputDir, stripName + '.bin')
 
@@ -265,15 +256,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     # writeMetaAndBin
     #---------------------------------------------------------------------------
-    def writeMetaAndBin(self, orthoName):
+    def writeMetaAndBin(self, stripName):
 
-        metaFileName = \
-            os.path.join(self.srInputDir,
-                         os.path.basename(orthoName).replace('.tif', '.meta'))
-
-        binFileName = \
-            os.path.join(self.srInputDir,
-                         os.path.basename(orthoName).replace('.tif', '.bin'))
+        metaFileName = os.path.join(self.srInputDir, stripName + '.meta')
+        binFileName = os.path.join(self.srInputDir, stripName + '.bin')
 
         if not os.path.exists(metaFileName) or not os.path.exists(binFileName):
 
@@ -309,11 +295,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # Barrow
     # File_Barrow = 6-sr/srInput.txt
     #---------------------------------------------------------------------------
-    def writeWv2(self, orthoName):
+    def writeWv2(self, stripName):
 
-        wv2File = \
-            os.path.join(self.srInputDir,
-                         os.path.basename(orthoName).replace('.tif', '.wv2'))
+        wv2File = os.path.join(self.srInputDir, stripName + '.wv2')
 
         if not os.path.exists(wv2File):
 
