@@ -56,9 +56,16 @@ class CommandHelper(object):
                 
                 oneConstituentAndFiles = constituentFileDict.popitem()
 
-                destination = retriever.retrieveOne(oneConstituentAndFiles[0],
-                                                    oneConstituentAndFiles[1])
+                constituent = Constituent()
+                constituent.request = request
+                constituent.started = True
+                
+                constituent.destination = \
+                    retriever.retrieveOne(oneConstituentAndFiles[0],
+                                          oneConstituentAndFiles[1])
         
+                constituent.save()
+
             aggFile = retriever.aggregate(aggregateDict)
 
         else:
