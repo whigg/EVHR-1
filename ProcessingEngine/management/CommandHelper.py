@@ -73,7 +73,6 @@ class CommandHelper(object):
                     constituent = Constituent()
                     constituent.request = request
                     constituent.started = True
-                    constituent.destination = 
                     constituent.destination = oneConstituentAndFiles[0]
                     constituent.save()
 
