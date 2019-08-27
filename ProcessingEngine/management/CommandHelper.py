@@ -3,6 +3,7 @@ import datetime
 import logging
 import traceback
 
+from ProcessingEngine.models import Constituent
 from ProcessingEngine.management.RequestProcessor import RequestProcessor
 
 #-------------------------------------------------------------------------------
