@@ -56,33 +56,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         pass
 
     #---------------------------------------------------------------------------
-    # getLatLon 
-    #
-    # According to Yujie's script, WV02Cal.py, which is the example used here
-    # to create the .meta files for the SR process, the UL and LR values are
-    # "messed up" in the XML.  While this might have been the case at some 
-    # point, it is not now.  To be safe, this method will validate the UL and
-    # LR, swapping them as needed, to accommodate both correct and incorrect
-    # XML files.
-    #---------------------------------------------------------------------------
-    # def getLatLon(self, imgTag):
-    #
-    #     ulLat = float(imgTag.find('BAND_B/ULLAT').text)
-    #     ulLon = float(imgTag.find('BAND_B/ULLON').text)
-    #     lrLat = float(imgTag.find('BAND_B/LRLAT').text)
-    #     lrLon = float(imgTag.find('BAND_B/LRLON').text)
-    #     lat = ulLat
-    #     lon = ulLon
-    #
-    #     if ulLat < lrLat:
-    #         lat = lrLat
-    #
-    #     if ulLon > lrLon:
-    #         lon = lrLon
-    #
-    #     return lat, lon
-        
-    #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
     def getScenes(self, request, ulx, uly, lrx, lry, srs):
@@ -226,25 +199,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     # retrieveOne
     #---------------------------------------------------------------------------
-    # def retrieveOne(self, constituentFileName, fileList):
-    #
-    #     stripName = DgFile(fileList[0], self.logger).getStripName()
-    #     stripBandList = self.scenesToStrip(stripName, fileList)
-    #
-    #     toaName = os.path.join(self.toaDir,
-    #                            os.path.basename(constituentFileName). \
-    #                                replace('.bin', '.tif'))
-    #
-    #     self.processStrip(stripBandList, toaName)
-    #     # self.toaToBin(toaName)
-    #     DgFile(toaName).toBandInterleavedBinary(self.srInputDir)
-    #     self.writeMeta(toaName)
-    #     self.writeWv2(toaName)
-    #     self.runSr(stripName)
-        
-    #---------------------------------------------------------------------------
-    # retrieveOne
-    #---------------------------------------------------------------------------
     def retrieveOne(self, constituentFileName, fileList):
         
         stripName = DgFile(fileList[0], self.logger).getStripName()
@@ -274,6 +228,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
         except:
             pass
             
+        return constituentFileName
+            
     #---------------------------------------------------------------------------
     # runSr
     #---------------------------------------------------------------------------
@@ -296,115 +252,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
         return srFile      
                   
-    #---------------------------------------------------------------------------
-    # toaToBin
-    #
-    # line 1, band 1
-    # line 1, band 2
-    # ...
-    # line2, band 1
-    # line2, band 2
-    # ...
-    #---------------------------------------------------------------------------
-    # def toaToBin(self, toaName):
-    #
-    #     binFileName = \
-    #         os.path.join(self.srInputDir,
-    #                      os.path.basename(toaName).replace('.tif', '.bin'))
-    #
-    #     if not os.path.exists(binFileName):
-    #
-    #         if self.logger:
-    #             self.logger.info('Extracting raster from ' + str(toaName))
-    #
-    #         toaGdalFile = GdalFile(toaName)
-    #
-    #         with open(binFileName, 'w') as f:
-    #
-    #             for lineNum in range(toaGdalFile.dataset.RasterYSize):
-    #                 for bandNum in range(toaGdalFile.dataset.RasterCount):
-    #
-    #                     band = toaGdalFile.dataset.GetRasterBand(bandNum + 1)
-    #
-    #                     npa = band.ReadAsArray(0,
-    #                                            lineNum,
-    #                                            toaGdalFile.dataset.RasterXSize,
-    #                                            1)
-    #
-    #                     npa.tofile(f)
-    #
-    #     return binFileName
-        
-    #---------------------------------------------------------------------------
-    # writeMeta
-    #---------------------------------------------------------------------------
-    # def writeMeta(self, toaName):
-    #
-    #     metaFileName = \
-    #         os.path.join(self.srInputDir,
-    #                      os.path.basename(toaName).replace('.tif', '.meta'))
-    #
-    #     if not os.path.exists(metaFileName):
-    #
-    #         if self.logger:
-    #             self.logger.info('Extracting metadata from ' + str(toaName))
-    #
-    #         dgFile = DgFile(toaName)
-    #
-    #         # Time-related fields.
-    #         date = dgFile.firstLineTime().strftime('%Y-%m-%d')
-    #         hour = dgFile.firstLineTime().strftime('%H')
-    #         minute = dgFile.firstLineTime().strftime('%M')
-    #         minutes = float(hour) * 60.0 + float(minute)
-    #
-    #         # Angles, elevations, etc.
-    #         SZA = 90.0 - dgFile.meanSunElevation()
-    #         VZA = 90.0 - dgFile.meanSatelliteElevation()
-    #         SAZ = dgFile.meanSunAzimuth()
-    #         VAZ = dgFile.meanSatelliteAzimuth()
-    #
-    #         relAZ = SAZ - VAZ
-    #
-    #         if (relAZ > 360):
-    #
-    #             relAZ -= 360
-    #
-    #         elif (relAZ<-360):
-    #
-    #             relAZ += 360
-    #
-    #         relAZ = math.fabs(180 - math.fabs(relAZ))
-    #
-    #         #---
-    #         # Projection information
-    #         #
-    #         # According to Yujie, "The xml file has messed up UL and LR," hence
-    #         # the seemingly misnamed tags.
-    #         #---
-    #         lat, lon = self.getLatLon(dgFile.imdTag)
-    #         projWords = dgFile.srs.GetAttrValue('projcs').split()
-    #         xScale = dgFile.dataset.GetGeoTransform()[1]
-    #         yScale = dgFile.dataset.GetGeoTransform()[5]
-    #         ulx = dgFile.dataset.GetGeoTransform()[0]
-    #         uly = dgFile.dataset.GetGeoTransform()[3]
-    #
-    #         # Write the file.
-    #         with open(metaFileName, 'w') as f:
-    #
-    #             f.write(date)
-    #             f.write('   %d\n' % minutes)
-    #             f.write('%f   %f\n' % (lat, lon))
-    #             f.write('%f   %f   %f   %f   %f \n' % (SZA, VZA,SAZ,VAZ,relAZ))
-    #
-    #             f.write('%d   %d\n' % (dgFile.dataset.RasterYSize,
-    #                                    dgFile.dataset.RasterXSize))
-    #
-    #             f.write('%s   %s\n' % (projWords[-1][0:-1], projWords[-1][-1]))
-    #             f.write('%f   %f   %f   %f\n' % (ulx, xScale, uly, yScale))
-    #             f.write(dgFile.dataset.GetProjection())
-    #
-    #     return metaFileName
-
     #---------------------------------------------------------------------------
     # writeMetaAndBin
     #---------------------------------------------------------------------------
