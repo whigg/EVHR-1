@@ -300,8 +300,6 @@ class FootprintsQuery(object):
         # For testing, ensure every scene in self.scenes is represented in 
         # sceneLists.  Eventually, remove this.
         #---
-        import pdb
-        pdb.set_trace()
         sortedScenes = sorted(self.scenes)
         aggregatedSceneList = []
         
@@ -321,8 +319,9 @@ class FootprintsQuery(object):
         scenes = []
         
         for sceneList in sceneLists:
-            scenes.extend(self.getBatchOfScenes(sceneList))
+            scenes.extend(self._getBatchOfScenes(sceneList))
             
+        print 'Length of scenes = ' + str(len(scenes))
         return scenes
         
     #---------------------------------------------------------------------------
