@@ -298,6 +298,8 @@ class FootprintsQuery(object):
         # For testing, ensure every scene in self.scenes is represented in 
         # sceneLists.  Eventually, remove this.
         #---
+        import pdb
+        pdb.set_trace()
         sortedScenes = sorted(self.scenes)
         aggregatedSceneList = []
         
