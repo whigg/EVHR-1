@@ -306,7 +306,7 @@ class FootprintsQuery(object):
         aggregatedSceneList = []
         
         for sceneList in sceneLists:
-            aggregatedSceneList.append(sceneList)
+            aggregatedSceneList += sceneList
             
         if sortedScenes == aggregatedSceneList.sort():
             
