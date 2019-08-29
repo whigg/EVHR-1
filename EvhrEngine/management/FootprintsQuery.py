@@ -304,9 +304,7 @@ class FootprintsQuery(object):
         for sceneList in sceneLists:
             aggregatedSceneList.append(sceneList)
             
-        sortedAggSceneList = sort(aggregatedSceneList)
-        
-        if sortedScenes == sortedAggSceneList:
+        if sortedScenes == sortedAggSceneList.sort():
             
             print 'Scene list splitting was successful.'
             
