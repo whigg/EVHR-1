@@ -310,7 +310,7 @@ class FootprintsQuery(object):
             
         aggregatedSceneList.sort()
         
-        if sortedScenes == aggregatedSceneLis:
+        if sortedScenes == aggregatedSceneList:
             
             print 'Scene list splitting was successful.'
             
