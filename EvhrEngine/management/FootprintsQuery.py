@@ -278,7 +278,7 @@ class FootprintsQuery(object):
         # Use "xargs --show-limits" to see 
         # "Size of command buffer we are actually using: 131072"
         #---
-        MAX_CHARS = 131072
+        MAX_CHARS = 10000
         curLen = 0
         curList = []
         sceneLists = []
