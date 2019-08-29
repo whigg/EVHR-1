@@ -275,10 +275,10 @@ class FootprintsQuery(object):
         #---
         # If there are too many scenes, the command line will be too long.  To
         # work around this, break up the scene list into manageable chunks.
-        # Use "getconf ARG_MAX" to see the maximum bytes of 8388352.  
-        # Conservatively use 4 bytes per character to get 2,097,088.
+        # Use "xargs --show-limits" to see 
+        # "Size of command buffer we are actually using: 131072"
         #---
-        MAX_CHARS = 2000000
+        MAX_CHARS = 131072
         curLen = 0
         curList = []
         sceneLists = []
