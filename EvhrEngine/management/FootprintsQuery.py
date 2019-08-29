@@ -294,6 +294,8 @@ class FootprintsQuery(object):
             curList.append(scene)
             curLen += len(scene)
             
+        sceneLists.append(curList)
+            
         #---
         # For testing, ensure every scene in self.scenes is represented in 
         # sceneLists.  Eventually, remove this.
