@@ -116,7 +116,7 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     # _buildWhereClause
     #---------------------------------------------------------------------------
-    def _buildWhereClause(self):
+    def _buildWhereClause(self, scenes=[]):
         
         # Add level-1 data only, the start of a where clause.    
         whereClause = "where (prod_short='1B')"
@@ -143,7 +143,7 @@ class FootprintsQuery(object):
         # Add scene list.
         first = True
         
-        for scene in self.scenes:
+        for scene in scenes:
     
             if first:
 
@@ -272,6 +272,60 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     def getScenes(self):
         
+        #---
+        # If there are too many scenes, the command line will be too long.  To
+        # work around this, break up the scene list into manageable chunks.
+        # Use "getconf ARG_MAX" to see the maximum bytes of 8388352.  
+        # Conservatively use 4 bytes per character to get 2,097,088.
+        #---
+        MAX_CHARS = 2000000
+        curLen = 0
+        curList = []
+        sceneLists = []
+        
+        for scene in self.scenes():
+            
+            if curLen + len(scene) > MAX_CHARS:
+                
+                sceneLists.append(curList)
+                curLen = 0
+                curList = []
+                
+            curList.append(scene)
+            curLen += len(scene)
+            
+        #---
+        # For testing, ensure every scene in self.scenes is represented in 
+        # sceneLists.  Eventually, remove this.
+        #---
+        sortedScenes = sorted(self.scenes)
+        aggregatedSceneList = []
+        
+        for sceneList in sceneLists:
+            aggregatedSceneList.append(sceneList)
+            
+        sortedAggSceneList = sort(aggregatedSceneList)
+        
+        if sortedScenes == sortedAggSceneList:
+            
+            print 'Scene list splitting was successful.'
+            
+        else:
+            print 'Scene list splitting failed.'
+
+        # Get the scenes for each list and add the to the result.
+        scenes = []
+        
+        for sceneList in sceneLists:
+            scenes.extend(self.getBatchOfScenes(sceneList))
+            
+        return scenes
+        
+    #---------------------------------------------------------------------------
+    # _getBatchOfScenes
+    #---------------------------------------------------------------------------
+    def _getBatchOfScenes(self, sceneList):
+        
         # Compose query.
         cmd = FootprintsQuery.BASE_QUERY
         
@@ -284,12 +338,6 @@ class FootprintsQuery(object):
             # To filter scenes that only overlap the AoI slightly, decrease both
             # corners of the query AoI.
             #---
-            # MIN_OVERLAP_IN_DEGREES = 0.02
-            # ulx = float(self.ulx) + MIN_OVERLAP_IN_DEGREES
-            # uly = float(self.uly) - MIN_OVERLAP_IN_DEGREES
-            # lrx = float(self.lrx) - MIN_OVERLAP_IN_DEGREES
-            # lry = float(self.lry) + MIN_OVERLAP_IN_DEGREES
-
             ulx = float(self.ulx) + self.minOverlapInDegrees
             uly = float(self.uly) - self.minOverlapInDegrees
             lrx = float(self.lrx) - self.minOverlapInDegrees
@@ -300,10 +348,8 @@ class FootprintsQuery(object):
                    ' ' + str(lry)                   + \
                    ' ' + str(lrx)                   + \
                    ' ' + str(uly)                   
-                   # ' -spat_srs'                     + \
-                   # ' "' + self.srs.ExportToProj4() + '"'
-
-        where = self._buildWhereClause()
+                   
+        where = self._buildWhereClause(sceneList)
 
         if len(where):
             
