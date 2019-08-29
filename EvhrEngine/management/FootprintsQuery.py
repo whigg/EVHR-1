@@ -271,7 +271,7 @@ class FootprintsQuery(object):
     # getScenes
     #---------------------------------------------------------------------------
     def getScenes(self):
-        
+
         #---
         # If there are too many scenes, the command line will be too long.  To
         # work around this, break up the scene list into manageable chunks.
@@ -283,7 +283,7 @@ class FootprintsQuery(object):
         curList = []
         sceneLists = []
         
-        for scene in self.scenes():
+        for scene in self.scenes:
             
             if curLen + len(scene) > MAX_CHARS:
                 
