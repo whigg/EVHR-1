@@ -272,11 +272,14 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     def getScenes(self):
 
+        self.scenes = list(set(self.scenes))
+        
         #---
         # If there are too many scenes, the command line will be too long.  To
         # work around this, break up the scene list into manageable chunks.
         # Use "xargs --show-limits" to see 
-        # "Size of command buffer we are actually using: 131072"
+        # "Size of command buffer we are actually using: 131072".  Use a bit
+        # less to allow for the rest of the command.
         #---
         MAX_CHARS = 10000
         curLen = 0
@@ -292,9 +295,15 @@ class FootprintsQuery(object):
                 curList = []
                 
             curList.append(scene)
-            curLen += len(scene)
+            curLen += len(scene) + 14   # 14 for ' OR S_FILEPATH='
             
         sceneLists.append(curList)
+        
+        if self.logger():
+            
+            self.logger.info('Split scenes into ' + \
+                             str(len(sceneLists)) + \
+                             ' lists for querying.')
             
         #---
         # For testing, ensure every scene in self.scenes is represented in 
