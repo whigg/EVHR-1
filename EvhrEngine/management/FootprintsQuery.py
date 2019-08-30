@@ -299,7 +299,7 @@ class FootprintsQuery(object):
             
         sceneLists.append(curList)
         
-        if self.logger():
+        if self.logger:
             
             self.logger.info('Split scenes into ' + \
                              str(len(sceneLists)) + \
