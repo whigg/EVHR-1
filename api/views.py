@@ -124,31 +124,6 @@ def getToaPath(request):
     return JsonResponse({'success': success, 'msg': msg})
 
 #-------------------------------------------------------------------------------
-# getToaVRT
-#
-# curl --url "http://evhr102/api/getToaVRT/?id=36"
-#-------------------------------------------------------------------------------
-@csrf_exempt
-def getToaVRT(request):
-
-    requestId = request.GET.get('id')
-    success = False
-    
-    try:
-        req = GeoRequest.objects.get(id = requestId)
-        success = True
-        
-        msg = 'path is ' + os.path.join(str(req.destination.name), 
-                                        '5-toas',
-                                        'toa.vrt')
-        
-    except GeoRequest.DoesNotExist:
-
-        msg = 'Request ' + str(requestId) + ' does not exist.'
-
-    return JsonResponse({'success': success, 'msg': msg})
-
-#-------------------------------------------------------------------------------
 # isDaemonRunning
 #-------------------------------------------------------------------------------
 def isDaemonRunning():
