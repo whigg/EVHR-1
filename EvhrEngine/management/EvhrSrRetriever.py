@@ -298,7 +298,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(wv2File):
 
             if self.logger:
-                self.logger.info('Creating wv2 file from ' + str(orthoName))
+                self.logger.info('Creating wv2 file from ' + str(stripName))
 
             wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                     'SurfaceReflectance/WVimg5')
@@ -314,11 +314,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # to only process this one.  To work around that, create a
             # temporary file containing only this ID.
             #---
-            oneID = os.path.basename(orthoName)
+            oneID = os.path.basename(stripName)
             tempInput = tempfile.mkstemp()[1]
 
             with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(orthoName))[0]+'\n')
+                f.write(os.path.splitext(os.path.basename(stripName))[0]+'\n')
                 
             # WVimg5   MAIACruntimefile  imagelistfile   TOApath
             cmd = wvImgExe + ' ' + \
