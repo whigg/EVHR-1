@@ -262,7 +262,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             if self.logger:
                 
                 self.logger.info('Extracting metadata and bin from ' + \
-                                 str(orthoName))
+                                 str(stripName))
 
             wv02CalExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                       'SurfaceReflectance/WV02Cal.py')
