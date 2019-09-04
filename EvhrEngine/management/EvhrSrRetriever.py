@@ -221,13 +221,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         self.orthoStrip(stripBandList, orthoName)
 
         # Run the SR code.
-        try:
-            self.writeMetaAndBin(stripName)
-            self.writeWv2(stripName)
-            self.runMaiac(stripName)
-
-        except:
-            pass
+        self.writeMetaAndBin(stripName)
+        self.writeWv2(stripName)
+        self.runMaiac(stripName)
             
         return constituentFileName
         
