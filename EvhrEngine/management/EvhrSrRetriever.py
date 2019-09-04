@@ -53,18 +53,19 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def aggregate(self, outFiles):
 
         # Build the VRT.
-        outputVrtFileName = os.path.join(self.srOutputDir, 'toa.vrt')
+        # outputVrtFileName = os.path.join(self.srOutputDir, 'toa.vrt')
+        #
+        # cmd = 'gdalbuildvrt -q -overwrite ' + \
+        #       outputVrtFileName + ' ' + \
+        #       ' '.join(outFiles)
+        #
+        # sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
+        #
+        # # Build pyramids.
+        # cmd = 'gdaladdo ' + outputVrtFileName + ' 2 4 8 16'
+        # sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
+        pass
         
-        cmd = 'gdalbuildvrt -q -overwrite ' + \
-              outputVrtFileName + ' ' + \
-              ' '.join(outFiles)
-              
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
-        
-        # Build pyramids.
-        cmd = 'gdaladdo ' + outputVrtFileName + ' 2 4 8 16'
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
-
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
