@@ -86,6 +86,7 @@ class EvhrDemRetriever(GeoRetriever):
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
+            fpq.setMultispectralOff()
             fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
 
