@@ -272,11 +272,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # to only process this one.  To work around that, create a
             # temporary file containing only this ID.
             #---
-            oneID = os.path.basename(orthoName)
+            oneID = os.path.basename(stripName)
             tempInput = tempfile.mkstemp()[1]
 
             with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(orthoName))[0]+'\n')
+                f.write(os.path.splitext(os.path.basename(stripName))[0]+'\n')
               
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
