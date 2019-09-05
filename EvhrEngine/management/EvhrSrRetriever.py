@@ -221,11 +221,25 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         self.orthoStrip(stripBandList, orthoName)
 
-        # Run the SR code.
-        self.writeMetaAndBin(stripName)
-        self.writeWv2(stripName)
-        self.runMaiac(stripName)
+        #---
+        # Run the SR code.  Yujie's code does not properly report errors, so
+        # check for expected output after each step.
+        #---
+        metaFileName, binFileName = self.writeMetaAndBin(stripName)
+
+        if not os.path.exists(metaFileName) or not os.path.exists(binFileName):
+            raise RuntimeError('WV02Cal failed for ' + constituentFileName)
+
+        wv2File = self.writeWv2(stripName)
+
+        if not os.path.exists(wv2File):
+            raise RuntimeError('WVimg5 failed for ' + constituentFileName)
+
+        srFile = self.runMaiac(stripName)
             
+        if not os.path.exists(srFile):
+            raise RuntimeError('MAIAC_WV2_5 failed for ' + constituentFileName)
+
         return constituentFileName
         
     #---------------------------------------------------------------------------
@@ -284,6 +298,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
                   
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
+                                 
+        return metaFileName, binFileName
 
     #---------------------------------------------------------------------------
     # writeWv2
