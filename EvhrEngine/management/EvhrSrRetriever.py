@@ -347,6 +347,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                  self.maxProcesses != 1)
 
             os.remove(tempInput)
+            
+            if sCmd.returnCode != 0:
+
+                if self.logger:
+                    
+                    self.logger.error(cmd)
+                    self.logger.error(sCmd.msg)
 
         return wv2File
 
