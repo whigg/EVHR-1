@@ -484,9 +484,6 @@ class EvhrToaRetriever(GeoRetriever):
 
         stripBandList = [] # Length of list = number of bands
             
-        # bands = ['BAND_P'] if 'P1BS' in stripName else \
-        #         ['BAND_B', 'BAND_C', 'BAND_G', 'BAND_R', 'BAND_N']
-	
         # Yujie says, "coastal band, blue, green, red, NIR".
         bands = ['BAND_P'] if 'P1BS' in stripName else \
                 ['BAND_C', 'BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
