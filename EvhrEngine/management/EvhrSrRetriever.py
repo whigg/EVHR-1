@@ -262,6 +262,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
             
+            if sCmd.returnCode != 0:
+
+                if self.logger:
+                    
+                    self.logger.error(cmd)
+                    self.logger.error(sCmd.msg)
+
         return srFile      
                   
     #---------------------------------------------------------------------------
@@ -299,6 +306,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
                                  
+            if sCmd.returnCode != 0:
+
+                if self.logger:
+                    
+                    self.logger.error(cmd)
+                    self.logger.error(sCmd.msg)
+
         return metaFileName, binFileName
 
     #---------------------------------------------------------------------------
