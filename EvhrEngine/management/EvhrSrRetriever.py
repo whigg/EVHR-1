@@ -66,6 +66,51 @@ class EvhrSrRetriever(EvhrToaRetriever):
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
     #---------------------------------------------------------------------------
+    # binToTif
+    #---------------------------------------------------------------------------
+    def binToTif(self, srBin, orthoTif, srTif):
+
+        inNoDataVal = -99999 # Yujie's NoData value
+        outNoDataVal = -20000 # output NoData value
+        scaleFactor = 10000
+
+        # Get reference information from ortho geoTIFF
+        inDS = gdal.Open(orthoTif)
+        geoTransform = inDS.GetGeoTransform()
+        proj = inDS.GetProjection()
+        (nCols, nRows) = (inDS.RasterXSize, inDS.RasterYSize)
+        nBands = inDS.RasterCount
+
+        inArr = numpy.fromfile(srBin, numpy.float32) # Read input array from .bin
+
+        # may not need try statement here (and prob needs editing) but:
+        # if the file is corrupt/not written all the way, there will be insufficient
+        # number of pixels to reshape array to original size. catch it here
+        try:
+            inArr = numpy.reshape(inArr, (nBands, nRows, nCols))
+        except ValueError:
+            print "Could not reshape {}".format(srBin)
+            return None
+
+        # Scale up and replace input NoData val
+        outArr = numpy.multiply(inArr, scaleFactor)
+        outArr[inArr==inNoDataVal] = outNoDataVal
+
+        inDS = inArr = None
+
+        # Write outArr to output geotif with data type 3 (int16):
+        drv = gdal.GetDriverByName("GTiff")
+        outDS = drv.Create(srTif, nCols, nRows, nBands, 3, options=["COMPRESS=LZW","BIGTIFF=YES"])
+        outDS.SetGeoTransform(geoTransform)
+        outDS.SetProjection(proj)
+
+        for b in range(0, nBands):
+            outDS.GetRasterBand(b+1).SetNoDataValue(outNoDataVal)
+            outDS.GetRasterBand(b+1).WriteArray(outArr[b])
+
+        outDS = outArr = None
+
+    #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
     def getScenes(self, request, ulx, uly, lrx, lry, srs):
@@ -228,7 +273,14 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         except:
             pass
-            
+
+        # Convert SR binary to geoTIFF output
+        # srTif = my best guess on the output name; 'srBin' needs to be the 
+        # binary output of Yujie's code, and I assume orthoName is the ortho 
+        # tif, which is what we need to use as georeference for output SR tif
+        srTif = os.path.join(self.srOutputDir, '{}__SR.tif'.format(stripName))
+        #self.binToTif(srBin, orthoName, srTif) # go in the try statement above?
+                    
         return constituentFileName
         
     #---------------------------------------------------------------------------
