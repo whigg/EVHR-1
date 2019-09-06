@@ -252,6 +252,19 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                  self.maxProcesses != 1)
             
         return srFile      
+
+    #---------------------------------------------------------------------------
+    # scenesToStrip()
+    #---------------------------------------------------------------------------
+    def scenesToStrip(self, stripName, stripScenes):
+
+        if self.logger:
+            self.logger.info('Extracting bands and mosaicking to strips for' + \
+                    ' {} ({} input scenes)'.format(stripName, len(stripScenes)))
+
+        bands = ['BAND_C', 'BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
+
+        return self.scenesToStripFromBandList(stripName, stripScenes, bands)
                   
     #---------------------------------------------------------------------------
     # writeMetaAndBin
@@ -337,4 +350,4 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         return wv2File
 
-        
+

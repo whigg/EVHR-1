@@ -466,15 +466,21 @@ class EvhrToaRetriever(GeoRetriever):
                 pass
 
     #---------------------------------------------------------------------------
-    # scenesToStrip()
-    #
-    # This need not have stripName passed because stripName is derived from any
-    # of the stripScenes.
-    #
-    # Input: a list of scenes all belonging to the same strip
-    #
-    # Output:  a mosaic of all the scenes for each band:  a mosaic containing
-    # band1 from every scene, a mosaic containing band2 from every scene ...
+    # retrieveOne
+    #---------------------------------------------------------------------------
+    def retrieveOne(self, constituentFileName, fileList):
+
+        stripName = DgFile(fileList[0], self.logger).getStripName()
+        stripBandList = self.scenesToStrip(stripName, fileList)
+        self.processStrip(stripBandList, constituentFileName)
+        # self.deleteFiles(self.stripDir)
+        # self.deleteFiles(self.demDir)
+        # self.deleteFiles(self.orthoDir)
+        
+        return constituentFileName
+
+    #---------------------------------------------------------------------------
+    # scenesToStrip
     #---------------------------------------------------------------------------
     def scenesToStrip(self, stripName, stripScenes):
 
@@ -482,15 +488,26 @@ class EvhrToaRetriever(GeoRetriever):
             self.logger.info('Extracting bands and mosaicking to strips for' + \
                     ' {} ({} input scenes)'.format(stripName, len(stripScenes)))
 
-        stripBandList = [] # Length of list = number of bands
-            
-        # bands = ['BAND_P'] if 'P1BS' in stripName else \
-        #         ['BAND_B', 'BAND_C', 'BAND_G', 'BAND_R', 'BAND_N']
-	
-        # Yujie says, "coastal band, blue, green, red, NIR".
         bands = ['BAND_P'] if 'P1BS' in stripName else \
-                ['BAND_C', 'BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
-	
+                ['BAND_B', 'BAND_G', 'BAND_R', 'BAND_N']
+
+        return self.scenesToStripFromBandList(stripName, stripScenes, bands)
+
+    #---------------------------------------------------------------------------
+    # scenesToStripFromBandList
+    #
+    # This need not have stripName passed because stripName is derived from any
+    # of the stripScenes.
+    #
+    # Input: a list of scenes all belonging to the same strip and list of bands
+    #
+    # Output:  a mosaic of all the scenes for each band:  a mosaic containing
+    # band1 from every scene, a mosaic containing band2 from every scene ...
+    #---------------------------------------------------------------------------
+    def scenesToStripFromBandList(self, stripName, stripScenes, bands):
+
+        stripBandList = [] # Length of list = number of bands
+
         for bandName in bands:
            
             bandScenes = [DgFile(scene).getBand(self.bandDir, bandName) \
@@ -518,20 +535,6 @@ class EvhrToaRetriever(GeoRetriever):
 
         # Return the list of band strips.
         return stripBandList
-
-    #---------------------------------------------------------------------------
-    # retrieveOne
-    #---------------------------------------------------------------------------
-    def retrieveOne(self, constituentFileName, fileList):
-
-        stripName = DgFile(fileList[0], self.logger).getStripName()
-        stripBandList = self.scenesToStrip(stripName, fileList)
-        self.processStrip(stripBandList, constituentFileName)
-        # self.deleteFiles(self.stripDir)
-        # self.deleteFiles(self.demDir)
-        # self.deleteFiles(self.orthoDir)
-        
-        return constituentFileName
 
     #---------------------------------------------------------------------------
     # _validateScenes
