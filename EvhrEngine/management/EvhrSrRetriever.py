@@ -247,7 +247,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     def runMaiac(self, stripName):
         
-        srFile = os.path.join(self.srOutputDir, stripName + '.bin')
+        srFile = os.path.join(self.srOutputDir, 'MAIAC.' + stripName + '.bin')
 
         if not os.path.exists(srFile):
             
