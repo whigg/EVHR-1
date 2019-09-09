@@ -285,6 +285,9 @@ class EvhrDemRetriever(GeoRetriever):
 
             cmd = 'mv ' + outDemName + ' ' + constituentFileName
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+            
+        else:
+            raise RuntimeError('DEM ' + outDemName + ' was not created.')
         
         return constituentFileName    
               
