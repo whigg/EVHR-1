@@ -275,7 +275,10 @@ class EvhrDemRetriever(GeoRetriever):
         #     else:
         #         raise
 
-        os.system(cmd)
+        exitCode = os.system(cmd)
+        
+        if exitCode:
+            raise RuntimeError('DEM ' + outDemName + ' failed.  Command: ' + cmd)
         
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
@@ -287,7 +290,7 @@ class EvhrDemRetriever(GeoRetriever):
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
             
         else:
-            raise RuntimeError('DEM ' + outDemName + ' was not created.')
+            raise RuntimeError('DEM ' + outDemName + ' failed.  Command: ' + cmd)
         
         return constituentFileName    
               
