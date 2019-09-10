@@ -289,6 +289,7 @@ class EvhrDemRetriever(GeoRetriever):
             
             if self.logger:
                 self.logger.error(msg)
+
             # raise RuntimeError(msg)
         
         # Move the primary output file to the constituent name.
@@ -301,7 +302,18 @@ class EvhrDemRetriever(GeoRetriever):
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
             
         else:
-            raise RuntimeError('DEM ' + outDemName + ' failed.  Command: ' + cmd)
+
+            msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
+            err = EvhrError()
+            err.request = self.request
+            err.errorOutput = msg
+            err.command = cmd
+            err.save()
+            
+            if self.logger:
+                self.logger.error(msg)
+
+            # raise RuntimeError('DEM ' + outDemName + ' failed.  Command: ' + cmd)
         
         return constituentFileName    
               
