@@ -11,6 +11,7 @@ from EvhrEngine.management.EvhrHelper import EvhrHelper
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
+from EvhrEngine.models import EvhrError
 from EvhrEngine.models import EvhrScene
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
@@ -279,10 +280,16 @@ class EvhrDemRetriever(GeoRetriever):
         
         if exitCode:
             
-            raise RuntimeError('DEM ' + \
-                               constituentFileName + \
-                               ' failed.  Command: ' + \
-                               cmd)
+            msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
+            err = EvhrError()
+            err.request = self.request
+            err.errorOutput = msg
+            err.command = cmd
+            err.save()
+            
+            if self.logger:
+                self.logger.error(msg)
+            # raise RuntimeError(msg)
         
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
