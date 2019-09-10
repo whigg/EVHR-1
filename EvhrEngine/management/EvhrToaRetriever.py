@@ -90,27 +90,41 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     def aggregate(self, outFiles):
 
+        # outFiles is list of all TOA outputs. Sort into pan and MS lists
+        panList   = [f for f in outFiles if DgFile(f).isPanchromatic()]
+        multiList = [f for f in outFiles if DgFile(f).isMultispectral()]
+
+        if panList: # Could be empty
+            self.buildVrtAndPyramids(panList, os.path.join(self.toaDir,
+                                                        'toa-pan.vrt'))
+        if multiList:
+            self.buildVrtAndPyramids(multiList, os.path.join(self.toaDir,
+                                                        'toa-multispec.vrt'))
+      
+    #---------------------------------------------------------------------------
+    # buildVrtAndPyramids
+    #---------------------------------------------------------------------------
+    def buildVrtAndPyramids(self, fileList, outVrt):
+
         # Sort the files from least to most cloud cover.
         ccDict = {}
-        
-        for outFile in outFiles:
-            
+
+        for outFile in fileList:
+
             dg = DgFile(outFile)
             ccDict[dg.cloudCover()] = outFile
-        
+
         sortedFiles = [value for (key, value) in sorted(ccDict.items())]
-        
+
         # Build the VRT.
-        outputVrtFileName = os.path.join(self.toaDir, 'toa.vrt')
-        
         cmd = 'gdalbuildvrt -q -overwrite ' + \
-              outputVrtFileName + ' ' + \
+              outVrt + ' ' + \
               ' '.join(sortedFiles)
-              
+
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
-        
+
         # Build pyramids.
-        cmd = 'gdaladdo ' + outputVrtFileName + ' 2 4 8 16'
+        cmd = 'gdaladdo ' + outVrt + ' 2 4 8 16'
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
     #---------------------------------------------------------------------------
