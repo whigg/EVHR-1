@@ -170,7 +170,7 @@ class EvhrDemRetriever(GeoRetriever):
                              'Paired scenes: ' + \
                              str(numPairedScenes) + '\n' + \
                              'Unaccounted scenes: ' + \
-                             str(unaccountedScenes)
+                             str(unaccountedScenes) + \
                              'Pairs: ' + str(len(pairs)))
 
         return pairs
