@@ -147,6 +147,12 @@ class EvhrDemRetriever(GeoRetriever):
         for pair in pairsWithMissingScenes:
             
             numUnpairedScenes += len(pairs[pair])
+            
+            for scene in pairs[pair]:
+                
+                EvhrScene.objects.get(request=self.request,
+                                      sceneFile=scene).delete()
+                
             del pairs[pair]
             
         #---
@@ -161,7 +167,9 @@ class EvhrDemRetriever(GeoRetriever):
         if self.logger:
             
             numQueriedScenes = len(fpScenes)
-            unaccountedScenes = numQueriedScenes - numPairedScenes
+            
+            unaccountedScenes = \
+                numQueriedScenes - numPairedScenes - numUnpairedScenes
             
             self.logger.info('Queried scenes: ' + \
                              str(numQueriedScenes) + '\n' + \
@@ -170,7 +178,7 @@ class EvhrDemRetriever(GeoRetriever):
                              'Paired scenes: ' + \
                              str(numPairedScenes) + '\n' + \
                              'Unaccounted scenes: ' + \
-                             str(unaccountedScenes) + \
+                             str(unaccountedScenes) + '\n' + \
                              'Pairs: ' + str(len(pairs)))
 
         return pairs
