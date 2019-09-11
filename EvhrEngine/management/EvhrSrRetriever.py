@@ -48,7 +48,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(self.srOutputDir):
             os.mkdir(self.srOutputDir)
             
-        self.srInputFileName = os.path.join(self.srInputDir, 'srInput.txt')
+        # self.srInputFileName = os.path.join(self.srInputDir, 'srInput.txt')
 
     #---------------------------------------------------------------------------
     # aggregate
@@ -176,9 +176,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # Aggregate the scenes into strips, and create the SR input file.
         constituents = {}
         
-        if os.path.exists(self.srInputFileName):
-            os.remove(self.srInputFileName)
-
         for scene in scenes:
             
             dgf = DgFile(scene, self.logger)
@@ -190,7 +187,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 constituents[constituentFileName] = []
                 
             constituents[constituentFileName].append(scene)
-            f.write(os.path.splitext(os.path.basename(srBaseName))[0]+'\n')
 
         return constituents
 
