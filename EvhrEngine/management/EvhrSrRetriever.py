@@ -20,6 +20,9 @@ from EvhrEngine.models import EvhrScene
 #
 # NOTE: the LUT files must reside in the Django project directory, the directory
 # containing manage.py.
+#
+# Yujie's code is in /att/nobackup/ywang1/ABoVE/WVImg5 and 
+# /att/nobackup/ywang1/ABoVE/MAIAC5_WorldView2_Nov-9-2017/.
 #-------------------------------------------------------------------------------
 class EvhrSrRetriever(EvhrToaRetriever):
 
@@ -263,6 +266,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
     #---------------------------------------------------------------------------
     # runMaiac
+    #
+    # Yujie's code is at
+    # /att/nobackup/ywang1/ABoVE/MAIAC5_WorldView2_Nov-9-2017/MAIAC_WV2_5.
     #---------------------------------------------------------------------------
     def runMaiac(self, stripName):
         
@@ -340,6 +346,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # WVimg5 /att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt file_Barrow
     # Barrow
     # File_Barrow = 6-sr/srInput.txt
+    #
+    # Yujie's code is at /att/nobackup/ywang1/ABoVE/WVImg5/WVimg5.
     #---------------------------------------------------------------------------
     def writeWv2(self, stripName):
 
