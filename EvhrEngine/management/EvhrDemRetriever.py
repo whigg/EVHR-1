@@ -180,6 +180,8 @@ class EvhrDemRetriever(GeoRetriever):
                              'Unaccounted scenes: ' + \
                              str(unaccountedScenes) + '\n' + \
                              'Pairs: ' + str(len(pairs)))
+                             
+            self.logger.info(pairs.keys())
 
         return pairs
 
