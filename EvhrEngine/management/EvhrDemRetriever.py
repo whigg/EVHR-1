@@ -181,7 +181,7 @@ class EvhrDemRetriever(GeoRetriever):
                              str(unaccountedScenes) + '\n' + \
                              'Pairs: ' + str(len(pairs)))
                              
-            for pair in pairs.keys().sort():
+            for pair in sorted(pairs.keys()):
                 self.logger.info(pair)
 
         return pairs
