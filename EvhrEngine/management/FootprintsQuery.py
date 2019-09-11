@@ -330,7 +330,6 @@ class FootprintsQuery(object):
         for sceneList in sceneLists:
             scenes.extend(self._getBatchOfScenes(sceneList))
             
-        print 'Length of scenes = ' + str(len(scenes))
         return scenes
         
     #---------------------------------------------------------------------------
