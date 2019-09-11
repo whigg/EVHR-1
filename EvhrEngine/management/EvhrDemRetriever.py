@@ -100,7 +100,7 @@ class EvhrDemRetriever(GeoRetriever):
             
         # ---
         # Now that dg_stereo.sh does not query redundantly, EDR must copy each
-        # pairs' files to the request directory for dg_stereo.sh to find them.
+        # pair's files to the request directory for dg_stereo.sh to find them.
         # The first step is to associate the pair name with its files.
         # ---
         pairs = {}
@@ -138,15 +138,40 @@ class EvhrDemRetriever(GeoRetriever):
                     pairsWithMissingScenes.append(pairName)
                     continue
                     
-        # Remove pairs without scenes for both mates.
+        #---
+        # Remove pairs without scenes for both mates.  Count the scenes deleted
+        # to reconcile with the number of scenes returned by the query.
+        #---
+        numUnpairedScenes = 0
+        
         for pair in pairsWithMissingScenes:
+            
+            numUnpairedScenes += len(pairs[pair])
             del pairs[pair]
+            
+        #---
+        # Count the scenes left to reconcile with the number of scenes returned
+        # by the query.
+        #---
+        numPairedScenes = 0
+        
+        for pair in pairs:
+            numPairedScenes += len(pairs[pair])
             
         if self.logger:
             
-            self.logger.info('There are ' + \
-                             str(len(pairs)) + \
-                             ' pairs among the input scenes.')
+            numQueriedScenes = len(fpScenes)
+            unaccountedScenes = numQueriedScenes - numPairedScenes
+            
+            self.logger.info('Queried scenes: ' + \
+                             str(numQueriedScenes) + '\n' + \
+                             'Unpaired scenes: ' + \
+                             str(numUnpairedScenes) + '\n' + \
+                             'Paired scenes: ' + \
+                             str(numPairedScenes) + '\n' + \
+                             'Unaccounted scenes: ' + \
+                             str(unaccountedScenes)
+                             'Pairs: ' + str(len(pairs)))
 
         return pairs
 
