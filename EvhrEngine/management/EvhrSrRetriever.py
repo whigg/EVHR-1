@@ -20,6 +20,9 @@ from EvhrEngine.models import EvhrScene
 #
 # NOTE: the LUT files must reside in the Django project directory, the directory
 # containing manage.py.
+#
+# Yujie's code is in /att/nobackup/ywang1/ABoVE/WVImg5 and 
+# /att/nobackup/ywang1/ABoVE/MAIAC5_WorldView2_Nov-9-2017/.
 #-------------------------------------------------------------------------------
 class EvhrSrRetriever(EvhrToaRetriever):
 
@@ -45,7 +48,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(self.srOutputDir):
             os.mkdir(self.srOutputDir)
             
-        self.srInputFileName = os.path.join(self.srInputDir, 'srInput.txt')
+        # self.srInputFileName = os.path.join(self.srInputDir, 'srInput.txt')
 
     #---------------------------------------------------------------------------
     # aggregate
@@ -53,18 +56,19 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def aggregate(self, outFiles):
 
         # Build the VRT.
-        outputVrtFileName = os.path.join(self.srOutputDir, 'toa.vrt')
+        # outputVrtFileName = os.path.join(self.srOutputDir, 'toa.vrt')
+        #
+        # cmd = 'gdalbuildvrt -q -overwrite ' + \
+        #       outputVrtFileName + ' ' + \
+        #       ' '.join(outFiles)
+        #
+        # sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
+        #
+        # # Build pyramids.
+        # cmd = 'gdaladdo ' + outputVrtFileName + ' 2 4 8 16'
+        # sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
+        pass
         
-        cmd = 'gdalbuildvrt -q -overwrite ' + \
-              outputVrtFileName + ' ' + \
-              ' '.join(outFiles)
-              
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
-        
-        # Build pyramids.
-        cmd = 'gdaladdo ' + outputVrtFileName + ' 2 4 8 16'
-        sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
-
     #---------------------------------------------------------------------------
     # binToTif
     #---------------------------------------------------------------------------
@@ -131,7 +135,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     
                     if self.logger:
                         self.logger.warning('Scene ' + \
-                                            sceneFile.fileName + \
+                                            dgf.fileName + \
                                             ' is being skipped because' + \
                                             ' it is panchromatic.')
                                             
@@ -139,7 +143,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
                     if self.logger:
                         self.logger.warning('Scene ' + \
-                                            sceneFile.fileName + \
+                                            dgf.fileName + \
                                             ' is being skipped because' + \
                                             ' it is not WV02 or WV03.')
                                             
@@ -185,34 +189,49 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not scenes and self.logger:
             self.logger.error('No multispectral scenes for WV2 or WV3.')
 
-        # Aggregate the scenes into ToAs.
-        toas = {}
+        # # Aggregate the scenes into strips.
+        # toas = {}
+        #
+        # for scene in scenes:
+        #
+        #     dgf = DgFile(scene, self.logger)
+        #     stripID = dgf.getStripName()
+        #     orthoName = os.path.join(self.orthoDir, stripID + '-ortho.tif')
+        #
+        #     if not orthos.has_key(orthoName):
+        #         orthos[orthoName] = []
+        #
+        #     orthos[orthoName].append(scene)
+        #
+        # # Aggregate the ToAs into SRs and create the SR input file.
+        # constituents = {}
+        #
+        # if os.path.exists(self.srInputFileName):
+        #     os.remove(self.srInputFileName)
+        #
+        # with open(self.srInputFileName, 'aw+') as f:
+        #
+        #     for ortho in sorted(orthos):
+        #
+        #         srBaseName = os.path.basename(ortho).replace('-ortho.tif', '.bin')
+        #         srName = os.path.join(self.srOutputDir, srBaseName)
+        #         constituents[srName] = orthos[ortho]
+        #         f.write(os.path.splitext(os.path.basename(srBaseName))[0]+'\n')
+
+        # Aggregate the scenes into strips, and create the SR input file.
+        constituents = {}
         
         for scene in scenes:
             
             dgf = DgFile(scene, self.logger)
             stripID = dgf.getStripName()
-            toaName = os.path.join(self.toaDir, stripID + '-toa.tif')
-
-            if not toas.has_key(toaName):
-                toas[toaName] = []
-                
-            toas[toaName].append(scene)
+            srBaseName = stripID + '.bin'
+            constituentFileName = os.path.join(self.srOutputDir, srBaseName)
             
-        # Aggregate the ToAs into SRs and create the SR input file.
-        constituents = {}
-        
-        if os.path.exists(self.srInputFileName):
-            os.remove(self.srInputFileName)
-        
-        with open(self.srInputFileName, 'aw+') as f:
-            
-            for toa in sorted(toas):
+            if not constituents.has_key(constituentFileName):
+                constituents[constituentFileName] = []
                 
-                srBaseName = os.path.basename(toa).replace('-toa.tif', '.bin')
-                srName = os.path.join(self.srOutputDir, srBaseName)
-                constituents[srName] = toas[toa]
-                f.write(os.path.splitext(os.path.basename(srBaseName))[0]+'\n')
+            constituents[constituentFileName].append(scene)
 
         return constituents
 
@@ -265,30 +284,45 @@ class EvhrSrRetriever(EvhrToaRetriever):
         
         self.orthoStrip(stripBandList, orthoName)
 
-        # Run the SR code.
-        try:
-            self.writeMetaAndBin(stripName)
-            self.writeWv2(stripName)
-            self.runMaiac(stripName)
+        #---
+        # Run the SR code.  Yujie's code does not properly report errors, so
+        # check for expected output after each step.
+        #---
+        metaFileName, binFileName = self.writeMetaAndBin(stripName)
 
-        except:
-            pass
+        if not os.path.exists(metaFileName) or not os.path.exists(binFileName):
+            raise RuntimeError('WV02Cal failed for ' + constituentFileName)
 
+        wv2File = self.writeWv2(stripName)
+
+        if not os.path.exists(wv2File):
+            raise RuntimeError('WVimg5 failed for ' + constituentFileName)
+
+        srFile = self.runMaiac(stripName)
+            
+        if not os.path.exists(srFile):
+            raise RuntimeError('MAIAC_WV2_5 failed for ' + constituentFileName)
+
+        #---
         # Convert SR binary to geoTIFF output
         # srTif = my best guess on the output name; 'srBin' needs to be the 
         # binary output of Yujie's code, and I assume orthoName is the ortho 
         # tif, which is what we need to use as georeference for output SR tif
+        #---
         srTif = os.path.join(self.srOutputDir, '{}__SR.tif'.format(stripName))
-        #self.binToTif(srBin, orthoName, srTif) # go in the try statement above?
+        self.binToTif(srBin, orthoName, srTif) 
                     
         return constituentFileName
         
     #---------------------------------------------------------------------------
     # runMaiac
+    #
+    # Yujie's code is at
+    # /att/nobackup/ywang1/ABoVE/MAIAC5_WorldView2_Nov-9-2017/MAIAC_WV2_5.
     #---------------------------------------------------------------------------
     def runMaiac(self, stripName):
         
-        srFile = os.path.join(self.srOutputDir, stripName + '.bin')
+        srFile = os.path.join(self.srOutputDir, 'MAIAC.' + stripName + '.bin')
 
         if not os.path.exists(srFile):
             
@@ -303,6 +337,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
             
+            if sCmd.returnCode != 0:
+
+                if self.logger:
+                    
+                    self.logger.error(cmd)
+                    self.logger.error(sCmd.msg)
+
         return srFile      
 
     #---------------------------------------------------------------------------
@@ -331,7 +372,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             if self.logger:
                 
                 self.logger.info('Extracting metadata and bin from ' + \
-                                 str(orthoName))
+                                 str(stripName))
 
             wv02CalExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                       'SurfaceReflectance/WV02Cal.py')
@@ -341,17 +382,26 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # to only process this one.  To work around that, create a
             # temporary file containing only this ID.
             #---
-            oneID = os.path.basename(orthoName)
+            oneID = os.path.basename(stripName)
             tempInput = tempfile.mkstemp()[1]
 
             with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(orthoName))[0]+'\n')
+                f.write(os.path.splitext(os.path.basename(stripName))[0]+'\n')
               
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
                   
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
+                                 
+            if sCmd.returnCode != 0:
+
+                if self.logger:
+                    
+                    self.logger.error(cmd)
+                    self.logger.error(sCmd.msg)
+
+        return metaFileName, binFileName
 
     #---------------------------------------------------------------------------
     # writeWv2
@@ -359,6 +409,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
     # WVimg5 /att/pubrepo/MAIAC-ancillary/results/runtime_Canada.txt file_Barrow
     # Barrow
     # File_Barrow = 6-sr/srInput.txt
+    #
+    # Yujie's code is at /att/nobackup/ywang1/ABoVE/WVImg5/WVimg5.
     #---------------------------------------------------------------------------
     def writeWv2(self, stripName):
 
@@ -367,7 +419,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not os.path.exists(wv2File):
 
             if self.logger:
-                self.logger.info('Creating wv2 file from ' + str(orthoName))
+                self.logger.info('Creating wv2 file from ' + str(stripName))
 
             wvImgExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                     'SurfaceReflectance/WVimg5')
@@ -383,11 +435,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # to only process this one.  To work around that, create a
             # temporary file containing only this ID.
             #---
-            oneID = os.path.basename(orthoName)
+            oneID = os.path.basename(stripName)
             tempInput = tempfile.mkstemp()[1]
 
             with open(tempInput, 'w') as f:
-                f.write(os.path.splitext(os.path.basename(orthoName))[0]+'\n')
+                f.write(os.path.splitext(os.path.basename(stripName))[0]+'\n')
                 
             # WVimg5   MAIACruntimefile  imagelistfile   TOApath
             cmd = wvImgExe + ' ' + \
@@ -399,6 +451,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                  self.maxProcesses != 1)
 
             os.remove(tempInput)
+            
+            if sCmd.returnCode != 0:
+
+                if self.logger:
+                    
+                    self.logger.error(cmd)
+                    self.logger.error(sCmd.msg)
 
         return wv2File
 

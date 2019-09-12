@@ -116,7 +116,7 @@ class FootprintsQuery(object):
     #---------------------------------------------------------------------------
     # _buildWhereClause
     #---------------------------------------------------------------------------
-    def _buildWhereClause(self):
+    def _buildWhereClause(self, scenes=[]):
         
         # Add level-1 data only, the start of a where clause.    
         whereClause = "where (prod_short='1B')"
@@ -143,7 +143,7 @@ class FootprintsQuery(object):
         # Add scene list.
         first = True
         
-        for scene in self.scenes:
+        for scene in scenes:
     
             if first:
 
@@ -271,6 +271,71 @@ class FootprintsQuery(object):
     # getScenes
     #---------------------------------------------------------------------------
     def getScenes(self):
+
+        self.scenes = list(set(self.scenes))
+        
+        #---
+        # If there are too many scenes, the command line will be too long.  To
+        # work around this, break up the scene list into manageable chunks.
+        # Use "xargs --show-limits" to see 
+        # "Size of command buffer we are actually using: 131072".  Use a bit
+        # less to allow for the rest of the command.
+        #---
+        MAX_CHARS = 10000
+        curLen = 0
+        curList = []
+        sceneLists = []
+        
+        for scene in self.scenes:
+            
+            if curLen + len(scene) > MAX_CHARS:
+                
+                sceneLists.append(curList)
+                curLen = 0
+                curList = []
+                
+            curList.append(scene)
+            curLen += len(scene) + 14   # 14 for ' OR S_FILEPATH='
+            
+        sceneLists.append(curList)
+        
+        if self.logger:
+            
+            self.logger.info('Split scenes into ' + \
+                             str(len(sceneLists)) + \
+                             ' lists for querying.')
+            
+        #---
+        # For testing, ensure every scene in self.scenes is represented in 
+        # sceneLists.  Eventually, remove this.
+        #---
+        sortedScenes = sorted(self.scenes)
+        aggregatedSceneList = []
+        
+        for sceneList in sceneLists:
+            aggregatedSceneList += sceneList
+            
+        aggregatedSceneList.sort()
+        
+        if sortedScenes == aggregatedSceneList:
+            
+            print 'Scene list splitting was successful.'
+            
+        else:
+            print 'Scene list splitting failed.'
+
+        # Get the scenes for each list and add the to the result.
+        scenes = []
+        
+        for sceneList in sceneLists:
+            scenes.extend(self._getBatchOfScenes(sceneList))
+            
+        return scenes
+        
+    #---------------------------------------------------------------------------
+    # _getBatchOfScenes
+    #---------------------------------------------------------------------------
+    def _getBatchOfScenes(self, sceneList):
         
         # Compose query.
         cmd = FootprintsQuery.BASE_QUERY
@@ -284,12 +349,6 @@ class FootprintsQuery(object):
             # To filter scenes that only overlap the AoI slightly, decrease both
             # corners of the query AoI.
             #---
-            # MIN_OVERLAP_IN_DEGREES = 0.02
-            # ulx = float(self.ulx) + MIN_OVERLAP_IN_DEGREES
-            # uly = float(self.uly) - MIN_OVERLAP_IN_DEGREES
-            # lrx = float(self.lrx) - MIN_OVERLAP_IN_DEGREES
-            # lry = float(self.lry) + MIN_OVERLAP_IN_DEGREES
-
             ulx = float(self.ulx) + self.minOverlapInDegrees
             uly = float(self.uly) - self.minOverlapInDegrees
             lrx = float(self.lrx) - self.minOverlapInDegrees
@@ -300,10 +359,8 @@ class FootprintsQuery(object):
                    ' ' + str(lry)                   + \
                    ' ' + str(lrx)                   + \
                    ' ' + str(uly)                   
-                   # ' -spat_srs'                     + \
-                   # ' "' + self.srs.ExportToProj4() + '"'
-
-        where = self._buildWhereClause()
+                   
+        where = self._buildWhereClause(sceneList)
 
         if len(where):
             

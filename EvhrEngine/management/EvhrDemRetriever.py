@@ -11,6 +11,7 @@ from EvhrEngine.management.EvhrHelper import EvhrHelper
 from EvhrEngine.management.FootprintsQuery import FootprintsQuery
 from EvhrEngine.management.FootprintsScene import FootprintsScene
 from EvhrEngine.management.SystemCommand import SystemCommand
+from EvhrEngine.models import EvhrError
 from EvhrEngine.models import EvhrScene
 from GeoProcessingEngine.management.GeoRetriever import GeoRetriever
 
@@ -86,6 +87,7 @@ class EvhrDemRetriever(GeoRetriever):
             if hasattr(settings, 'MAXIMUM_SCENES'):
                 fpq.setMaximumScenes(settings.MAXIMUM_SCENES)
             
+            fpq.setMultispectralOff()
             fpq.setPairsOnly()
             fpScenes = fpq.getScenes()
 
@@ -98,7 +100,7 @@ class EvhrDemRetriever(GeoRetriever):
             
         # ---
         # Now that dg_stereo.sh does not query redundantly, EDR must copy each
-        # pairs' files to the request directory for dg_stereo.sh to find them.
+        # pair's files to the request directory for dg_stereo.sh to find them.
         # The first step is to associate the pair name with its files.
         # ---
         pairs = {}
@@ -136,15 +138,51 @@ class EvhrDemRetriever(GeoRetriever):
                     pairsWithMissingScenes.append(pairName)
                     continue
                     
-        # Remove pairs without scenes for both mates.
+        #---
+        # Remove pairs without scenes for both mates.  Count the scenes deleted
+        # to reconcile with the number of scenes returned by the query.
+        #---
+        numUnpairedScenes = 0
+        
         for pair in pairsWithMissingScenes:
+            
+            numUnpairedScenes += len(pairs[pair])
+            
+            for scene in pairs[pair]:
+                
+                EvhrScene.objects.get(request=self.request,
+                                      sceneFile=scene).delete()
+                
             del pairs[pair]
+            
+        #---
+        # Count the scenes left to reconcile with the number of scenes returned
+        # by the query.
+        #---
+        numPairedScenes = 0
+        
+        for pair in pairs:
+            numPairedScenes += len(pairs[pair])
             
         if self.logger:
             
-            self.logger.info('There are ' + \
-                             str(len(pairs)) + \
-                             ' pairs among the input scenes.')
+            numQueriedScenes = len(fpScenes)
+            
+            unaccountedScenes = \
+                numQueriedScenes - numPairedScenes - numUnpairedScenes
+            
+            self.logger.info('Queried scenes: ' + \
+                             str(numQueriedScenes) + '\n' + \
+                             'Unpaired scenes: ' + \
+                             str(numUnpairedScenes) + '\n' + \
+                             'Paired scenes: ' + \
+                             str(numPairedScenes) + '\n' + \
+                             'Unaccounted scenes: ' + \
+                             str(unaccountedScenes) + '\n' + \
+                             'Pairs: ' + str(len(pairs)))
+                             
+            for pair in sorted(pairs.keys()):
+                self.logger.info(pair)
 
         return pairs
 
@@ -274,7 +312,21 @@ class EvhrDemRetriever(GeoRetriever):
         #     else:
         #         raise
 
-        os.system(cmd)
+        exitCode = os.system(cmd)
+        
+        if exitCode:
+            
+            msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
+            err = EvhrError()
+            err.request = self.request
+            err.errorOutput = msg
+            err.command = cmd
+            err.save()
+            
+            if self.logger:
+                self.logger.error(msg)
+
+            # raise RuntimeError(msg)
         
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
@@ -284,6 +336,20 @@ class EvhrDemRetriever(GeoRetriever):
 
             cmd = 'mv ' + outDemName + ' ' + constituentFileName
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+            
+        else:
+
+            msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
+            err = EvhrError()
+            err.request = self.request
+            err.errorOutput = msg
+            err.command = cmd
+            err.save()
+            
+            if self.logger:
+                self.logger.error(msg)
+
+            # raise RuntimeError('DEM ' + outDemName + ' failed.  Command: ' + cmd)
         
         return constituentFileName    
               
