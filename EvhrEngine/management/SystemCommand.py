@@ -19,6 +19,7 @@ class SystemCommand(object):
     
     # These must be in lower case.
     ERROR_STRINGS_TO_TEST = [ \
+        'aborted',
         'command not found',
         'exiting',
         'error',
