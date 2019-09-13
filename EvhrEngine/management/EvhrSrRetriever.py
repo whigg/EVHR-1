@@ -309,7 +309,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # binary output of Yujie's code, and I assume orthoName is the ortho 
         # tif, which is what we need to use as georeference for output SR tif
         #---
-        srTif = os.path.join(self.srOutputDir, '{}__SR.tif'.format(stripName))
+        srTif = os.path.join(self.srOutputDir, '{}_SR.tif'.format(stripName))
         self.binToTif(srFile, orthoName, srTif) 
                     
         return constituentFileName
