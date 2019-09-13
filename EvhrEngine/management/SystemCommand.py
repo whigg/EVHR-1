@@ -165,11 +165,12 @@ class SystemCommand(object):
         # and error text.
         #---
         lcMsg = self.msg.lower()
+        lcStdOut = self.stdOut.lower()
         hasErrorString = False
         
         for eMsg in SystemCommand.ERROR_STRINGS_TO_TEST:
             
-            if lcMsg.find(eMsg) != -1:
+            if lcMsg.find(eMsg) != -1 or lcStdOut.find(eMsg) != -1:
 
                 if SystemCommand.NODE_FAILURE_MSG in eMsg:
                     
