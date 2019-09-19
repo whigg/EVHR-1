@@ -463,7 +463,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     self.logger.error(cmd)
                     self.logger.error(sCmd.msg)
 
-            os.remove(tempInput)
+            # os.remove(tempInput)
             
         return wv2File
 
