@@ -280,9 +280,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
 
-        orthoName = os.path.join(self.srInputDir,
-                                 os.path.basename(constituentFileName). \
-                                     replace('.bin', '.tif'))
+        baseName = os.path.basename(constituentFileName).split('.')[1:]
+        baseName.replace('.bin', '.tif')
+        orthoName = os.path.join(self.srInputDir, baseName)
         
         self.orthoStrip(stripBandList, orthoName)
 
