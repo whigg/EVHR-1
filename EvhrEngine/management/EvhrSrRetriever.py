@@ -227,7 +227,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             dgf = DgFile(scene, self.logger)
             stripID = dgf.getStripName()
-            srBaseName = stripID + '.bin'
+            srBaseName = 'MAIAC.' + stripID + '.bin'
             constituentFileName = os.path.join(self.srOutputDir, srBaseName)
             
             if not constituents.has_key(constituentFileName):
