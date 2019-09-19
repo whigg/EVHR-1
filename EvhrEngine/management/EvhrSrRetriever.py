@@ -92,7 +92,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # number of pixels to reshape array to original size. catch it here
         try:
             inArr = numpy.reshape(inArr, (nBands, nRows, nCols))
+
         except ValueError:
+            
             print "Could not reshape {}".format(srBin)
             return None
 
@@ -334,8 +336,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
                   self.srInputDir + ' ' + \
                   self.srOutputDir
             
+            cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
+
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
-                                 self.maxProcesses != 1)
+                                 False)
             
             if sCmd.returnCode != 0:
 
@@ -447,11 +451,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
                   tempInput + ' ' + \
                   self.srInputDir
 
-            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
-                                 self.maxProcesses != 1)
-
-            os.remove(tempInput)
+            cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
             
+            sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
+                                 False)
+
             if sCmd.returnCode != 0:
 
                 if self.logger:
@@ -459,6 +463,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     self.logger.error(cmd)
                     self.logger.error(sCmd.msg)
 
+            os.remove(tempInput)
+            
         return wv2File
 
 
