@@ -366,7 +366,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     # writeMetaAndBin
     #---------------------------------------------------------------------------
-    def writeMetaAndBin(self, stripName, orthoNam):
+    def writeMetaAndBin(self, stripName, orthoName):
 
         metaFileName = os.path.join(self.srInputDir, stripName + '.meta')
         binFileName = os.path.join(self.srInputDir, stripName + '.bin')
