@@ -401,7 +401,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             srInOrtho = os.path.join(self.srInputDir, 
                                      os.path.basename(orthoName))
                                      
-            srInOrthoXml = srInOrtho.replace('bin', 'xml')
+            srInOrthoXml = orthoName.replace('tif', 'xml')
             
             if not os.path.exists(srInOrtho):
                 os.symlink(orthoName, srInOrtho)
@@ -422,11 +422,12 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     self.logger.error(cmd)
                     self.logger.error(sCmd.msg)
                     
-        if os.path.exists(srInOrtho):
-            os.remove(srInOrtho)
+            # Delete the symbolic links.
+            if os.path.exists(srInOrtho):
+                os.remove(srInOrtho)
 
-        if os.path.exists(srInOrthoXml):
-            os.remove(srInOrthoXml)
+            if os.path.exists(srInOrthoXml):
+                os.remove(srInOrthoXml)
 
         return metaFileName, binFileName
 
