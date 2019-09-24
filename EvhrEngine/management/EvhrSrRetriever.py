@@ -475,7 +475,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                   tempInput + ' ' + \
                   self.srInputDir
 
-            # cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
+            cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
             
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  False)
