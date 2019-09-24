@@ -400,9 +400,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
             #---
             srInOrtho = os.path.join(self.srInputDir, orthoName)
             srInOrthoXml = srInOrtho.replace('bin', 'xml')
-            os.symlink(orthoName, srInOrtho)
-            os.symlink(orthoName, srInOrthoXml)
-                
+            
+            if not os.path.exists(srInOrtho):
+                os.symlink(orthoName, srInOrtho)
+            
+            if not os.path.exists(srInOrthoXml):
+                os.symlink(orthoName, srInOrthoXml)
+            
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
                   
