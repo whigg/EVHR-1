@@ -280,9 +280,11 @@ class EvhrSrRetriever(EvhrToaRetriever):
         stripName = DgFile(fileList[0], self.logger).getStripName()
         stripBandList = self.scenesToStrip(stripName, fileList)
 
-        baseName ='.'.join(os.path.basename(constituentFileName).split('.')[1:])
-        baseName.replace('.bin', '.tif')
-        orthoName = os.path.join(self.srInputDir, baseName)
+        baseName ='.'.join(os.path.basename(constituentFileName). \
+                           split('.')[1:])
+
+        orthoName = os.path.join(self.srInputDir, 
+                                 baseName.replace('.bin', '.tif'))
         
         self.orthoStrip(stripBandList, orthoName)
 
@@ -397,7 +399,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # that is where WV02Cal.py expects to find it.
             #---
             srInOrtho = os.path.join(self.srInputDir, orthoName)
-            srInOrthoXml = srInOrtho.replace('tif', 'xml')
+            srInOrthoXml = srInOrtho.replace('bin', 'xml')
             os.symlink(orthoName, srInOrtho)
             os.symlink(orthoName, srInOrthoXml)
                 
