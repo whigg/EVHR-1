@@ -283,7 +283,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         baseName ='.'.join(os.path.basename(constituentFileName). \
                            split('.')[1:])
 
-        orthoName = os.path.join(self.srInputDir, 
+        orthoName = os.path.join(self.orthoDir, 
                                  baseName.replace('.bin', '.tif'))
         
         self.orthoStrip(stripBandList, orthoName)
@@ -398,7 +398,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
             # Temporarily link the ortho to the SR input directory because 
             # that is where WV02Cal.py expects to find it.
             #---
-            srInOrtho = os.path.join(self.srInputDir, orthoName)
+            srInOrtho = os.path.join(self.srInputDir, 
+                                     os.path.basename(orthoName))
+                                     
             srInOrthoXml = srInOrtho.replace('bin', 'xml')
             
             if not os.path.exists(srInOrtho):
