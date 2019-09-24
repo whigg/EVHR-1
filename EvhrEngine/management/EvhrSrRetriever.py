@@ -401,7 +401,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             srInOrtho = os.path.join(self.srInputDir, 
                                      os.path.basename(orthoName))
                                      
-            srInOrthoXml = srInOrtho.replace('tif', 'xml'))
+            srInOrthoXml = srInOrtho.replace('tif', 'xml')
             
             if not os.path.exists(srInOrtho):
                 os.symlink(orthoName, srInOrtho)
