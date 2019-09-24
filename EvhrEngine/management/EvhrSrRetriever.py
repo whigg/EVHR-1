@@ -338,7 +338,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                   self.srInputDir + ' ' + \
                   self.srOutputDir
             
-            cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
+            # cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
 
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  False)
@@ -411,7 +411,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
-                  
+            cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
+
             sCmd = SystemCommand(cmd, None, self.logger, self.request, True,
                                  self.maxProcesses != 1)
                                  
