@@ -401,13 +401,13 @@ class EvhrSrRetriever(EvhrToaRetriever):
             srInOrtho = os.path.join(self.srInputDir, 
                                      os.path.basename(orthoName))
                                      
-            srInOrthoXml = orthoName.replace('tif', 'xml')
+            srInOrthoXml = srInOrtho.replace('tif', 'xml'))
             
             if not os.path.exists(srInOrtho):
                 os.symlink(orthoName, srInOrtho)
             
             if not os.path.exists(srInOrthoXml):
-                os.symlink(orthoName, srInOrthoXml)
+                os.symlink(orthoName.replace('tif', 'xml'), srInOrthoXml)
             
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
