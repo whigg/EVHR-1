@@ -290,7 +290,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
         # Run the SR code.  Yujie's code does not properly report errors, so
         # check for expected output after each step.
         #---
-        metaFileName, binFileName = self.writeMetaAndBin(stripName)
+        metaFileName, binFileName = self.writeMetaAndBin(stripName, orthoName)
 
         if not os.path.exists(metaFileName) or not os.path.exists(binFileName):
             raise RuntimeError('WV02Cal failed for ' + constituentFileName)
@@ -366,7 +366,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     # writeMetaAndBin
     #---------------------------------------------------------------------------
-    def writeMetaAndBin(self, stripName):
+    def writeMetaAndBin(self, stripName, orthoNam):
 
         metaFileName = os.path.join(self.srInputDir, stripName + '.meta')
         binFileName = os.path.join(self.srInputDir, stripName + '.bin')
@@ -382,8 +382,8 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                       'SurfaceReflectance/WV02Cal.py')
 
             #---
-            # WVimg5 wants to process all IDs in srInput.txt, while we need it
-            # to only process this one.  To work around that, create a
+            # WV02Cal.py wants to process all IDs in srInput.txt, while we need
+            # it to only process this one.  To work around that, create a
             # temporary file containing only this ID.
             #---
             oneID = os.path.basename(stripName)
@@ -392,6 +392,15 @@ class EvhrSrRetriever(EvhrToaRetriever):
             with open(tempInput, 'w') as f:
                 f.write(os.path.splitext(os.path.basename(stripName))[0]+'\n')
               
+            #---
+            # Temporarily link the ortho to the SR input directory because 
+            # that is where WV02Cal.py expects to find it.
+            #---
+            srInOrtho = os.path.join(self.srInputDir, orthoName)
+            srInOrthoXml = srInOrtho.replace('tif', 'xml')
+            os.symlink(orthoName, srInOrtho)
+            os.symlink(orthoName, srInOrthoXml)
+                
             # Build and run the command.  
             cmd = wv02CalExe + ' ' + tempInput + ' ' + self.srInputDir
                   
@@ -404,6 +413,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     
                     self.logger.error(cmd)
                     self.logger.error(sCmd.msg)
+                    
+            os.remove(srInOrtho)
+            os.remove(srInOrthoXml)
 
         return metaFileName, binFileName
 
