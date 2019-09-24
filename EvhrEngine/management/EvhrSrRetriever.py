@@ -420,7 +420,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     self.logger.error(cmd)
                     self.logger.error(sCmd.msg)
                     
+        if os.path.exists(srInOrtho):
             os.remove(srInOrtho)
+
+        if os.path.exists(srInOrthoXml):
             os.remove(srInOrthoXml)
 
         return metaFileName, binFileName
