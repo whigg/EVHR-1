@@ -332,11 +332,15 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             srExe = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'SurfaceReflectance/MAIAC_WV2_5')
+                                 
+            lutDir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'SurfaceReflectance')
         
             cmd = srExe + ' ' + \
                   stripName + ' ' + \
                   self.srInputDir + ' ' + \
-                  self.srOutputDir
+                  self.srOutputDir + ' ' + \
+                  lutDir
             
             # cmd = "pdsh -w {} '{}'".format('evhr103', cmd)
 
