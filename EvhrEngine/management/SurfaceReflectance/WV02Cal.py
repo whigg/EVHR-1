@@ -37,8 +37,8 @@ print "?????"
 #outpath = '../TOA/' + sys.argv[2] + '/'
 #datapath = '/att/gpfsfs/briskfs01/ppl/rlgill/'
 #datapath = '/att/gpfsfs/nga01/data/forward_20160121/Data/WV02/1B/2010/209/WV02_10300100060DDC00_X1BS_500175887070_01/'
-datapath = '../test_img/'
-outpath = '../TOA_test/' 
+datapath = sys.argv[2]
+outpath = sys.argv[2] 
 print outpath
 
 f =open(sys.argv[1], "r")
