@@ -13,7 +13,8 @@ import sys
 
 nBands = 5
 BandName = ["BAND_C", "BAND_B", "BAND_G", "BAND_Y", "BAND_R","BAND_RE", "BAND_N"]
-BandNum = [1, 2, 3, 5, 7] 
+# BandNum = [1, 2, 3, 5, 7]
+BandNum = [1, 2, 3, 4, 5] 
 RGBNum =  [-1, 2, 1, 0, -1]
 AbScal = []
 EBWidth = []
