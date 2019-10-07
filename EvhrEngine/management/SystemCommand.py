@@ -171,11 +171,20 @@ class SystemCommand(object):
         
         for eMsg in SystemCommand.ERROR_STRINGS_TO_TEST:
             
-            if lcMsg.find(eMsg) != -1 or lcStdOut.find(eMsg) != -1:
+            if lcMsg.find(eMsg) != -1:
 
                 if SystemCommand.NODE_FAILURE_MSG in eMsg:
                     
                     logger.warning('Node failed. ' + str(self.msg))
+                    
+                hasErrorString = True
+                break
+        
+            elif lcStdOut.find(eMsg) != -1:
+
+                if SystemCommand.NODE_FAILURE_MSG in eMsg:
+                    
+                    logger.warning('Node failed. ' + str(self.stdOut))
                     
                 hasErrorString = True
                 break
