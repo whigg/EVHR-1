@@ -35,7 +35,7 @@ class FootprintsQuery(object):
         self.footprintsFile = footprintsFile
         self.logger = logger
         self.catalogIDs = []
-        self.maxScenes = None
+        self.maxScenes = -1
         self.minOverlapInDegrees = 0.0
         self.pairsOnly = False
         self.scenes = []
@@ -340,7 +340,7 @@ class FootprintsQuery(object):
         # Compose query.
         cmd = FootprintsQuery.BASE_QUERY
         
-        if self.maxScenes:
+        if self.maxScenes > 0:
             cmd += ' -limit ' + str(self.maxScenes)
 
         if self.ulx and self.uly and self.lrx and self.lry and self.srs:
@@ -406,7 +406,7 @@ class FootprintsQuery(object):
               self._buildWhereClausePostgres() + \
               ' order by acq_time desc'
         
-        if self.maxScenes:
+        if self.maxScenes > 0:
             cmd += ' -limit ' + str(self.maxScenes)
 
         if self.logger:
