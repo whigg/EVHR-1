@@ -167,43 +167,41 @@ class SystemCommand(object):
         #---
         lcMsg = self.msg.lower()
         lcStdOut = self.stdOut.lower()
-        hasErrorString = False
+        error = None
         
         for eMsg in SystemCommand.ERROR_STRINGS_TO_TEST:
             
             if lcMsg.find(eMsg) != -1:
 
-                if SystemCommand.NODE_FAILURE_MSG in eMsg:
-                    
+                if SystemCommand.NODE_FAILURE_MSG in lcMsg:
                     logger.warning('Node failed. ' + str(self.msg))
                     
-                hasErrorString = True
+                error = self.msg
                 break
         
             elif lcStdOut.find(eMsg) != -1:
 
-                if SystemCommand.NODE_FAILURE_MSG in eMsg:
-                    
+                if SystemCommand.NODE_FAILURE_MSG in lcStdOut:
                     logger.warning('Node failed. ' + str(self.stdOut))
                     
-                hasErrorString = True
+                error = self.stdOut
                 break
         
-        if self.returnCode or hasErrorString:
+        if self.returnCode or error:
             
             if request != None:
             
                 err             = EvhrError()
                 err.request     = request
                 err.inputFile   = inFile
-                err.errorOutput = self.msg
+                err.errorOutput = error
                 err.command     = cmd
                 err.save()
             
             if raiseException:
                 
                 msg = 'A system command error occurred.  ' + \
-                      str(self.msg) + \
+                      error + \
                       ' Command: ' + str(cmd)
                       
                 raise RuntimeError(msg)
