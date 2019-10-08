@@ -36,8 +36,9 @@ class SystemCommand(object):
     # __init__
     #---------------------------------------------------------------------------
     def __init__(self, cmd, inFile, logger, request=None, raiseException=False,
-                 distribute=False):
+                 distribute=False, errorsToIgnore=[]):
 
+        self.errorsToIgnore = errorsToIgnore 
         self.msg = None
         self.returnCode = None
         self.stdOut = None
@@ -169,7 +170,10 @@ class SystemCommand(object):
         lcStdOut = self.stdOut.lower()
         error = None
         
-        for eMsg in SystemCommand.ERROR_STRINGS_TO_TEST:
+        errorsToTest = [e for e in SystemCommand.ERROR_STRINGS_TO_TEST \
+                            if x not in self.errorsToIgnore]
+        
+        for eMsg in errorsToTest:
             
             if lcMsg.find(eMsg) != -1:
 
