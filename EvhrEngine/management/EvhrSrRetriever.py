@@ -191,35 +191,6 @@ class EvhrSrRetriever(EvhrToaRetriever):
         if not scenes and self.logger:
             self.logger.error('No multispectral scenes for WV2 or WV3.')
 
-        # # Aggregate the scenes into strips.
-        # toas = {}
-        #
-        # for scene in scenes:
-        #
-        #     dgf = DgFile(scene, self.logger)
-        #     stripID = dgf.getStripName()
-        #     orthoName = os.path.join(self.orthoDir, stripID + '-ortho.tif')
-        #
-        #     if not orthos.has_key(orthoName):
-        #         orthos[orthoName] = []
-        #
-        #     orthos[orthoName].append(scene)
-        #
-        # # Aggregate the ToAs into SRs and create the SR input file.
-        # constituents = {}
-        #
-        # if os.path.exists(self.srInputFileName):
-        #     os.remove(self.srInputFileName)
-        #
-        # with open(self.srInputFileName, 'aw+') as f:
-        #
-        #     for ortho in sorted(orthos):
-        #
-        #         srBaseName = os.path.basename(ortho).replace('-ortho.tif', '.bin')
-        #         srName = os.path.join(self.srOutputDir, srBaseName)
-        #         constituents[srName] = orthos[ortho]
-        #         f.write(os.path.splitext(os.path.basename(srBaseName))[0]+'\n')
-
         # Aggregate the scenes into strips, and create the SR input file.
         constituents = {}
         
