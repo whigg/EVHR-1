@@ -37,6 +37,7 @@ class FootprintsQuery(object):
         self.catalogIDs = []
         self.maxScenes = -1
         self.minOverlapInDegrees = 0.0
+        self.numBands = -1
         self.pairsOnly = False
         self.scenes = []
         self.sensors = []
@@ -187,6 +188,10 @@ class FootprintsQuery(object):
           
         if not self.useMultispectral:
             whereClause += ' AND (SPEC_TYPE <> \'Multispectral\')'
+            
+        # Set bands.
+        if self.numBands > 0:
+            whereClause += ' AND (BANDS=\'' + str(self.numBands) + '\')')
 
         return unicode(whereClause)
         
@@ -442,6 +447,13 @@ class FootprintsQuery(object):
         
         self.minOverlapInDegrees = minimum
         
+    #---------------------------------------------------------------------------
+    # setNumBands
+    #---------------------------------------------------------------------------
+    def setNumBands(self, numBands):
+        
+        self.numBands = numBands
+
     #---------------------------------------------------------------------------
     # setPairsOnly
     #---------------------------------------------------------------------------
