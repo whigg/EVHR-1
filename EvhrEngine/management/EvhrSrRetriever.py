@@ -119,10 +119,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
-    def getScenes(self, request, ulx, uly, lrx, lry, srs):
+    def getScenes(self, ulx, uly, lrx, lry, srs):
 
         # Check if there are already scenes associated with this request.
-        evhrScenes = EvhrScene.objects.filter(request = request)
+        evhrScenes = EvhrScene.objects.filter(request=self.request)
         sceneFiles = []
 
         if evhrScenes:
@@ -182,8 +182,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
     def listConstituents(self):
 
         # Query for scenes.
-        scenes = self.getScenes(self.request,
-                                self.retrievalUlx,
+        scenes = self.getScenes(self.retrievalUlx,
                                 self.retrievalUly,
                                 self.retrievalLrx,
                                 self.retrievalLry,
