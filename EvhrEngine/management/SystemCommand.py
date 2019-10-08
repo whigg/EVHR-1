@@ -171,7 +171,7 @@ class SystemCommand(object):
         error = None
         
         errorsToTest = [e for e in SystemCommand.ERROR_STRINGS_TO_TEST \
-                            if x not in self.errorsToIgnore]
+                            if e not in self.errorsToIgnore]
         
         for eMsg in errorsToTest:
             
