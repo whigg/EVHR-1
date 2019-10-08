@@ -191,7 +191,7 @@ class FootprintsQuery(object):
             
         # Set bands.
         if self.numBands > 0:
-            whereClause += ' AND (BANDS=\'' + str(self.numBands) + '\')')
+            whereClause += ' AND (BANDS=\'' + str(self.numBands) + '\')'
 
         return unicode(whereClause)
         
