@@ -335,7 +335,14 @@ class EvhrDemRetriever(GeoRetriever):
         if os.path.exists(outDemName):
 
             cmd = 'mv ' + outDemName + ' ' + constituentFileName
-            sCmd = SystemCommand(cmd, None, self.logger, self.request, True)
+            
+            sCmd = SystemCommand(cmd, 
+                                 None, 
+                                 self.logger, 
+                                 self.request, 
+                                 True,
+                                 False,
+                                 ['no such file or directory'])
             
         else:
 
