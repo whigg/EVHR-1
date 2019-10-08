@@ -157,6 +157,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             fpq.setMinimumOverlapInDegrees()
             fpq.addSensors(['WV02', 'WV03'])
             fpq.setPanchromaticOff()
+            fpq.setNumBands(8)
 
             maxScenes = EvhrToaRetriever.MAXIMUM_SCENES
             
