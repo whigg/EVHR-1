@@ -175,7 +175,7 @@ class EvhrToaRetriever(GeoRetriever):
         for scene in fpScenes:
 
             evhrScene = EvhrScene()
-            evhrScene.request = request
+            evhrScene.request = self.request
             evhrScene.sceneFile = scene.fileName()
             evhrScene.save()
 
@@ -188,10 +188,10 @@ class EvhrToaRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # getScenes
     #---------------------------------------------------------------------------
-    def getScenes(self, request, ulx, uly, lrx, lry, srs):
+    def getScenes(self, ulx, uly, lrx, lry, srs):
 
         # Check if there are already scenes associated with this request.
-        evhrScenes = EvhrScene.objects.filter(request = request)
+        evhrScenes = EvhrScene.objects.filter(request = self.request)
         sceneFiles = []
 
         if evhrScenes:
@@ -228,8 +228,7 @@ class EvhrToaRetriever(GeoRetriever):
     def listConstituents(self):
 
         # Query for scenes.
-        scenes = self.getScenes(self.request,
-                                self.retrievalUlx,
+        scenes = self.getScenes(self.retrievalUlx,
                                 self.retrievalUly,
                                 self.retrievalLrx,
                                 self.retrievalLry,
