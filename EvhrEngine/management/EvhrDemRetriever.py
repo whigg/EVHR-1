@@ -68,10 +68,10 @@ class EvhrDemRetriever(GeoRetriever):
     #---------------------------------------------------------------------------
     # getPairs
     #---------------------------------------------------------------------------
-    def getPairs(self, ulx, uly, lrx, lry, srs, request):
+    def getPairs(self, ulx, uly, lrx, lry, srs):
 
         # Check if there are already scenes associated with this request.
-        evhrScenes = EvhrScene.objects.filter(request = request)
+        evhrScenes = EvhrScene.objects.filter(request=self.request)
         features = None
         fpq = FootprintsQuery(logger=self.logger)
         fpq.addAoI(ulx, uly, lrx, lry, srs)
@@ -94,7 +94,7 @@ class EvhrDemRetriever(GeoRetriever):
             for scene in fpScenes:
 
                 evhrScene = EvhrScene()
-                evhrScene.request = request
+                evhrScene.request = self.request
                 evhrScene.sceneFile = scene.fileName()
                 evhrScene.save()
             
@@ -209,8 +209,7 @@ class EvhrDemRetriever(GeoRetriever):
                               self.retrievalUly,
                               self.retrievalLrx,
                               self.retrievalLry,
-                              self.retrievalSRS,
-                              self.request)
+                              self.retrievalSRS)
                               
         # ONLY RUN ONE SCENE FOR TESTING
         # pairs = list(pairs)[:1]
@@ -225,7 +224,6 @@ class EvhrDemRetriever(GeoRetriever):
 
             consName = os.path.join(self.demDir, pair + '.tif')
             constituents[consName] = {pair : pairs[pair]}
-            # constituents[consName] = {pair : pairs[0]}
             
         return constituents
 
