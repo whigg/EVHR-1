@@ -36,6 +36,9 @@ class Command(BaseCommand):
                             help='Only use multispectral',
                             action='store_true')
                             
+        parser.add_argument('--numBands', 
+                            help='Select images with a specific number of bands')
+                            
         parser.add_argument('--pairsOnly', 
                             help='Only choose scenes that are part of a pair',
                             action='store_true')
@@ -63,6 +66,9 @@ class Command(BaseCommand):
         
         if options['multiOnly']:
             fpq.setPanchromaticOff()
+            
+        if options['numBands']:
+            fpq.setNumBands(options['numBands'])
             
         if options['pairsOnly']:
             fpq.setPairsOnly()
