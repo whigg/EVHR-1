@@ -177,7 +177,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                 if error:
                     
                     EvhrScene.objects.get(request=self.request,
-                                          sceneFile=scene).delete()
+                                          sceneFile=sceneFile).delete()
                     
         else:
             
