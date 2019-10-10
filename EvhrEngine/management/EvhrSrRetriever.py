@@ -154,6 +154,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
             fpScenes = None
             fpq = FootprintsQuery(logger=self.logger)
             fpq.addAoI(ulx, uly, lrx, lry, srs)
+            fpq.setEndDate(settings.MOST_RECENT_MAIAC)
             fpq.setMinimumOverlapInDegrees()
             fpq.addSensors(['WV02', 'WV03'])
             fpq.setPanchromaticOff()
