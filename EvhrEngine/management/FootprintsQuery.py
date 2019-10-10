@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import os
 import psycopg2
 import tempfile
@@ -32,6 +33,7 @@ class FootprintsQuery(object):
                                footprintsFile + \
                                ' does not exist.')
                                
+        self.endDate = datetime.today()
         self.footprintsFile = footprintsFile
         self.logger = logger
         self.catalogIDs = []
@@ -434,6 +436,14 @@ class FootprintsQuery(object):
         return scenes          
 
     #---------------------------------------------------------------------------
+    # setEndDate
+    #---------------------------------------------------------------------------
+    def setEndDate(self, endDateStr):
+
+        endDate = datetime.strptime(endDateStr, '%Y-%m-%d')
+        self.endDate = endDate
+
+    #---------------------------------------------------------------------------
     # setMaximumScenes
     #---------------------------------------------------------------------------
     def setMaximumScenes(self, maximum):
@@ -446,6 +456,13 @@ class FootprintsQuery(object):
     def setMinimumOverlapInDegrees(self, minimum=0.02):
         
         self.minOverlapInDegrees = minimum
+        
+    #---------------------------------------------------------------------------
+    # setMultispectralOff
+    #---------------------------------------------------------------------------
+    def setMultispectralOff(self):
+        
+        self.useMultispectral = False
         
     #---------------------------------------------------------------------------
     # setNumBands
@@ -467,11 +484,4 @@ class FootprintsQuery(object):
     def setPanchromaticOff(self):
         
         self.usePanchromatic = False
-        
-    #---------------------------------------------------------------------------
-    # setMultispectralOff
-    #---------------------------------------------------------------------------
-    def setMultispectralOff(self):
-        
-        self.useMultispectral = False
         
