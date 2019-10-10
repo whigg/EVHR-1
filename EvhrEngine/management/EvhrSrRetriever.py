@@ -131,9 +131,12 @@ class EvhrSrRetriever(EvhrToaRetriever):
             
             for sceneFile in sceneFiles:
                 
+                error = False
                 dgf = DgFile(sceneFile)
                 
                 if dgf.isPanchromatic():
+                    
+                    error = True
                     
                     if self.logger:
                         self.logger.warning('Scene ' + \
@@ -141,14 +144,41 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                             ' is being skipped because' + \
                                             ' it is panchromatic.')
                                             
-                if dgf.sensor() != 'WV02' and dgf.sensor() != 'WV03':
+                elif dgf.sensor() != 'WV02' and dgf.sensor() != 'WV03':
 
+                    error = True
+                    
                     if self.logger:
                         self.logger.warning('Scene ' + \
                                             dgf.fileName + \
                                             ' is being skipped because' + \
                                             ' it is not WV02 or WV03.')
                                             
+                elif dgf.numBands != 8:
+                    
+                    error = True
+                    
+                    if self.logger:
+                        self.logger.warning('Scene ' + \
+                                            dgf.fileName + \
+                                            ' is being skipped because' + \
+                                            ' it does not have 8 bands.')
+                                            
+                elif dgf.year() > settings.MOST_RECENT_MAIAC:
+                    
+                    error = True
+                    
+                    if self.logger:
+                        self.logger.warning('Scene ' + \
+                                            dgf.fileName + \
+                                            ' is being skipped because' + \
+                                            ' it is too recent for MAIAC data.'
+                                            
+                if error:
+                    
+                    EvhrScene.objects.get(request=self.request,
+                                          sceneFile=scene).delete()
+                    
         else:
             
             fpScenes = None
