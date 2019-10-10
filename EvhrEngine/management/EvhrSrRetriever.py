@@ -172,7 +172,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                         self.logger.warning('Scene ' + \
                                             dgf.fileName + \
                                             ' is being skipped because' + \
-                                            ' it is too recent for MAIAC data.'
+                                            ' it is too recent for MAIAC data.')
                                             
                 if error:
                     
