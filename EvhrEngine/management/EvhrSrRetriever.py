@@ -127,9 +127,10 @@ class EvhrSrRetriever(EvhrToaRetriever):
 
         if evhrScenes:
             
-            sceneFiles = self._validateScenes(evhrScenes)
+            potentialSceneFiles = self._validateScenes(evhrScenes)
             
-            for sceneFile in sceneFiles:
+            # This validation is specific to SR.
+            for sceneFile in potentialSceneFiles:
                 
                 error = False
                 dgf = DgFile(sceneFile)
@@ -178,6 +179,9 @@ class EvhrSrRetriever(EvhrToaRetriever):
                     
                     EvhrScene.objects.get(request=self.request,
                                           sceneFile=sceneFile).delete()
+                                          
+                else:
+                    sceneFiles.append(sceneFile)
                     
         else:
             
