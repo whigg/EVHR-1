@@ -196,10 +196,9 @@ class FootprintsQuery(object):
             whereClause += ' AND (BANDS=\'' + str(self.numBands) + '\')'
             
         # Set end date.  "2018/07/02 00:00:00"
-        year, month, day = self.endDate.split('-')
-        
-        whereClause += ' AND (ACQ_DATE<\'' + year + '/' + month + '/' + \
-                       day + ' 00:00:00\')'
+        whereClause += ' AND (ACQ_DATE<\'' + \
+                       self.endDate.strftime("%Y-%m-%d %H:%M:%S") + \
+                       '\')'
 
         return unicode(whereClause)
         
