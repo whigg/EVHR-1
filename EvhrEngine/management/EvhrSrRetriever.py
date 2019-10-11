@@ -224,7 +224,7 @@ class EvhrSrRetriever(EvhrToaRetriever):
                                 self.retrievalSRS)
 
         if not scenes and self.logger:
-            self.logger.error('No multispectral scenes for WV2 or WV3.')
+            self.logger.error('No valid scenes.')
 
         # Aggregate the scenes into strips, and create the SR input file.
         constituents = {}
