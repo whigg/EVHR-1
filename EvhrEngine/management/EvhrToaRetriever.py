@@ -108,9 +108,9 @@ class EvhrToaRetriever(GeoRetriever):
         for outFile in fileList:
 
             dg = DgFile(outFile)
-            ccDict[dg.cloudCover()] = outFile
+            ccDict[outFile] = dg.cloudCover()
 
-        sortedFiles = [value for (key, value) in sorted(ccDict.items())]
+        sortedFiles = [key for (key, value) in sorted(ccDict.items())]
 
         # Build the VRT.
         cmd = 'gdalbuildvrt -q -overwrite ' + \
@@ -120,7 +120,7 @@ class EvhrToaRetriever(GeoRetriever):
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
         # Build pyramids.
-        cmd = 'gdaladdo ' + outVrt + ' 2 4 8 16'
+        cmd = 'gdaladdo -q ' + outVrt + ' 2 4 8 16'
         sCmd = SystemCommand(cmd, None, self.logger, self.request, True, True)
 
     #---------------------------------------------------------------------------
