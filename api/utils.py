@@ -24,7 +24,11 @@ def downloadRequest(requestId):
                   
         archiveFile = os.path.join(settings.DOWNLOAD_DIR, zipName)
       
-        zf = zipfile.ZipFile(archiveFile, 'w', zipfile.ZIP_DEFLATED)
+        zf = zipfile.ZipFile(archiveFile, 
+                             'w', 
+                             zipfile.ZIP_DEFLATED, 
+                             allowZip64=True)
+                             
         atLeastOneFileZipped = False
 
         # Zip the file for each COMPLETE and enabled constituent.
