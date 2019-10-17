@@ -144,8 +144,12 @@ class EvhrDemRetriever(GeoRetriever):
                     
                     if fpScenes:
                         
+                        existingScenes = pairs[pairName]
+                        
                         for fps in fpScenes:
-                            pairs[pairName].append(fps.fileName())
+                            
+                            if fps not in existingScenes:
+                                pairs[pairName].append(fps.fileName())
 
                     else:
                         
