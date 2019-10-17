@@ -127,26 +127,15 @@ class EvhrDemRetriever(GeoRetriever):
                 
                 if not (filter(r.match, pairs[pairName])):
 
-                    # if self.logger:
-                    #
-                    #     self.logger.warning('Pair ' +
-                    #                         pairName +
-                    #                         ' does not contain any scenes' +
-                    #                         ' for ' +
-                    #                         mate)
-                    #
-                    # pairsWithMissingScenes.append(pairName)
-                    # continue
-
                     fpq = FootprintsQuery(logger=self.logger)
                     fpq.addCatalogID([mate])
-                    fpScenes = fpq.getScenes()
+                    mates = fpq.getScenes()
                     
-                    if fpScenes:
+                    if mates:
                         
                         existingScenes = pairs[pairName]
                         
-                        for fps in fpScenes:
+                        for fps in mates:
                             
                             if fps not in existingScenes:
                                 pairs[pairName].append(fps.fileName())
