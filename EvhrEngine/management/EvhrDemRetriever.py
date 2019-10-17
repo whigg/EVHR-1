@@ -138,7 +138,9 @@ class EvhrDemRetriever(GeoRetriever):
                         for fps in mates:
                             
                             if fps not in existingScenes:
+
                                 pairs[pairName].append(fps.fileName())
+                                fpScenes.append(fps)
 
                     else:
                         
