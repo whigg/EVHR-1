@@ -212,7 +212,7 @@ def orderMosaic(request):
     geoRequest.lrx         = request.POST['lrx']
     geoRequest.lry         = request.POST['lry']
     
-    ep = EndPoint.objects.filter(name = 'EVHR Mosaic')[0]
+    ep = EndPoint.objects.filter(name = 'EVHR ToA')[0]
     geoRequest.endPoint = ep
     
     geoRequest.srs = GeoRetriever. \
