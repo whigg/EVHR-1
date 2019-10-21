@@ -328,19 +328,17 @@ class EvhrDemRetriever(GeoRetriever):
 
         exitCode = os.system(cmd)
         
-        if exitCode:
-            
-            msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
-            err = EvhrError()
-            err.request = self.request
-            err.errorOutput = msg
-            err.command = cmd
-            err.save()
-            
-            if self.logger:
-                self.logger.error(msg)
-
-            # raise RuntimeError(msg)
+        # if exitCode:
+        #
+        #     msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
+        #     err = EvhrError()
+        #     err.request = self.request
+        #     err.errorOutput = msg
+        #     err.command = cmd
+        #     err.save()
+        #
+        #     if self.logger:
+        #         self.logger.error(msg)
         
         # Move the primary output file to the constituent name.
         pairDir = os.path.join(self.demDir, PAIR_NAME)
