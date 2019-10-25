@@ -310,7 +310,8 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + MYSTERY1              + \
               ' ' + OUT_DIR               + \
               ' ' + QUERY                 + \
-              ' ' + CROP_WINDOW 
+              ' ' + CROP_WINDOW           + \
+              ' &> ' + os.path.join(self.request.destination.name + 'dg_stereo.out')
             
         # try:
         #     SystemCommand(cmd, None, self.logger, self.request, True)
@@ -326,13 +327,8 @@ class EvhrDemRetriever(GeoRetriever):
         #     else:
         #         raise
 
-        # exitCode = os.system(cmd)
-        import subprocess
-        
-        result = subprocess.check_output(cmd, 
-                                         stderr=subprocess.STDOUT, 
-                                         shell=True)
-        
+        exitCode = os.system(cmd)
+
         # if exitCode:
         #
         #     msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
