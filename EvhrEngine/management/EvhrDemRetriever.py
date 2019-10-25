@@ -311,7 +311,7 @@ class EvhrDemRetriever(GeoRetriever):
               ' ' + OUT_DIR               + \
               ' ' + QUERY                 + \
               ' ' + CROP_WINDOW           + \
-              ' >& ' + os.path.join(self.request.destination.name, 'dg_stereo.out')
+              ' &> ' + os.path.join(self.request.destination.name, 'dg_stereo.out')
             
         # try:
         #     SystemCommand(cmd, None, self.logger, self.request, True)
