@@ -1,5 +1,7 @@
 
+import grp
 import os
+import pwd
 import re
 from sets import Set
 import shutil
@@ -358,7 +360,11 @@ class EvhrDemRetriever(GeoRetriever):
             
         else:
 
-            msg = 'DEM ' + pairName + ' failed.  Command: ' + cmd
+            msg = 'DEM ' + pairName + ' failed.\n' + \
+                  'Command: ' + cmd + '\n' + \
+                  'User: ' + pwd.getpwuid(os.getuid()).pw_name + '\n' + \
+                  'Group: ' + grp.getgrgid(pwd.getpwuid(os.getuid()).pw_gid)[0]
+                  
             err = EvhrError()
             err.request = self.request
             err.errorOutput = msg
