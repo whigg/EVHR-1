@@ -61,7 +61,7 @@ class EvhrDemRetriever(GeoRetriever):
         self.logger.info('Using ' + str(scmd.stdOut))
 
         os.environ['PYTHONPATH'] = \
-            os.environ['PYTHONPATH'] + settings.PYTHON_PATH
+            os.environ['PYTHONPATH'] + ':' + settings.PYTHON_PATH
 
         self.logger.info('PYTHONPATH = ' + os.environ['PYTHONPATH'])
 
