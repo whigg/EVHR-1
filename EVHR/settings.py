@@ -203,4 +203,5 @@ MERRA_START_DATE = '1980-01-01'
 MOST_RECENT_MAIAC = '2017-12-31'
 NODE_GROUP = 'gumby'
 NO_DATA_VALUE = -9999
+PYTHON_PATH = '/att/nobackup/rlgill/DgStereo/dgtools:/att/nobackup/rlgill/DgStereo/pygeotools:/att/nobackup/rlgill/DgStereo/imview'
 WORK_DIRECTORY = OUTPUT_DIRECTORY
