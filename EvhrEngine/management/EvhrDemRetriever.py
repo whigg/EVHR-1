@@ -328,7 +328,7 @@ class EvhrDemRetriever(GeoRetriever):
         #     else:
         #         raise
 
-        exitCode = os.system(cmd)
+        exitCode = os.system(cmd + '> ' + self.request.destination.name + ' 2>&1')
 
         # if exitCode:
         #
