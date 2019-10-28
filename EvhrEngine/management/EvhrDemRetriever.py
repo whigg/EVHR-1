@@ -59,6 +59,10 @@ class EvhrDemRetriever(GeoRetriever):
         #---
         scmd = SystemCommand('parallel_stereo -v', None, self.logger)
         self.logger.info('Using ' + str(scmd.stdOut))
+
+        os.environ['PYTHONPATH'] = \
+            os.environ['PYTHONPATH'] + settings.PYTHON_PATH
+
         self.logger.info('PYTHONPATH = ' + os.environ['PYTHONPATH'])
 
     #---------------------------------------------------------------------------
