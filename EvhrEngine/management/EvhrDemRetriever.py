@@ -328,7 +328,11 @@ class EvhrDemRetriever(GeoRetriever):
         #     else:
         #         raise
 
-        exitCode = os.system(cmd + '> ' + self.request.destination.name + ' 2>&1')
+        exitCode = \
+            os.system(cmd + \
+                      '> ' + \
+                      os.path.join(self.request.destination.name, 'edr.out' + \
+                      ' 2>&1')
 
         # if exitCode:
         #
