@@ -51,7 +51,7 @@ def downloadRequest(requestId):
                          
         os.chdir(readMeDir)
 
-        req = Request.object.get(id=requestId)
+        req = Request.objects.get(id=requestId)
         protocol = req.endPoint.name
                 
         if protocol == 'EVHR DEM':
