@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from ProcessingEngine.models import Constituent
+from ProcessingEngine.models import Request
 
 #-------------------------------------------------------------------------------
 # downloadRequest
@@ -41,6 +42,29 @@ def downloadRequest(requestId):
                 os.chdir(dirName)
                 zf.write(fileName)
                 
+        # ---
+        # Get the request, determine if it is a ToA or DEM, and add the
+        # relevant read-me file.
+        # ---
+        readMeDir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 '../EVHR/documents')
+                         
+        os.chdir(readMeDir)
+
+        req = Request.object.get(id=requestId)
+        protocol = req.endPoint.protocol.name
+                
+        if protocol == 'EVHR DEM':
+
+            zf.write('readme-dem.txt')            
+            
+        elif protocol == 'EVHR ToA':
+            
+            zf.write('readme-toa.txt')
+
+        else:
+            print 'No read-me file for ' + str(protocol)
+            
         zf.close()
 
         response = None
