@@ -56,11 +56,11 @@ def downloadRequest(requestId):
                 
         if protocol == 'EVHR DEM':
 
-            zf.write('readme-dem.txt')            
+            zf.write('readme_dem.txt')            
             
         elif protocol == 'EVHR ToA':
             
-            zf.write('readme-toa.txt')
+            zf.write('readme_toa.txt')
 
         else:
             print 'No read-me file for ' + str(protocol)
