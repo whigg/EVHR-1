@@ -111,7 +111,8 @@ class EvhrToaRetriever(GeoRetriever):
             dg = DgFile(outFile)
             ccDict[outFile] = dg.cloudCover()
 
-        sortedFiles = [key for (key, value) in sorted(ccDict.items(), key=operator.itemgetter(1))]
+        sortedFiles = [key for (key, value) in sorted(ccDict.items(), 
+                                     key=operator.itemgetter(1), reverse=True)]
 
         # Build the VRT.
         cmd = 'gdalbuildvrt -q -overwrite ' + \
