@@ -264,7 +264,7 @@ class EvhrToaRetriever(GeoRetriever):
             self.logger.info('Merging bands into ' + str(outFileName))
 
         cmd = 'gdal_merge.py -co COMPRESS=LZW -co BIGTIFF=YES -ot Int16 \
-                -separate -n {} -a_nodata {} -o {} {}'. \
+                -separate -init {} -a_nodata {} -o {} {}'. \
                 format(settings.NO_DATA_VALUE, \
                        settings.NO_DATA_VALUE, 
                        outFileName, \
